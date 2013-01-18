@@ -9,6 +9,7 @@ package com.bob85;
 
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Victor;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,6 +23,10 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+    
+    Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_SLOT,
+            Shooter.SHOOTER_MOTOR_CHANNEL);
+    
     public void robotInit() {
 
     }
