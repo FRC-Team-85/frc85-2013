@@ -12,8 +12,11 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Shooter {
     
-    public static int SHOOTER_MOTOR_CHANNEL = 2;
     public static int SHOOTER_MOTOR_SLOT = 2;
+    public static int SHOOTER_MOTOR_CHANNEL = 2;
+    
+    public static int SHOOTER_RPM_SENSOR_SLOT = 2;
+    public static int SHOOTER_RPM_SENSOR_CHANNEL = 1;
     
     private double _shooterPID_kP;
     private double _shooterPID_kI;
@@ -43,8 +46,38 @@ public class Shooter {
         _shooterPID.setOutputRange(_shooterPID_kMinOutput, _shooterPID_kMaxOutput);
     }
     
-    private void initTestMode() {
-        _shooterPID.startLiveWindowMode();
+    /**
+     * Enables PID Controller if it is not already enabled
+     */
+    private void initPID() {
+        if (!_shooterPID.isEnable()) {
+            _shooterPID.enable();
+        }
+    }
+    
+    /**
+     * Runs the PID Controller if outside of setSpeed RPM range, if inside
+     * switches to a static speed to prevent oscillation
+     * 
+     * @param isEnabled Checks if the function is enabled
+     * @param setSpeed Desired final shooter output
+     * @param measuredRPM Shooter sensor's measured RPM
+     * @param minRPM Minimum RPM to turn off PID Controller
+     * @param maxRPM Maximum RPM to turn off PID Controller
+     */
+    public void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
+            double measuredRPM, double minRPM, double maxRPM) {
+        if (isEnabled) {
+            if (((measuredRPM < minRPM) || (measuredRPM > maxRPM ))) {
+                initPID();
+            }
+            else if (((measuredRPM > minRPM) && (measuredRPM < maxRPM ))) {
+                _shooterMotor.set(setSpeed);
+            }
+            else {
+                _shooterMotor.set(0);
+            }
+        }
     }
     
 }
