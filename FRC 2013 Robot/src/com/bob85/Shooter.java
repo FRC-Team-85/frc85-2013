@@ -60,6 +60,12 @@ public class Shooter {
         }
     }
     
+    private void disablePID() {
+        if (_shooterPID.isEnable()) {
+            _shooterPID.disable();
+        }
+    }
+    
     /**
      * Runs the PID Controller if outside of setSpeed RPM range, if inside
      * switches to a static speed to prevent oscillation
@@ -80,6 +86,7 @@ public class Shooter {
                 initPID();
             }
             else if (((getRPM > minRPM) && (getRPM < maxRPM ))) {
+                disablePID();
                 _shooterMotor.set(setSpeed);
             }
             else {
@@ -87,7 +94,7 @@ public class Shooter {
             }
         }
         else {
-            _shooterPID.disable();
+            disablePID();
             _shooterMotor.set(0);
         }
     }
