@@ -13,27 +13,31 @@ import edu.wpi.first.wpilibj.*;
 public class Shooter {
     
     public static int SHOOTER_MOTOR_SLOT = 2;
-    public static int SHOOTER_MOTOR_CHANNEL = 2;
+    public static int SHOOTER_MOTOR_CHANNEL = 6;
     
-    public static int SHOOTER_RPM_SENSOR_SLOT = 2;
-    public static int SHOOTER_RPM_SENSOR_CHANNEL = 1;
+    public static int SHOOTER_RPM_SENSOR_SLOT = 1;
+    public static int SHOOTER_RPM_SENSOR_CHANNEL = 5;
     
-    private double _shooterPID_kP;
-    private double _shooterPID_kI;
-    private double _shooterPID_kD;
-    private double _shooterPID_kF;
-    private double _shooterPID_kMinInput;
-    private double _shooterPID_kMaxInput;
-    private double _shooterPID_kMinOutput;
-    private double _shooterPID_kMaxOutput;
+    private double _shooterPID_kP = 0.009;
+    private double _shooterPID_kI = 0.0001;
+    private double _shooterPID_kD = 0;
+    private double _shooterPID_kF = 0;
+    private double _shooterPID_kMinInput = 0;
+    private double _shooterPID_kMaxInput = 3000;
+    private double _shooterPID_kMinOutput = 0;
+    private double _shooterPID_kMaxOutput = 1;
+    private double _shooterPID_kSetPoint = 2800;
     
     private PIDController _shooterPID;
     
     private Victor _shooterMotor;
     
-    public Shooter(Victor shooterMotor, PIDController shooterPIDController) {
+    private HallEffect _shooterSensor;
+    
+    public Shooter(Victor shooterMotor, PIDController shooterPIDController, HallEffect shooterSensor) {
         _shooterMotor = shooterMotor;
         _shooterPID = shooterPIDController;
+        _shooterSensor = shooterSensor;
         initPIDConstants();
     }
     
@@ -52,6 +56,7 @@ public class Shooter {
     private void initPID() {
         if (!_shooterPID.isEnable()) {
             _shooterPID.enable();
+            _shooterPID.setSetpoint(_shooterPID_kSetPoint);
         }
     }
     
@@ -66,17 +71,24 @@ public class Shooter {
      * @param maxRPM Maximum RPM to turn off PID Controller
      */
     public void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
-            double measuredRPM, double minRPM, double maxRPM) {
+            double minRPM, double maxRPM) {
+        
+        int getRPM = _shooterSensor.returnRPM();
+        
         if (isEnabled) {
-            if (((measuredRPM < minRPM) || (measuredRPM > maxRPM ))) {
+            if (((getRPM < minRPM) || (getRPM > maxRPM ))) {
                 initPID();
             }
-            else if (((measuredRPM > minRPM) && (measuredRPM < maxRPM ))) {
+            else if (((getRPM > minRPM) && (getRPM < maxRPM ))) {
                 _shooterMotor.set(setSpeed);
             }
             else {
                 _shooterMotor.set(0);
             }
+        }
+        else {
+            _shooterPID.disable();
+            _shooterMotor.set(0);
         }
     }
     
