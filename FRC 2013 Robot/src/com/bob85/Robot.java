@@ -7,6 +7,26 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
 
     }
+    
+    public void disabledInit() {
+        
+    }
+    
+    public void autonomousInit() {
+        
+    }
+    
+    public void teleopInit() {
+        
+    }
+    
+    public void testInit() {
+        
+    }
+    
+    public void disabledPeriodic() {
+        
+    }
 
     public void autonomousPeriodic() {
 
