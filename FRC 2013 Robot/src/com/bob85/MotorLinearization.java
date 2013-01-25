@@ -20,7 +20,7 @@ public class MotorLinearization {
      * @param x Desired Motor Output
      */
     public static void linearizeVictor884Output(Victor victorMotor, double x) {
-        double linearOutput = 3.1199*(x*x*x*x) - 4.4664*(x*x*x) + 2.2378*(x*x) + 0.122*x;
+        double linearOutput = 3.1199*Exponent.pow(x, 4) - 4.4664*Exponent.pow(x, 3) + 2.2378*Exponent.pow(x, 2) + 0.122*x;
         victorMotor.set(linearOutput);
     }
     
