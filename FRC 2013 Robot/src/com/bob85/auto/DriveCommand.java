@@ -4,27 +4,26 @@
  */
 package com.bob85.auto;
 
-import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.*;
 
 /**
  *
  * @author Michael Chau <mchau95@gmail.com>
  */
 public class DriveCommand {
-    
+
     private RobotDrive m_drive;
-    
     private double initialDist;
     private boolean isInitialDistSet;
-    
+
     public DriveCommand(RobotDrive drive) {
         m_drive = drive;
     }
-    
+
     /**
-     * Drives the robot for a desired distance.
-     * Currently waiting on a proper closed loop autonomous drive method
-     * 
+     * Drives the robot for a desired distance. Currently waiting on a proper
+     * closed loop autonomous drive method
+     *
      * @param currentDist current displacement robot is at
      * @param desiredDist goal displacement of the robot
      * @param isEnabled is the method enabled
@@ -37,9 +36,7 @@ public class DriveCommand {
             }
             if ((currentDist - initialDist) < desiredDist) {
                 m_drive.drive(1, 0);
-            }
-
-            else {
+            } else {
                 m_drive.drive(0, 0);
                 isInitialDistSet = false;
             }

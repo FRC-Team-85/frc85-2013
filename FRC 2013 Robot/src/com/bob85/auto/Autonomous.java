@@ -15,22 +15,30 @@ public class Autonomous {
     Timer autoTimer;
     double waitTime;
 
-    public void stageAutoDrive(double driveSpeed, SpeedController leftSpControl, SpeedController rightSpControl, Encoder leftDriveEnc, Encoder rightDriveEnc) {
+    public void stageAutoDrive(double driveSpeed, SpeedController leftFrontSpControl, SpeedController leftBackSpControl, SpeedController rightFrontSpControl, SpeedController rightBackSpControl, Encoder leftDriveEnc, Encoder rightDriveEnc) {
         if (((leftDriveEnc.get() + rightDriveEnc.get()) / 2) < 200) {
-            leftSpControl.set(driveSpeed);
-            rightSpControl.set(driveSpeed);
+            leftFrontSpControl.set(driveSpeed);
+            leftBackSpControl.set(driveSpeed);
+            rightFrontSpControl.set(driveSpeed);
+            leftBackSpControl.set(driveSpeed);
         } else {
-            leftSpControl.set(0.0);
-            rightSpControl.set(0.0);
+            leftFrontSpControl.set(0.0);
+            leftBackSpControl.set(0.0);
+            rightFrontSpControl.set(0.0);
+            rightBackSpControl.set(0.0);
             autoTimer.start();
         }
 
         if (autoTimer.get() > waitTime && ((leftDriveEnc.get() + rightDriveEnc.get()) / 2) > 0) {
-            leftSpControl.set(-driveSpeed);
-            rightSpControl.set(-driveSpeed);
+            leftFrontSpControl.set(-driveSpeed);
+            leftBackSpControl.set(-driveSpeed);
+            rightFrontSpControl.set(-driveSpeed);
+            rightBackSpControl.set(-driveSpeed);
         } else {
-            leftSpControl.set(0.0);
-            rightSpControl.set(0.0);
+            leftFrontSpControl.set(0.0);
+            leftBackSpControl.set(0.0);
+            rightFrontSpControl.set(0.0);
+            rightBackSpControl.set(0.0);
         }
     }
 
