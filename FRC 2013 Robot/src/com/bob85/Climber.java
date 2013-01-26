@@ -2,7 +2,7 @@ package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
 
-public class pyramidClimb {
+public class Climber {
 
     public void elevatorHooks(Encoder elevEnc, Joystick auxStick, int upButton, int downButton, SpeedController leftDriveMotor, SpeedController rightDriveMotor, double elevDriveSpeed, boolean inElevMode) {
 
