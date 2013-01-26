@@ -23,18 +23,28 @@ public class pyramidClimb {
     }
 
     public void driveElevShift(Joystick leftStick, int driveShiftButton, int elevShiftButton, Servo leftShiftServo, Servo rightShiftServo, boolean inElevMode) {
-
+        //driveModeButton
         if (leftStick.getRawButton(driveShiftButton) == true) {
-
             leftShiftServo.set(0.0);
             rightShiftServo.set(1.0);
             inElevMode = false;
-
+        //elevModeButton    
         } else if (leftStick.getRawButton(elevShiftButton) == true) {
-
             leftShiftServo.set(1.0);
             rightShiftServo.set(0.0);
             inElevMode = true;
+        }
+    }
+    
+    public void diskIntake(Joystick auxStick, SpeedController intakeRoller, int feedInButton, int feedOutButton){
+        if (auxStick.getRawButton(feedInButton)){
+            intakeRoller.set(0.6);
+        }
+        else if (auxStick.getRawButton(feedOutButton)){
+            intakeRoller.set(-0.6);
+        }
+        else {
+            intakeRoller.set(0);
         }
     }
 }
