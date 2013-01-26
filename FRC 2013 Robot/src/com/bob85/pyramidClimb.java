@@ -24,7 +24,7 @@ public class pyramidClimb {
 
 }
     
-    public void driveElevShift(Joystick leftStick, int driveShift, int elevShift, Servo leftShiftServo, Servo rightShiftServo){
+    public void driveElevShift(Joystick leftStick, int driveShiftButton, int elevShiftButton, Servo leftShiftServo, Servo rightShiftServo){
         
     }
     
