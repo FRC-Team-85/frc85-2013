@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class AutoModeChooser {
     
     private SendableChooser autoChooser;
+    private AnalogChannel m_analogAutoChooser;
     
     private String m_optionZeroName;
     private String m_optionOneName;
     private String m_optionTwoName;
     
     private Object m_choice;
+    private int analogChoice;
     
     /**
      * Adds the choices to the SmartDashboard
@@ -40,7 +42,7 @@ public class AutoModeChooser {
         
         initChoices();
     }
-       
+      
     /**
      * Gets choice selected from SmartDashboard
      * 
@@ -57,5 +59,31 @@ public class AutoModeChooser {
     public Object chooseMode() {
         returnChoice();
         return m_choice;
+    }
+    
+    /**
+     * Constructs an AutoModeChooser using an analog selector
+     * 
+     * @param analogModeChooser the analog selector
+     */
+    public AutoModeChooser(AnalogChannel analogModeChooser) {
+        m_analogAutoChooser = analogModeChooser;
+    }
+    
+    /**
+     * Gets voltage and calculate choice selected
+     */
+    private void returnAnalogChoice() {
+        analogChoice = (int) ((m_analogAutoChooser.getVoltage() + 0.45) * (12/5));    
+    }
+    
+    /**
+     * Returns the chosen mode integer
+     * 
+     * @return Gets chosen mode number
+     */
+    public int chooseAnalogMode() {
+        returnAnalogChoice();
+        return analogChoice;
     }
 }
