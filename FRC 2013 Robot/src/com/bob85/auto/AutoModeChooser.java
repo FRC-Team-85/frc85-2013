@@ -4,6 +4,7 @@
  */
 package com.bob85.auto;
 
+import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
@@ -20,16 +21,6 @@ public class AutoModeChooser {
     
     private Object m_choice;
     
-    public AutoModeChooser(String optionZeroName, String optionOneName, String optionTwoName) {
-        autoChooser = new SendableChooser();
-        
-        m_optionZeroName = optionZeroName;
-        m_optionOneName = optionOneName;
-        m_optionTwoName = optionTwoName;
-        
-        initChoices();
-    }
-    
     /**
      * Adds the choices to the SmartDashboard
      * The objects are all strings
@@ -40,6 +31,16 @@ public class AutoModeChooser {
         autoChooser.addObject(m_optionTwoName, m_optionTwoName);
     }
     
+    public AutoModeChooser(String optionZeroName, String optionOneName, String optionTwoName) {
+        autoChooser = new SendableChooser();
+        
+        m_optionZeroName = optionZeroName;
+        m_optionOneName = optionOneName;
+        m_optionTwoName = optionTwoName;
+        
+        initChoices();
+    }
+       
     /**
      * Gets choice selected from SmartDashboard
      * 
