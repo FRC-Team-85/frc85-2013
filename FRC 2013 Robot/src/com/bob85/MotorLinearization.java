@@ -4,6 +4,7 @@
  */
 package com.bob85;
 
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Victor;
 
 /**
@@ -20,7 +21,7 @@ public class MotorLinearization {
      * @param x Desired Motor Output
      */
     public static void linearizeVictor884Output(Victor victorMotor, double x) {
-        double linearOutput = 3.1199*Exponent.pow(x, 4) - 4.4664*Exponent.pow(x, 3) + 2.2378*Exponent.pow(x, 2) + 0.122*x;
+        double linearOutput = 3.1199*MathUtils.pow(x, 4) - 4.4664*MathUtils.pow(x, 3) + 2.2378*MathUtils.pow(x, 2) + 0.122*x;
         victorMotor.set(linearOutput);
     }
     
