@@ -25,4 +25,8 @@ public class MotorLinearization {
         victorMotor.set(linearOutput);
     }
     
+    public static double calculateLinearOutput(double x) {
+        return (3.1199*MathUtils.pow(x, 4) - 4.4664*MathUtils.pow(x, 3) + 2.2378*MathUtils.pow(x, 2) + 0.122*x);
+    }
+    
 }
