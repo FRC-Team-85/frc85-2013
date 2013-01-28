@@ -5,6 +5,7 @@ package com.bob85;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -17,11 +18,12 @@ public class Drive {
     
     Joystick m_leftDriveJoystick; //reference to left drive joystick
     Joystick m_rightDriveJoystick; //reference to right drive joystick
+    Joystick m_testDriveJoystick;
     
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
     
-    private double deadband = 0.1; //Deadband for drive motor output
+    private double deadband = 0.5; //Deadband for drive motor output
     
     /**
      * Constructs a Robot Drive with two PWM channels
@@ -32,6 +34,13 @@ public class Drive {
     public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors) {
         m_leftDriveMotors = leftDriveMotors;
         m_rightDriveMotors = rightDriveMotors;
+    }
+    
+    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors,
+            Joystick testDriveJoystick) {
+        m_leftDriveMotors = leftDriveMotors;
+        m_rightDriveMotors = rightDriveMotors;
+        m_testDriveJoystick = testDriveJoystick;
     }
     
     /**
@@ -58,13 +67,21 @@ public class Drive {
         rightMotorsOutput = m_rightDriveJoystick.getY();
     }
     
+    private void getTestDriveJoystickInput() {
+        leftMotorsOutput = m_testDriveJoystick.getRawAxis(2);
+        rightMotorsOutput = m_testDriveJoystick.getRawAxis(4);
+    }
+    
     /**
      * Sets motor output setting to zero if it falls under the deadband
-     * @param motorOutput current motor output setting 
-     */
-    private void setDeadband(double motorOutput) {
-        if (Math.abs(motorOutput) < deadband) {
-            motorOutput = 0;
+     */    
+    private void setMotorOutputDeadbands() {
+        if (Math.abs(leftMotorsOutput) < deadband) {
+            leftMotorsOutput = 0;
+        }
+        
+        if (Math.abs(rightMotorsOutput) < deadband) {
+            rightMotorsOutput = 0;
         }
     }
     
@@ -83,15 +100,32 @@ public class Drive {
      m_leftDriveMotors.set(leftMotorsOutput);
      m_rightDriveMotors.set(rightMotorsOutput);
     }
+    
+    /**
+     * Sends input and output of joystickBasedTestDrive()
+     */
+    private void sendTestDriveDiagnosticsSDB() {
+        SmartDashboard.putNumber("Left Drive Input", m_testDriveJoystick.getRawAxis(2));
+        SmartDashboard.putNumber("Right Drive Input", m_testDriveJoystick.getRawAxis(4));
+        SmartDashboard.putNumber("Left Drive Output", m_leftDriveMotors.get());
+        SmartDashboard.putNumber("Right Drive Output", m_rightDriveMotors.get());
+    }
 
     /**
      * Uses two joysticks in a tank drive setup to run the motors
      */
     public void joystickBasedTankDrive() {
-        getJoystickInput();
+        getTankDriveJoystickInput();
         setLinearizedOutput();
-        setDeadband(leftMotorsOutput);
-        setDeadband(rightMotorsOutput);
+        setMotorOutputDeadbands();
         setMotorsOutput();
+    }
+    
+    public void joystickBasedTestDrive() {
+        getTestDriveJoystickInput();
+        setLinearizedOutput();
+        setMotorOutputDeadbands();
+        setMotorsOutput();
+        sendTestDriveDiagnosticsSDB();
     }
 }
