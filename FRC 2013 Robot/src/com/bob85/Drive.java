@@ -23,7 +23,7 @@ public class Drive {
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
     
-    private double deadband = 0.5; //Deadband for drive motor output
+    private double deadband = 0.05; //Deadband for drive motor output
     
     /**
      * Constructs a Robot Drive with two PWM channels
