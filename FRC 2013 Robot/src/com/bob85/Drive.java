@@ -53,7 +53,7 @@ public class Drive {
     /**
      * Maps the motor outputs to the joysticks Y axis
      */
-    private void getJoystickInput() {
+    private void getTankDriveJoystickInput() {
         leftMotorsOutput = m_leftDriveJoystick.getY();
         rightMotorsOutput = m_rightDriveJoystick.getY();
     }
