@@ -16,7 +16,7 @@ public class Autonomous {
     double waitTime;
 
     public void stageAutoDrive(double driveSpeed, SpeedController leftFrontSpControl, SpeedController leftBackSpControl, SpeedController rightFrontSpControl, SpeedController rightBackSpControl, Encoder leftDriveEnc, Encoder rightDriveEnc) {
-        if (((leftDriveEnc.get() + rightDriveEnc.get()) / 2) < 200) {
+        if (((leftDriveEnc.get() + rightDriveEnc.get()) / 2) < 200) { //twelveInches~200encCounts
             leftFrontSpControl.set(driveSpeed);
             leftBackSpControl.set(driveSpeed);
             rightFrontSpControl.set(driveSpeed);
@@ -46,7 +46,7 @@ public class Autonomous {
         if (autoTimer.get() > 0) {
             shooterMotor.set(shooterSpeed);
             //unfinished, write for disk loader mechanism
-
+            
 
         } else {
             shooterMotor.set(0.0);
