@@ -128,4 +128,12 @@ public class Drive {
         setMotorsOutput();
         sendTestDriveDiagnosticsSDB();
     }
+    
+    public void autoBasedDrive(double leftMotorOutput, double rightMotorOutput) {
+        leftMotorsOutput = leftMotorOutput;
+        rightMotorsOutput = rightMotorOutput;
+        setLinearizedOutput();
+        setMotorOutputDeadbands();
+        setMotorsOutput();
+    }
 }
