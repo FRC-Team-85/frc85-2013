@@ -28,6 +28,8 @@ public class Drive {
             
     private double deadband = 0.05; //Deadband for drive motor output
     
+    private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
+    
     /**
      * Constructs a Robot Drive with two PWM channels
      * 
