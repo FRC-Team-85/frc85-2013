@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.*;
 
 public class Climber {
 
+    private double encoderDistanceRatio = 0.150; //Every encoder pulse is 0.150 linear inches moved on the climber
+    
     public void elevatorHooks(Encoder elevEnc, Joystick auxStick, int upButton, int downButton, SpeedController leftDriveMotor, SpeedController rightDriveMotor, double elevDriveSpeed, boolean inElevMode) {
 
         if (inElevMode == true && auxStick.getRawButton(upButton) == true) {
