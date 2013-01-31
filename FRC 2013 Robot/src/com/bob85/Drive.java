@@ -23,7 +23,8 @@ public class Drive {
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
    
-    private double oldOutput;
+    private double leftOldOutput;
+    private double rightOldOutput;
             
     private double deadband = 0.05; //Deadband for drive motor output
     
@@ -95,20 +96,33 @@ public class Drive {
         rightMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
     }
     
-    private double setMotorsChangeLimit(double output) {
-        if (output>0) {
-            if (Math.abs(output-oldOutput)>0.5) {
-                output = oldOutput + 0.5;
+    private double setMotorsChangeLimit(double output,boolean isLeft) {
+        double oldOutput;
+        
+        if (isLeft) {
+            oldOutput = leftOldOutput;
             }
+        else {
+            oldOutput = rightOldOutput;
         }
-        else if (output<0) {
-            if (Math.abs(output-oldOutput)>0.5) {
-                output = oldOutput - 0.5;
+        
+        if (Math.abs(output-oldOutput)>0.5) {
+            if (output>0) {
+                oldOutput += 0.5;
+                }
+            else if (output<0) {
+                oldOutput -= 0.5;
+                }
+        }
+        if (isLeft) {
+            leftOldOutput = oldOutput;
             }
-        }
-        oldOutput = output;
-        return output;
+        else {
+            rightOldOutput = oldOutput;
+            }
+        return oldOutput;
     }
+    
     /**
      * Sets the motors output with the motor output settings
      */
