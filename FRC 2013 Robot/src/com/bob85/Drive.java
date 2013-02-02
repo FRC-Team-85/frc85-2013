@@ -96,31 +96,35 @@ public class Drive {
         rightMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
     }
     
-    private double setMotorsChangeLimit(double output,boolean isLeft) {
-        double oldOutput;
+    private void motorsChangeLimit() {
         
-        if (isLeft) {
-            oldOutput = leftOldOutput;
-            }
-        else {
-            oldOutput = rightOldOutput;
+        if (Math.abs(leftMotorsOutput-leftOldOutput)>0.5) {     //checks if the change is above 0.5
+            if (leftMotorsOutput>0) {                           //checks if positive and rewrites
+                leftOldOutput +=0.5;                            //oldoutput to change by +0.5
+                }
+            else if (leftMotorsOutput<0) {                      //check if negative and rewrites
+                leftOldOutput -=0.5;                            //oldoutput to change by -0.5
+                }                                           
+        }
+        else {                                                  //if change is acceptable
+            leftOldOutput = leftMotorsOutput;                   //set change to oldoutput
         }
         
-        if (Math.abs(output-oldOutput)>0.5) {
-            if (output>0) {
-                oldOutput += 0.5;
+        if (Math.abs(rightMotorsOutput-rightOldOutput)>0.5) {   //same for right
+            if (rightMotorsOutput>0) {
+                rightOldOutput += 0.5;
                 }
-            else if (output<0) {
-                oldOutput -= 0.5;
+            else if (rightMotorsOutput<0) {
+                rightOldOutput -= 0.5;
                 }
         }
-        if (isLeft) {
-            leftOldOutput = oldOutput;
-            }
         else {
-            rightOldOutput = oldOutput;
-            }
-        return oldOutput;
+            rightOldOutput = rightMotorsOutput;
+        }
+        
+        leftMotorsOutput = leftOldOutput;                       //sets changes to motors
+        rightMotorsOutput = rightOldOutput;
+            
     }
     
     /**
