@@ -1,16 +1,8 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.networktables.*;
-import edu.wpi.first.wpilibj.smartdashboard.*;
-import edu.wpi.first.wpilibj.tables.*;
-
 
 public class Robot extends IterativeRobot {
-
-    SmartDashboard sDashboard = new SmartDashboard();
-    
-    NetworkTable server = NetworkTable.getTable("SmartDashboard");
 
     public void robotInit() {
 
