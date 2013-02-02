@@ -20,6 +20,7 @@ public class FrisbeeLoader {
     private boolean timerReset;
     private double time;
     private double shiftTime = 0.3;
+    private boolean isShiftDone;
     
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
@@ -43,7 +44,13 @@ public class FrisbeeLoader {
         }
     }
     
-    private double getTime() {
+    /**
+     * Runs a timer to check if the servo shift surpassed the time required
+     * to drop a Frisbee
+     * 
+     * @return boolean returning if the time limit is passed
+     */
+    private boolean getShiftDone() {
         if (!timerReset) {
             timer.reset();
             timerReset = true;
@@ -51,10 +58,43 @@ public class FrisbeeLoader {
         }
         
         time = timer.get();
-        return time;
+        
+        if (time < shiftTime) {
+            isShiftDone = false;
+        } else if (time >= shiftTime) {
+            timer.stop();
+            isShiftDone = true;
+        }
+        
+        return isShiftDone;
     }
     
-    public void loadFrisbee() {
-        
+    /**
+     * Resets the boolean condition to reset timer in getShiftDone()
+     */
+    private void resetGetShiftDoneTimer() {
+        timerReset = false;
+    }
+    
+    /**
+     * Unlocks & locks a servo to drop a Frisbee onto the shooter belt
+     * 
+     * @param isEnabled buttonIsPressed() boolean
+     */
+    public void loadFrisbee(boolean isEnabled) {
+        if (isEnabled) {
+            if (!getShiftDone()) {
+                unlockServo(dropServo);
+                lockServo(readyServo);
+            }
+            else if (getShiftDone()) {
+                lockServo(dropServo);
+                unlockServo(readyServo);
+            }
+        } else {
+            lockServo(dropServo);
+            lockServo(readyServo);
+            resetGetShiftDoneTimer();
+        }
     }
 }
