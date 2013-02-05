@@ -4,8 +4,10 @@
  */
 package com.bob85;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Button;
 
 /**
  *
@@ -95,6 +97,22 @@ public class FrisbeeLoader {
             lockServo(dropServo);
             lockServo(readyServo);
             resetGetShiftDoneTimer();
+        }
+    }
+    
+    /**
+     * dropServo is the servo used to drop the frisbees into the shooter
+     * 
+     * @param dropServo lower servo on the loader
+     * @param auxStick operator controls
+     * @param dropServoButton joystick button used for command
+     */
+    public void dropFrisbee(Servo dropServo, Joystick auxStick, int dropServoButton) {
+        if(auxStick.getRawButton(dropServoButton)){
+            dropServo.set(1);
+        }
+        else{
+            dropServo.set(0);
         }
     }
 }
