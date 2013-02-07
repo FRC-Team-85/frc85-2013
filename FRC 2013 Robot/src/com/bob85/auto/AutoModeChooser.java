@@ -5,6 +5,7 @@
 package com.bob85.auto;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
@@ -22,6 +23,11 @@ public class AutoModeChooser {
     
     private Object m_choice;
     private int analogChoice;
+    
+    public boolean[] driverStationInputs;
+    private int driverStationInputsAmount = 8;
+    
+    DriverStation driverStation = DriverStation.getInstance();
     
     /**
      * Adds the choices to the SmartDashboard
@@ -85,5 +91,20 @@ public class AutoModeChooser {
     public int chooseAnalogMode() {
         returnAnalogChoice();
         return analogChoice;
+    }
+    
+    private void returnDriverStationInputs() {
+        int i;
+        
+        if (driverStationInputs == null) {
+            driverStationInputs = new boolean[driverStationInputsAmount];
+        }
+        for (i=0; i<driverStationInputsAmount; i++) {
+            driverStationInputs[i] = driverStation.getDigitalIn(i);
+        }
+    }
+    
+    public boolean getDriveStationInput(int channel) {
+        return driverStationInputs[channel];
     }
 }
