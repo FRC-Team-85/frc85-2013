@@ -28,16 +28,16 @@ public class Shooter {
     private double _shooterPID_kMaxOutput = 1;
     private double _shooterPID_kSetPoint = 2800;
     
-    private PIDController _shooterPID;
+    private PIDController shooterPID;
     
-    private Victor _shooterMotor;
+    private Victor shooterMotor;
     
-    private HallEffect _shooterSensor;
+    private HallEffect shooterSensor;
     
-    public Shooter(Victor shooterMotor, PIDController shooterPIDController, HallEffect shooterSensor) {
-        _shooterMotor = shooterMotor;
-        _shooterPID = shooterPIDController;
-        _shooterSensor = shooterSensor;
+    public Shooter(Victor shooterMotor, PIDController shooterPID, HallEffect shooterSensor) {
+        this.shooterMotor = shooterMotor;
+        this.shooterPID = shooterPID;
+        this.shooterSensor = shooterSensor;
         initPIDConstants();
     }
     
@@ -45,24 +45,24 @@ public class Shooter {
      * Initializes Shooter PID Controller Settings
      */
     private void initPIDConstants() {
-        _shooterPID.setPID(_shooterPID_kP, _shooterPID_kI, _shooterPID_kD, _shooterPID_kF);
-        _shooterPID.setInputRange(_shooterPID_kMinInput, _shooterPID_kMaxInput);
-        _shooterPID.setOutputRange(_shooterPID_kMinOutput, _shooterPID_kMaxOutput);
+        shooterPID.setPID(_shooterPID_kP, _shooterPID_kI, _shooterPID_kD, _shooterPID_kF);
+        shooterPID.setInputRange(_shooterPID_kMinInput, _shooterPID_kMaxInput);
+        shooterPID.setOutputRange(_shooterPID_kMinOutput, _shooterPID_kMaxOutput);
     }
     
     /**
      * Enables PID Controller if it is not already enabled
      */
     private void initPID() {
-        if (!_shooterPID.isEnable()) {
-            _shooterPID.enable();
-            _shooterPID.setSetpoint(_shooterPID_kSetPoint);
+        if (!shooterPID.isEnable()) {
+            shooterPID.enable();
+            shooterPID.setSetpoint(_shooterPID_kSetPoint);
         }
     }
     
     private void disablePID() {
-        if (_shooterPID.isEnable()) {
-            _shooterPID.disable();
+        if (shooterPID.isEnable()) {
+            shooterPID.disable();
         }
     }
     
@@ -79,7 +79,7 @@ public class Shooter {
     public void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
             double minRPM, double maxRPM) {
         
-        int getRPM = _shooterSensor.returnRPM();
+        int getRPM = shooterSensor.returnRPM();
         
         if (isEnabled) {
             if (((getRPM < minRPM) || (getRPM > maxRPM ))) {
@@ -87,15 +87,15 @@ public class Shooter {
             }
             else if (((getRPM > minRPM) && (getRPM < maxRPM ))) {
                 disablePID();
-                _shooterMotor.set(setSpeed);
+                shooterMotor.set(setSpeed);
             }
             else {
-                _shooterMotor.set(0);
+                shooterMotor.set(0);
             }
         }
         else {
             disablePID();
-            _shooterMotor.set(0);
+            shooterMotor.set(0);
         }
     }
     
