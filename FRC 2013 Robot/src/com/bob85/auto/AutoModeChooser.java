@@ -7,6 +7,7 @@ package com.bob85.auto;
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -93,6 +94,10 @@ public class AutoModeChooser {
         return analogChoice;
     }
     
+    public AutoModeChooser() {
+        
+    }
+    
     private void returnDriverStationInputs() {
         int i;
         
@@ -104,7 +109,21 @@ public class AutoModeChooser {
         }
     }
     
-    public boolean getDriveStationInput(int channel) {
+    public boolean getDriverStationInput(int channel) {
         return driverStationInputs[channel];
+    }
+    
+    private void sendDriverStationInputsSmartDashboard() {
+        int i;
+        String key = "DS DIO ";
+        
+        for (i=0; i< driverStationInputsAmount; i++) {
+            SmartDashboard.putBoolean(key + (i++), driverStationInputs[i]);
+        }
+    }
+    
+    public void testDriveStationInputs() {
+        returnDriverStationInputs();
+        sendDriverStationInputsSmartDashboard();
     }
 }

@@ -1,5 +1,6 @@
 package com.bob85;
 
+import com.bob85.auto.AutoModeChooser;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -9,6 +10,8 @@ public class Robot extends IterativeRobot {
     Victor rightDriveMotor = new Victor(2);
     Joystick testDriveStick = new Joystick(1);
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, testDriveStick);
+    
+    AutoModeChooser testChooser = new AutoModeChooser();
 
     public void robotInit() {
 

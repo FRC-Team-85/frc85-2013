@@ -17,6 +17,12 @@ public class Autonomous {
     double waitTime = 6.5;//in seconds; this is an approximate
     double uWaitTime = (waitTime * MathUtils.pow(10.0, 6.0)); //in microSeconds (uSeconds)
 
+    AutoModeChooser autoChooser;
+    
+    public Autonomous(AutoModeChooser autoChooser) {
+        this.autoChooser = autoChooser;
+    }
+    
     public void stageAutoDrive(double driveSpeed, SpeedController leftFrontSpControl, SpeedController leftBackSpControl, SpeedController rightFrontSpControl, SpeedController rightBackSpControl, Encoder leftDriveEnc, Encoder rightDriveEnc) {
         /*if (((leftDriveEnc.get() + rightDriveEnc.get()) / 2) < 200) { //twelveInches~200encCounts
          leftFrontSpControl.set(driveSpeed);
@@ -69,13 +75,17 @@ public class Autonomous {
     /**
      * Skeleton for a test function
      */
-    private static void testAutoMode() {
+    private void testAutoMode() {
     }
 
     /**
      * Only public access to the class
      */
-    public static void runAutonomous() {
+    public void runAutonomous() {
         testAutoMode();
+    }
+    
+    public void initAutonomous() {
+        autoChooser.testDriveStationInputs();
     }
 }
