@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Drive {
     
-    private SpeedController m_leftDriveMotors; //class reference to left drive
-    private SpeedController m_rightDriveMotors; //class reference to right drive
+    private SpeedController leftDriveMotors; //class reference to left drive
+    private SpeedController rightDriveMotors; //class reference to right drive
     
-    Joystick m_leftDriveJoystick; //reference to left drive joystick
-    Joystick m_rightDriveJoystick; //reference to right drive joystick
+    Joystick leftDriveJoystick; //reference to left drive joystick
+    Joystick rightDriveJoystick; //reference to right drive joystick
     Joystick m_testDriveJoystick;
     
     private double leftMotorsOutput; //left drive motor output setting
@@ -37,14 +37,14 @@ public class Drive {
      * @param rightDriveMotors right drive PWM channel
      */
     public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors) {
-        m_leftDriveMotors = leftDriveMotors;
-        m_rightDriveMotors = rightDriveMotors;
+        this.leftDriveMotors = leftDriveMotors;
+        this.rightDriveMotors = rightDriveMotors;
     }
     
     public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors,
             Joystick testDriveJoystick) {
-        m_leftDriveMotors = leftDriveMotors;
-        m_rightDriveMotors = rightDriveMotors;
+        this.leftDriveMotors = leftDriveMotors;
+        this.rightDriveMotors = rightDriveMotors;
         m_testDriveJoystick = testDriveJoystick;
     }
     
@@ -58,18 +58,18 @@ public class Drive {
      */
     public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors,
             Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
-        m_leftDriveMotors = leftDriveMotors;
-        m_rightDriveMotors = rightDriveMotors;
-        m_leftDriveJoystick = leftDriveJoystick;
-        m_rightDriveJoystick = rightDriveJoystick;
+        this.leftDriveMotors = leftDriveMotors;
+        this.rightDriveMotors = rightDriveMotors;
+        this.leftDriveJoystick = leftDriveJoystick;
+        this.rightDriveJoystick = rightDriveJoystick;
     }
     
     /**
      * Maps the motor outputs to the joysticks Y axis
      */
     private void getTankDriveJoystickInput() {
-        leftMotorsOutput = m_leftDriveJoystick.getY();
-        rightMotorsOutput = m_rightDriveJoystick.getY();
+        leftMotorsOutput = leftDriveJoystick.getY();
+        rightMotorsOutput = rightDriveJoystick.getY();
     }
     
     private void getTestDriveJoystickInput() {
@@ -133,8 +133,8 @@ public class Drive {
      * Sets the motors output with the motor output settings
      */
     private void setMotorsOutput() {
-     m_leftDriveMotors.set(leftMotorsOutput);
-     m_rightDriveMotors.set(rightMotorsOutput);
+     leftDriveMotors.set(leftMotorsOutput);
+     rightDriveMotors.set(rightMotorsOutput);
     }
     
     /**
@@ -143,8 +143,8 @@ public class Drive {
     private void sendTestDriveDiagnosticsSDB() {
         SmartDashboard.putNumber("Left Drive Input", m_testDriveJoystick.getRawAxis(2));
         SmartDashboard.putNumber("Right Drive Input", m_testDriveJoystick.getRawAxis(4));
-        SmartDashboard.putNumber("Left Drive Output", m_leftDriveMotors.get());
-        SmartDashboard.putNumber("Right Drive Output", m_rightDriveMotors.get());
+        SmartDashboard.putNumber("Left Drive Output", leftDriveMotors.get());
+        SmartDashboard.putNumber("Right Drive Output", rightDriveMotors.get());
     }
 
     /**
