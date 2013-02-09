@@ -5,6 +5,7 @@ package com.bob85;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -17,6 +18,8 @@ public class Drive {
     private SpeedController leftDriveMotors; //class reference to left drive
     private SpeedController rightDriveMotors; //class reference to right drive
     
+    private Servo servo;
+    
     private Encoder leftDriveEncoder;
     private Encoder rightDriveEncoder;
     
@@ -26,6 +29,8 @@ public class Drive {
     
     public static final int kLEFTDRIVE_VICTORS = 1;
     public static final int kRIGHTDRIVE_VICTORS = 2;
+    
+    public static final int kDRIVE_SERVOS = 3;
     
     public static final int kLEFTDRIVE_ENCODER_A = 1;
     public static final int kLEFTDRIVE_ENCODER_B = 2;
@@ -79,7 +84,7 @@ public class Drive {
         this.rightDriveJoystick = rightDriveJoystick;
     }
     
-    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, 
+    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, Servo servo,
             Encoder leftDriveEncoder, Encoder rightDriveEncoder,
             Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
         this.leftDriveMotors = leftDriveMotors;
@@ -204,6 +209,12 @@ public class Drive {
         SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.getDistance());
         SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.getDistance());
     }
+    
+    private void setServoDrivePosition() {
+        if (!(servo.get() == 0)) {
+            servo.set(0);
+        }
+    }
 
     /**
      * Uses two joysticks in a tank drive setup to run the motors
@@ -234,6 +245,7 @@ public class Drive {
     public void encoderTestDrive() {
         joystickBasedTankDrive();
         sendEncoderDriveDiagnosticsSDB();
+        setServoDrivePosition();
     }
     
     public void driveInit() {

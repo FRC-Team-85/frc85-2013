@@ -7,11 +7,12 @@ public class Robot extends IterativeRobot {
     
     Victor leftDriveMotor = new Victor(Drive.kLEFTDRIVE_VICTORS);
     Victor rightDriveMotor = new Victor(Drive.kRIGHTDRIVE_VICTORS);
+    Servo driveServos = new Servo(Drive.kDRIVE_SERVOS);
     Joystick leftDriveStick = new Joystick(1);
     Joystick rightDriveStick = new Joystick(2);
     Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
-    Drive drive = new Drive(leftDriveMotor, rightDriveMotor, 
+    Drive drive = new Drive(leftDriveMotor, rightDriveMotor, driveServos,
             leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
 
     public void robotInit() {
