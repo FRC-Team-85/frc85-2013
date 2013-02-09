@@ -3,6 +3,7 @@
  */
 package com.bob85;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,9 +17,22 @@ public class Drive {
     private SpeedController leftDriveMotors; //class reference to left drive
     private SpeedController rightDriveMotors; //class reference to right drive
     
+    private Encoder leftDriveEncoder;
+    private Encoder rightDriveEncoder;
+    
     Joystick leftDriveJoystick; //reference to left drive joystick
     Joystick rightDriveJoystick; //reference to right drive joystick
     Joystick m_testDriveJoystick;
+    
+    public static final int kLEFTDRIVE_VICTORS = 1;
+    public static final int kRIGHTDRIVE_VICTORS = 2;
+    
+    public static final int kLEFTDRIVE_ENCODER_A = 1;
+    public static final int kLEFTDRIVE_ENCODER_B = 2;
+    public static final int kRIGHTDRIVE_ENCODER_A = 3;
+    public static final int kRIGHTDRIVE_ENCODER_B = 4;
+    
+    private boolean isEncodersStarted = false;
     
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
@@ -29,6 +43,7 @@ public class Drive {
     private double deadband = 0.05; //Deadband for drive motor output
     
     private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
+    private int encoderCPR = 250;
     
     /**
      * Constructs a Robot Drive with two PWM channels
@@ -62,6 +77,18 @@ public class Drive {
         this.rightDriveMotors = rightDriveMotors;
         this.leftDriveJoystick = leftDriveJoystick;
         this.rightDriveJoystick = rightDriveJoystick;
+    }
+    
+    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, 
+            Encoder leftDriveEncoder, Encoder rightDriveEncoder,
+            Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
+        this.leftDriveMotors = leftDriveMotors;
+        this.rightDriveMotors = rightDriveMotors;
+        this.leftDriveJoystick = leftDriveJoystick;
+        this.rightDriveJoystick = rightDriveJoystick;
+        
+        this.leftDriveEncoder = leftDriveEncoder;
+        this.rightDriveEncoder = rightDriveEncoder;
     }
     
     /**
@@ -146,6 +173,37 @@ public class Drive {
         SmartDashboard.putNumber("Left Drive Output", leftDriveMotors.get());
         SmartDashboard.putNumber("Right Drive Output", rightDriveMotors.get());
     }
+    
+    private void resetEncoders() {
+        leftDriveEncoder.reset();
+        rightDriveEncoder.reset();
+    }
+    
+    private void initEncoders() {
+        if (!isEncodersStarted) {
+            leftDriveEncoder.start();
+            rightDriveEncoder.start();
+            
+            resetEncoders();
+            
+            leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio/encoderCPR);
+            rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio/encoderCPR);
+            
+            isEncodersStarted = true;
+        }
+    }
+    
+    private void disableEncoders() {
+        if (isEncodersStarted) {
+            leftDriveEncoder.stop();
+            rightDriveEncoder.stop();
+        }
+    }    
+    
+    private void sendEncoderDriveDiagnosticsSDB() {
+        SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.getDistance());
+        SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.getDistance());
+    }
 
     /**
      * Uses two joysticks in a tank drive setup to run the motors
@@ -171,5 +229,18 @@ public class Drive {
         setLinearizedOutput();
         setMotorOutputDeadbands();
         setMotorsOutput();
+    }
+    
+    public void encoderTestDrive() {
+        joystickBasedTankDrive();
+        sendEncoderDriveDiagnosticsSDB();
+    }
+    
+    public void driveInit() {
+        initEncoders();
+    }
+    
+    public void disabledInit() {
+        disableEncoders();
     }
 }

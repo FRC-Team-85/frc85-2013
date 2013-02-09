@@ -5,13 +5,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
     
-    Victor leftDriveMotor = new Victor(1);
-    Victor rightDriveMotor = new Victor(2);
-    Joystick testDriveStick = new Joystick(1);
-    Drive drive = new Drive(leftDriveMotor, rightDriveMotor, testDriveStick);
+    Victor leftDriveMotor = new Victor(Drive.kLEFTDRIVE_VICTORS);
+    Victor rightDriveMotor = new Victor(Drive.kRIGHTDRIVE_VICTORS);
+    Joystick leftDriveStick = new Joystick(1);
+    Joystick rightDriveStick = new Joystick(2);
+    Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
+    Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
+    Drive drive = new Drive(leftDriveMotor, rightDriveMotor, 
+            leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
 
     public void robotInit() {
-
+        drive.driveInit();
     }
     
     public void disabledInit() {
@@ -39,7 +43,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        drive.joystickBasedTestDrive();
+        drive.encoderTestDrive();
     }
     
     public void testPeriodic() {
