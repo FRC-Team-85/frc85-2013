@@ -216,9 +216,12 @@ public class Drive {
     }
     
     private void setServoDrivePosition() {
-        if (leftDriveServo.get() == 0 || rightDriveServo.get() == 1){
-            leftDriveServo.set(1);
-            rightDriveServo.set(0);
+        int leftDriveServoPosition = 1;
+        int rightDriveServoPosition = 0;
+        if (leftDriveServo.get() != leftDriveServoPosition || 
+                rightDriveServo.get() != rightDriveServoPosition){
+            leftDriveServo.set(leftDriveServoPosition);
+            rightDriveServo.set(rightDriveServoPosition);
         } 
     }
 
