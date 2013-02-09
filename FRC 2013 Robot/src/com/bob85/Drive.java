@@ -18,7 +18,8 @@ public class Drive {
     private SpeedController leftDriveMotors; //class reference to left drive
     private SpeedController rightDriveMotors; //class reference to right drive
     
-    private Servo servo;
+    private Servo leftDriveServo;
+    private Servo rightDriveServo;
     
     private Encoder leftDriveEncoder;
     private Encoder rightDriveEncoder;
@@ -30,7 +31,8 @@ public class Drive {
     public static final int kLEFTDRIVE_VICTORS = 1;
     public static final int kRIGHTDRIVE_VICTORS = 2;
     
-    public static final int kDRIVE_SERVOS = 3;
+    public static final int kLEFTDRIVE_SERVO = 3;
+    public static final int kRIGHTDRIVE_SERVO = 4;
     
     public static final int kLEFTDRIVE_ENCODER_A = 1;
     public static final int kLEFTDRIVE_ENCODER_B = 2;
@@ -45,7 +47,7 @@ public class Drive {
     private double leftOldOutput;
     private double rightOldOutput;
             
-    private double deadband = 0.05; //Deadband for drive motor output
+    private double deadband = 0.1; //Deadband for drive motor output
     
     private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
@@ -84,7 +86,7 @@ public class Drive {
         this.rightDriveJoystick = rightDriveJoystick;
     }
     
-    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, Servo servo,
+    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, Servo leftDriveServo, Servo rightDriveServo,
             Encoder leftDriveEncoder, Encoder rightDriveEncoder,
             Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
         this.leftDriveMotors = leftDriveMotors;
@@ -100,7 +102,7 @@ public class Drive {
      * Maps the motor outputs to the joysticks Y axis
      */
     private void getTankDriveJoystickInput() {
-        leftMotorsOutput = leftDriveJoystick.getY();
+        leftMotorsOutput = -leftDriveJoystick.getY();
         rightMotorsOutput = rightDriveJoystick.getY();
     }
     
@@ -206,14 +208,18 @@ public class Drive {
     }    
     
     private void sendEncoderDriveDiagnosticsSDB() {
-        SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.getDistance());
-        SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.getDistance());
+        SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
+        SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance());
+        SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.get());
+        SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.get());
+ 
     }
     
     private void setServoDrivePosition() {
-        if (!(servo.get() == 0)) {
-            servo.set(0);
-        }
+        if (leftDriveServo.get() == 0 || rightDriveServo.get() == 1){
+            leftDriveServo.set(1);
+            rightDriveServo.set(0);
+        } 
     }
 
     /**

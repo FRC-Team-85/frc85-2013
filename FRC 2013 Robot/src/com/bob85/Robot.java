@@ -7,12 +7,13 @@ public class Robot extends IterativeRobot {
     
     Victor leftDriveMotor = new Victor(Drive.kLEFTDRIVE_VICTORS);
     Victor rightDriveMotor = new Victor(Drive.kRIGHTDRIVE_VICTORS);
-    Servo driveServos = new Servo(Drive.kDRIVE_SERVOS);
+    Servo leftDriveServo = new Servo(Drive.kLEFTDRIVE_SERVO);
+    Servo rightDriveServo = new Servo (Drive.kRIGHTDRIVE_SERVO);
     Joystick leftDriveStick = new Joystick(1);
     Joystick rightDriveStick = new Joystick(2);
     Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
-    Drive drive = new Drive(leftDriveMotor, rightDriveMotor, driveServos,
+    Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
 
     public void robotInit() {
@@ -45,6 +46,14 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         drive.encoderTestDrive();
+        if (leftDriveStick.getTrigger()) {
+            leftDriveServo.set(1);
+            rightDriveServo.set(0);
+        }
+        if (rightDriveStick.getTrigger()) {
+            leftDriveServo.set(0);
+            rightDriveServo.set(1);
+        }
     }
     
     public void testPeriodic() {
