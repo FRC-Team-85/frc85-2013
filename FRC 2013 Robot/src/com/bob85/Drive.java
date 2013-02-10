@@ -49,6 +49,9 @@ public class Drive {
             
     private double deadband = 0.1; //Deadband for drive motor output
     
+    private double leftDriveServoDrivePosition = 1;
+    private double rightDriveServoDrivePosition = 0;
+    
     private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
     
@@ -193,8 +196,8 @@ public class Drive {
             
             resetEncoders();
             
-            leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio/encoderCPR);
-            rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio/encoderCPR);
+            leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
+            rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             
             isEncodersStarted = true;
         }
@@ -204,6 +207,7 @@ public class Drive {
         if (isEncodersStarted) {
             leftDriveEncoder.stop();
             rightDriveEncoder.stop();
+            isEncodersStarted = false;
         }
     }    
     
@@ -215,16 +219,25 @@ public class Drive {
  
     }
     
-    private void setServoDrivePosition() {
-        int leftDriveServoPosition = 1;
-        int rightDriveServoPosition = 0;
-        if (leftDriveServo.get() != leftDriveServoPosition || 
-                rightDriveServo.get() != rightDriveServoPosition){
-            leftDriveServo.set(leftDriveServoPosition);
-            rightDriveServo.set(rightDriveServoPosition);
-        } 
+    private boolean getServoDrivePosition() {
+        if (leftDriveServo.get() == leftDriveServoDrivePosition && 
+                rightDriveServo.get() == rightDriveServoDrivePosition) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
+    
+    private void setServoDrivePosition() {
+
+        if (!getServoDrivePosition()){
+            leftDriveServo.set(leftDriveServoDrivePosition);
+            rightDriveServo.set(rightDriveServoDrivePosition);
+        } 
+    }
+    
     /**
      * Uses two joysticks in a tank drive setup to run the motors
      */
