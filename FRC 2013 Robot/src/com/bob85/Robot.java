@@ -10,12 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
     
-    Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_SLOT,
-            Shooter.SHOOTER_MOTOR_CHANNEL);
+    Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
     
-    HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_SLOT, Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
+    HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
     
-    Joystick stick = new Joystick(1);
+    Joystick opStick = new Joystick(3);
     
     PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
@@ -50,7 +49,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        shooter.testSingleSpeedPID(stick.getRawButton(8), 0.465, 2250, 3000);
+        shooter.testSingleSpeedPID(opStick.getRawButton(8), 0.465, 2250, 3000);
         SmartDashboard.putNumber("Shooter Motor", shooterMotor.get());
         SmartDashboard.putNumber("Shooter RPM", shooterSensor.get());
     }

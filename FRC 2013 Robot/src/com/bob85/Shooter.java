@@ -12,11 +12,8 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Shooter {
     
-    public static int SHOOTER_MOTOR_SLOT = 2;
-    public static int SHOOTER_MOTOR_CHANNEL = 6;
-    
-    public static int SHOOTER_RPM_SENSOR_SLOT = 1;
-    public static int SHOOTER_RPM_SENSOR_CHANNEL = 5;
+    public static final int SHOOTER_MOTOR_CHANNEL = 5;
+    public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
     
     private double shooterPID_kP = 0.009;
     private double shooterPID_kI = 0.0001;
