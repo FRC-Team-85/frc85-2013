@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.*;
 public class Shooter {
     
     public static final int SHOOTER_MOTOR_CHANNEL = 5;
+    public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
     public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
     
     private double shooterPID_kP = 0.009;
@@ -28,6 +29,7 @@ public class Shooter {
     private PIDController shooterPID;
     
     private Victor shooterMotor;
+    private Victor shooterBeltMotor;
     
     private HallEffect shooterSensor;
     
@@ -43,6 +45,17 @@ public class Shooter {
     public Shooter(Victor shooterMotor, PIDController shooterPID, HallEffect shooterSensor, 
             Joystick joystick) {
         this.shooterMotor = shooterMotor;
+        this.shooterPID = shooterPID;
+        this.shooterSensor = shooterSensor;
+        this.joystick = joystick;
+        initPIDConstants();
+    }
+    
+    public Shooter(Victor shooterMotor, Victor shooterBeltMotor, 
+            PIDController shooterPID, HallEffect shooterSensor, 
+            Joystick joystick) {
+        this.shooterMotor = shooterMotor;
+        this.shooterBeltMotor = shooterBeltMotor;
         this.shooterPID = shooterPID;
         this.shooterSensor = shooterSensor;
         this.joystick = joystick;

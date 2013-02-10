@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
     
     Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
+    Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
     
     HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
     
@@ -18,7 +19,7 @@ public class Robot extends IterativeRobot {
     
     PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
-    Shooter shooter = new Shooter(shooterMotor, shooterPID, shooterSensor);
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opStick);
     
     public void robotInit() {
 
