@@ -26,6 +26,8 @@ public class Shooter {
     private double shooterPID_kMaxOutput = 1;
     private double shooterPID_kSetPoint = 2800;
     
+    private static double kRPM_TO_PWM;
+    
     private PIDController shooterPID;
     
     private Victor shooterMotor;
@@ -61,6 +63,30 @@ public class Shooter {
         this.joystick = joystick;
         initPIDConstants();
     }
+    
+    /**
+     * Returns an RPM's equivalence in a 0 to 1 PWM scale
+     * 
+     * @param RPM Revolutions per minute
+     * @return 
+     */
+    public static double convertRPMtoPWM(int RPM) {
+        double pwmValue ;
+        pwmValue = RPM / kRPM_TO_PWM;
+        return pwmValue;
+    }
+    
+    /**
+     * Returns an PWM's equivalence as an RPM
+     * @param PWM -1.0 to 1.0 PWM signal
+     * @return 
+     */
+    public static int convertPWMtoRPM(double PWM) {
+        int rpmValue;
+        rpmValue = (int) (PWM * (1/kRPM_TO_PWM));
+        return rpmValue;
+    }
+    
     
     /**
      * Initializes Shooter PID Controller Settings
