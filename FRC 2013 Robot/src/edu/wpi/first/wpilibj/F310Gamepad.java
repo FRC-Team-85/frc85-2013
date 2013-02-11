@@ -61,7 +61,7 @@ public class F310Gamepad extends Joystick{
     }
     
     public F310Gamepad(int port) {
-        super(port, 4, 12);
+        super(port, 6, 12);
     }
     
     public boolean getButton(ButtonType button) {
