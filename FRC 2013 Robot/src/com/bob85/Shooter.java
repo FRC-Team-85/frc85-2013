@@ -37,6 +37,15 @@ public class Shooter {
     
     private Joystick joystick;
     
+    /**
+     * Initializes Shooter PID Controller Settings
+     */
+    private void initPIDConstants() {
+        shooterPID.setPID(shooterPID_kP, shooterPID_kI, shooterPID_kD, shooterPID_kF);
+        shooterPID.setInputRange(shooterPID_kMinInput, shooterPID_kMaxInput);
+        shooterPID.setOutputRange(shooterPID_kMinOutput, shooterPID_kMaxOutput);
+    }
+    
     public Shooter(Victor shooterMotor, PIDController shooterPID, HallEffect shooterSensor) {
         this.shooterMotor = shooterMotor;
         this.shooterPID = shooterPID;
@@ -85,16 +94,6 @@ public class Shooter {
         int rpmValue;
         rpmValue = (int) (PWM * (1/kRPM_TO_PWM));
         return rpmValue;
-    }
-    
-    
-    /**
-     * Initializes Shooter PID Controller Settings
-     */
-    private void initPIDConstants() {
-        shooterPID.setPID(shooterPID_kP, shooterPID_kI, shooterPID_kD, shooterPID_kF);
-        shooterPID.setInputRange(shooterPID_kMinInput, shooterPID_kMaxInput);
-        shooterPID.setOutputRange(shooterPID_kMinOutput, shooterPID_kMaxOutput);
     }
     
     /**
