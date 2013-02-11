@@ -134,7 +134,7 @@ public class Shooter {
     public void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
             double minRPM, double maxRPM) {
         
-        int getRPM = shooterSensor.returnRPM();
+        int getRPM = shooterSensor.getRPM();
         
         if (isEnabled) {
             if (((getRPM < minRPM) || (getRPM > maxRPM ))) {
