@@ -5,6 +5,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -16,6 +17,8 @@ public class Shooter {
     public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
     public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
     
+    private double kOnTargetPercentTolerance = 0.1;
+    
     private double shooterPID_kP = 0.009;
     private double shooterPID_kI = 0.0001;
     private double shooterPID_kD = 0;
@@ -25,6 +28,7 @@ public class Shooter {
     private double shooterPID_kMinOutput = 0;
     private double shooterPID_kMaxOutput = 1;
     private double shooterPID_kSetPoint = 2800;
+    private double shooterPID_kPercentTolerance = kOnTargetPercentTolerance * 100;
     
     private static double kRPM_TO_PWM;
     
@@ -32,6 +36,8 @@ public class Shooter {
     
     private Victor shooterMotor;
     private Victor shooterBeltMotor;
+    
+    private double shooterBeltMotorSpeed;
     
     private HallEffect shooterSensor;
     
@@ -44,6 +50,7 @@ public class Shooter {
         shooterPID.setPID(shooterPID_kP, shooterPID_kI, shooterPID_kD, shooterPID_kF);
         shooterPID.setInputRange(shooterPID_kMinInput, shooterPID_kMaxInput);
         shooterPID.setOutputRange(shooterPID_kMinOutput, shooterPID_kMaxOutput);
+        shooterPID.setPercentTolerance(shooterPID_kPercentTolerance);
     }
     
     public Shooter(Victor shooterMotor, PIDController shooterPID, HallEffect shooterSensor) {
@@ -120,6 +127,28 @@ public class Shooter {
         }
     }
     
+    private void changePIDSetpoint(boolean isEnabled, double setpoint) {
+        if (isEnabled && shooterPID.getSetpoint() != setpoint) {
+            shooterPID.setSetpoint(setpoint);
+        }
+    }
+    
+    private boolean onTarget() {
+        if (shooterPID.isEnable()) {
+            return shooterPID.onTarget();
+        } else {
+            boolean onTarget;
+            
+            if (Math.abs(convertRPMtoPWM(shooterSensor.getRPM()) -  shooterMotor.get()) <  kOnTargetPercentTolerance) {
+                onTarget = true;
+            } else {
+                onTarget = false;
+            }
+            
+            return onTarget;
+        }
+    }
+    
     /**
      * Runs the PID Controller if outside of setSpeed RPM range, if inside
      * switches to a static speed to prevent oscillation
@@ -130,7 +159,7 @@ public class Shooter {
      * @param minRPM Minimum RPM to turn off PID Controller
      * @param maxRPM Maximum RPM to turn off PID Controller
      */
-    public void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
+    private void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
             double minRPM, double maxRPM) {
         
         int getRPM = shooterSensor.getRPM();
@@ -153,6 +182,14 @@ public class Shooter {
         }
     }
     
+    private void runAutomaticShooterPID(boolean isEnabled) {
+        if (isEnabled) {
+            initPID();            
+        } else {
+            disablePID();
+        }
+    }
+    
     /**
      * Calculates shooter speed in RPM and use it in a PID Controller
      * @param isEnabled
@@ -167,11 +204,42 @@ public class Shooter {
         }
     }
     
+    private void setShooterBeltSpeed(double speed) {
+        shooterBeltMotorSpeed = speed;
+        shooterBeltMotor.set(shooterBeltMotorSpeed);
+    }
+    
+    private double getShooterBeltSpeed() {
+        return shooterBeltMotorSpeed;
+    }
+    
+    private void runDiagnostics() {
+        SmartDashboard.putNumber("Shooter PWM Setting", shooterMotor.get());
+        SmartDashboard.putNumber("Shooter RPM", shooterSensor.getRPM());
+        SmartDashboard.putNumber("Shooter Belt PWM Setting", shooterBeltMotor.get());
+        SmartDashboard.putBoolean("Shooter On Target", onTarget());
+    }
+    
+    private void runCompetitionShooter() {
+        setShooterBeltSpeed(0.5);
+        runAutomaticShooterPID(joystick.getRawButton(8));
+        
+    }
+    
     /**
      * Runs a shooter feature needed to be tested
      * @param distance distance from target in inches
      */
-    public void runCurrentTest(double distance) {
+    private void runAutomaticShooterSpeedTest(double distance) {
         testAutomaticShooterSpeedCalculation(joystick.getTrigger(), distance);
+    }
+    
+    private void runShooterPIDTest() {
+        runAutomaticShooterPID(joystick.getRawButton(8));
+    }
+    
+    public void runShooter() {
+        runShooterPIDTest();
+        runDiagnostics();
     }
 }

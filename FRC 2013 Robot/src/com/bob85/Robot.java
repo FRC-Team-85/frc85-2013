@@ -46,9 +46,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        shooter.testSingleSpeedPID(opStick.getRawButton(8), 0.465, 2250, 3000);
-        SmartDashboard.putNumber("Shooter Motor", shooterMotor.get());
-        SmartDashboard.putNumber("Shooter RPM", shooterSensor.get());
+        shooter.runShooter();
     }
     
     public void testPeriodic() {
