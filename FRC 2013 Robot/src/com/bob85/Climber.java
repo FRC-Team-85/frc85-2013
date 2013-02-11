@@ -21,18 +21,21 @@ public class Climber {
     
     Victor leftClimberMotors;
     Victor rightClimberMotors;
-    Encoder linearClimberEncoder;
+    Encoder leftClimberEncoder;
+    Encoder rightClimberEncoder;
     
     private void initEncoderSetting() {
-        linearClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
+        leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
+        rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
     }
     
     public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
-            Encoder linearClimberEncoder, DigitalInput bottomClimberLimitSwitch,
-            DigitalInput topClimberLimitSwitch) {
+            Encoder leftClimberEncoder, Encoder rightClimberEncoder, 
+            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
-        this.linearClimberEncoder = linearClimberEncoder;
+        this.leftClimberEncoder = leftClimberEncoder;
+        this.rightClimberEncoder = rightClimberEncoder;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         
@@ -44,11 +47,11 @@ public class Climber {
     }
     
     private void getEncoderDistance() {
-        linearClimberDistance = linearClimberEncoder.getDistance();
+        linearClimberDistance = rightClimberEncoder.getDistance();
         
         if (bottomClimberLimitSwitch.get()) {
             linearClimberDistance = 0;
-            linearClimberEncoder.reset();
+            rightClimberEncoder.reset();
         }
     }
     
