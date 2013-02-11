@@ -12,35 +12,35 @@ public class Climber {
     
     private double linearClimberDistance;
     
-    private double linearClimberMotorOutput;
+    private double climberMotorOutput;
     
     private int climberStage;
 
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
     
-    Victor tiltClimber;
-    Victor linearClimber;
+    Victor leftClimberMotors;
+    Victor rightClimberMotors;
     Encoder linearClimberEncoder;
     
-    private void initializeEncoderSetting() {
-        linearClimberEncoder.setDistancePerPulse(encoderDistanceRatio/encoderCPR);
+    private void initEncoderSetting() {
+        linearClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
     }
     
-    public Climber(Victor tiltClimber, Victor linearClimber, 
+    public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder linearClimberEncoder, DigitalInput bottomClimberLimitSwitch,
             DigitalInput topClimberLimitSwitch) {
-        this.tiltClimber = tiltClimber;
-        this.linearClimber = linearClimber;
+        this.leftClimberMotors = leftClimberMotors;
+        this.rightClimberMotors = rightClimberMotors;
         this.linearClimberEncoder = linearClimberEncoder;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         
-        initializeEncoderSetting();
+        initEncoderSetting();
     }
     
     private void stopClimb() {
-        linearClimberMotorOutput = 0;
+        climberMotorOutput = 0;
     }
     
     private void getEncoderDistance() {
@@ -53,15 +53,16 @@ public class Climber {
     }
     
     private void scaleStage1LinearClimberMotorOutput() {
-        linearClimberMotorOutput = (linearClimberMotorOutputCoefficient*linearClimberDistance + linearClimberMotorOutputOffset);
+        climberMotorOutput = (linearClimberMotorOutputCoefficient*linearClimberDistance + linearClimberMotorOutputOffset);
     }
     
     private void stage2LinearClimb() {
-        linearClimberMotorOutput = -1;
+        climberMotorOutput = -1;
     }
     
-    private void setLinearClimberMotor() {
-        linearClimber.set(linearClimberMotorOutput);
+    private void setClimberMotors() {
+        leftClimberMotors.set(climberMotorOutput);
+        rightClimberMotors.set(climberMotorOutput);
     }
     
     public void setClimberStage(boolean isStage1, boolean isStage2, boolean isStage3) {
@@ -82,7 +83,7 @@ public class Climber {
         switch(climberStage) {
             case 1:
                 scaleStage1LinearClimberMotorOutput();
-                setLinearClimberMotor();
+                setClimberMotors();
                 break;
             case 2:
                 
