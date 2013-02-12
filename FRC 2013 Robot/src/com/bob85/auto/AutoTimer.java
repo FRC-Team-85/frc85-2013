@@ -5,6 +5,7 @@
 package com.bob85.auto;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -17,11 +18,21 @@ public class AutoTimer {
     
     double shooterTimer1;
     double shooterTimer2;
+    double shooterTimer3;
+    
+    public static final String shooterTimer1Key = "Shooter Timer 1";
+    public static final String shooterTimer2Key = "Shooter Timer 2";
+    public static final String shooterTimer3Key = "Shooter Timer 3";
+    
     
     int autoMode;
     
     public AutoTimer(AutoModeChooser autoChooser) {
         m_autoChooser = autoChooser;
+        
+    }
+    
+    public AutoTimer() {
         
     }
     
@@ -35,7 +46,21 @@ public class AutoTimer {
         shooterTimer2 = timer2Input;
     }
     
-    public void setTimerDelays() {
+    public void initSmartDashboardTimers() {
+        SmartDashboard.putNumber(shooterTimer1Key, 0);
+        SmartDashboard.putNumber(shooterTimer2Key, 0);
+        SmartDashboard.putNumber(shooterTimer3Key, 0);
+        
+    }
+    
+    public void setSmartDashboardTimers() {
+        shooterTimer1 = SmartDashboard.getNumber(shooterTimer1Key);
+        shooterTimer2 = SmartDashboard.getNumber(shooterTimer2Key);
+        shooterTimer3 = SmartDashboard.getNumber(shooterTimer3Key);
+        
+    }
+    
+    public void setAnalogTimerDelays() {
         switch(autoMode) {
             case 0:{
                 setShooterTimers(0.0,0.0);
@@ -59,5 +84,25 @@ public class AutoTimer {
     
     public double returnTimerDelay2() {
         return shooterTimer2;
+    }
+    
+    public double returnTimerDelay3() {
+        return shooterTimer3;
+    }
+    
+    private void runDiagnostics() {
+        SmartDashboard.putNumber(shooterTimer1Key + "Diagnostics", shooterTimer1);
+        SmartDashboard.putNumber(shooterTimer2Key + "Diagnostics", shooterTimer2);
+        SmartDashboard.putNumber(shooterTimer3Key + "Diagnostics", shooterTimer3);
+
+    }
+    
+    public void initAutoTimer() {
+        initSmartDashboardTimers();
+    }
+    
+    public void runAutoTimer() {
+        setSmartDashboardTimers();
+        runDiagnostics();
     }
 }

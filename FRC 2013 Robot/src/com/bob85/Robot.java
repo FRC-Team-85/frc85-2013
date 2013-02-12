@@ -1,6 +1,7 @@
 package com.bob85;
 
 import com.bob85.auto.AutoModeChooser;
+import com.bob85.auto.AutoTimer;
 import com.bob85.auto.Autonomous;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,9 +15,10 @@ public class Robot extends IterativeRobot {
     
     AutoModeChooser testChooser = new AutoModeChooser();
     Autonomous auto = new Autonomous(testChooser);
-
+    AutoTimer autoTimer = new AutoTimer();
+    
     public void robotInit() {
-
+        autoTimer.initAutoTimer();
     }
     
     public void disabledInit() {
@@ -41,6 +43,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         auto.initAutonomous();
+        autoTimer.runAutoTimer();
     }
 
     public void teleopPeriodic() {
