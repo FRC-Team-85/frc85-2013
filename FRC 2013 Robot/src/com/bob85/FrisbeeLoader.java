@@ -4,10 +4,7 @@
  */
 package com.bob85;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.*;
 
 /**
  *
@@ -15,8 +12,15 @@ import edu.wpi.first.wpilibj.buttons.Button;
  */
 public class FrisbeeLoader {
     
+    public static final int kDROPSERVO_CHANNEL = 8;
+    public static final int kREADYSERVO_CHANNEL = 9;
+    
     private Servo dropServo;
     private Servo readyServo;
+    
+    private Victor hopperBeltMotor;
+    
+    private double hopperBeltSpeed;
     
     private Timer timer;
     private boolean timerReset;
@@ -27,9 +31,10 @@ public class FrisbeeLoader {
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
     
-    public FrisbeeLoader(Servo dropServo, Servo readyServo) {
+    public FrisbeeLoader(Servo dropServo, Servo readyServo, Victor hopperBeltMotor) {
         this.dropServo = dropServo;
         this.readyServo = readyServo;
+        this.hopperBeltMotor = hopperBeltMotor;
         this.timer = new Timer();
         timer.reset();
     }
@@ -44,6 +49,23 @@ public class FrisbeeLoader {
         if (!(servo.get() == lockedPosition)) {
             servo.set(lockedPosition);
         }
+    }
+    /**
+     * Sets the Hopper Belt Motor TODO: add motor linearization
+     * @param speed desired input
+     */
+    private void setHopperBeltMotor(double speed) {
+        hopperBeltSpeed = speed;
+        hopperBeltMotor.set(hopperBeltSpeed);
+    }
+    
+    /**
+     * Returns the Hopper Belt Motor assigned speed 
+     * Meant to show original input after motor output is linearized
+     * @return Original Hopper Belt Motor Input
+     */
+    private double getHopperBeltMotor() {
+        return hopperBeltSpeed;
     }
     
     /**
@@ -114,5 +136,13 @@ public class FrisbeeLoader {
         else{
             dropServo.set(0);
         }
+    }
+    
+    private void testFrisbeeLoader() {
+
+    }
+    
+    public void runFrisbeeLoader() {
+        testFrisbeeLoader();
     }
 }
