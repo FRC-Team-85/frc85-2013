@@ -15,6 +15,8 @@ public class Climber {
     private double climberMotorOutput;
     
     private int climberStage;
+    
+    private boolean inDriveMode = true;
 
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
@@ -23,21 +25,27 @@ public class Climber {
     Victor rightClimberMotors;
     Encoder leftClimberEncoder;
     Encoder rightClimberEncoder;
+    Servo leftShiftServo;
+    Servo rightShiftServo;
     
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
     }
     
+    
     public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder, 
-            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
+            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch,
+            Servo leftShiftServo, Servo rightShiftServo) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
         this.rightClimberEncoder = rightClimberEncoder;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
+        this.leftShiftServo = leftShiftServo;
+        this.rightShiftServo = rightShiftServo;
         
         initEncoderSetting();
     }
@@ -99,38 +107,61 @@ public class Climber {
         
     }
     
-    public void elevatorHooks(Encoder elevEnc, Joystick auxStick, int upButton, int downButton, SpeedController leftDriveMotor, SpeedController rightDriveMotor, double elevDriveSpeed, boolean inElevMode) {
+    /**
+     *
+     * @param auxStick Joystick
+     * @param upButton Button to go up
+     * @param downButton Button to go down
+     * @param inDriveMode Boolean Check
+     */
+    public void setManualElevDrive(Joystick auxStick, double climbSpeed, int upButton, int downButton) {
+        if (inDriveMode == false) {
+            if (auxStick.getRawButton(upButton) == true) {
+                //Drive Elev Up
+                climberMotorOutput = climbSpeed;
+                setClimberMotors();
+            } else if (auxStick.getRawButton(downButton) == true) {
+                //Drive Elev Down
+                climberMotorOutput = -climbSpeed;
+                setClimberMotors();
+            } else {
+                //Stop Elev
+                stopClimb();
+                setClimberMotors();
+            }
 
-        if (inElevMode == true && auxStick.getRawButton(upButton) == true) {
-            //Drive Elev Up
-            leftDriveMotor.set(elevDriveSpeed);
-            rightDriveMotor.set(-elevDriveSpeed);
-        } else if (inElevMode == true && auxStick.getRawButton(downButton) == true) {
-            //Drive Elev Down
-            leftDriveMotor.set(-elevDriveSpeed);
-            rightDriveMotor.set(elevDriveSpeed);
-        } else {
-            //Stop Elev
-            leftDriveMotor.set(0);
-            rightDriveMotor.set(0);
         }
-
     }
-
-    public void driveElevShift(Joystick leftStick, int driveShiftButton, int elevShiftButton, Servo leftShiftServo, Servo rightShiftServo, boolean inElevMode) {
-        //driveModeButton
+    /**
+     * 
+     * @param leftStick Joystick
+     * @param driveShiftButton Button to go into driveMode
+     * @param elevShiftButton Button to go into elevMode
+     * @param leftShiftServo leftServo
+     * @param rightShiftServo rightServo
+     */
+    public void driveElevShift(Joystick leftStick, int driveShiftButton, int elevShiftButton) {
+        //elevModeButton
         if (leftStick.getRawButton(driveShiftButton) == true) {
-            leftShiftServo.set(0.0);
-            rightShiftServo.set(1.0);
-            inElevMode = false;
-        //elevModeButton    
-        } else if (leftStick.getRawButton(elevShiftButton) == true) {
             leftShiftServo.set(1.0);
             rightShiftServo.set(0.0);
-            inElevMode = true;
+            inDriveMode = false;
+        }
+        //driveModeButton  
+        if (leftStick.getRawButton(elevShiftButton) == true) {
+            leftShiftServo.set(0.0);
+            rightShiftServo.set(1.0);
+            inDriveMode = true;
         }
     }
     
+    /**
+     * 
+     * @param auxStick Joystick
+     * @param intakeRoller Motor for hopper
+     * @param feedInButton Intake Button
+     * @param feedOutButton Out Button
+     */
     public void diskIntake(Joystick auxStick, SpeedController intakeRoller, int feedInButton, int feedOutButton){
         if (auxStick.getRawButton(feedInButton)){
             intakeRoller.set(0.6);
