@@ -5,6 +5,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 
 /**
  *
@@ -22,6 +23,8 @@ public class FrisbeeLoader {
     
     private Victor hopperBeltMotor;
     
+    private F310Gamepad opPad;
+    
     private double hopperBeltSpeed;
     
     private Timer timer;
@@ -33,20 +36,30 @@ public class FrisbeeLoader {
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
     
-    public FrisbeeLoader(Servo dropServo, Servo readyServo, Victor hopperBeltMotor) {
+    public FrisbeeLoader(Servo dropServo, Servo readyServo, Victor hopperBeltMotor, 
+            F310Gamepad opPad) {
         this.dropServo = dropServo;
         this.readyServo = readyServo;
         this.hopperBeltMotor = hopperBeltMotor;
+        this.opPad = opPad;
         this.timer = new Timer();
         timer.reset();
     }
     
+    /**
+     * Tell servo to pull pin out of hopper area
+     * @param servo 
+     */
     private void unlockServo(Servo servo) {
         if (!(servo.get() == unlockedPosition)) {
             servo.set(unlockedPosition);
         }
     }
     
+    /**
+     * Tell servo to push pin into hopper area
+     * @param servo 
+     */
     private void lockServo(Servo servo) {
         if (!(servo.get() == lockedPosition)) {
             servo.set(lockedPosition);
@@ -68,6 +81,28 @@ public class FrisbeeLoader {
      */
     private double getHopperBeltMotor() {
         return hopperBeltSpeed;
+    }
+    
+    /**
+     * Servo positions to allow a frisbee to be locked for dropping to shooter
+     * @param isEnabled 
+     */
+    private void readyFrisbeeServoPositions(boolean isEnabled) {
+        if (isEnabled) {
+            lockServo(dropServo);
+            unlockServo(readyServo);
+        }
+    }
+    
+    /**
+     * Servo positions to allow locked frisbee to fall to shooter
+     * @param isEnabled 
+     */
+    private void dropFrisbeeServoPositions(boolean isEnabled) {
+        if (isEnabled) {
+            unlockServo(dropServo);
+            lockServo(readyServo);
+        }
     }
     
     /**
@@ -141,7 +176,15 @@ public class FrisbeeLoader {
     }
     
     private void testFrisbeeLoader() {
-
+        if (opPad.getButton(ButtonType.kA)) {
+            setHopperBeltMotor(0.3);
+        } else if(opPad.getButton(ButtonType.kY)) {
+            setHopperBeltMotor(-0.3);
+        } else {
+            setHopperBeltMotor(0);
+        }
+        readyFrisbeeServoPositions(opPad.getButton(ButtonType.kB));
+        dropFrisbeeServoPositions(opPad.getButton(ButtonType.kX));
     }
     
     public void runFrisbeeLoader() {
