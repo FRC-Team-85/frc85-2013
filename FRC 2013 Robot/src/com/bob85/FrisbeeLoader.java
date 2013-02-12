@@ -15,6 +15,8 @@ public class FrisbeeLoader {
     public static final int kDROPSERVO_CHANNEL = 8;
     public static final int kREADYSERVO_CHANNEL = 9;
     
+    public static final int kHOPPERBELTMOTOR_CHANNEL = 7;
+    
     private Servo dropServo;
     private Servo readyServo;
     
