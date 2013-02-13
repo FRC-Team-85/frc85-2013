@@ -289,14 +289,18 @@ public class Drive {
     public void encoderTestDrive() {
         joystickBasedTankDrive();
         sendEncoderDriveDiagnosticsSDB();
-        setServoDrivePosition();
     }
     
     public void driveInit() {
         initEncoders();
+        setServoDrivePosition();
     }
     
     public void disabledInit() {
         disableEncoders();
+    }
+    
+    public void runDrive() {
+        encoderTestDrive();
     }
 }
