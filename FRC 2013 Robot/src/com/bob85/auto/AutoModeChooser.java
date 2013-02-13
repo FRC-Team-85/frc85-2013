@@ -122,8 +122,19 @@ public class AutoModeChooser {
         }
     }
     
+    private void sendDriveStationsInputsSDB() {
+        SmartDashboard.putBoolean("DI 1", driverStation.getDigitalIn(1));
+        SmartDashboard.putBoolean("DI 2", driverStation.getDigitalIn(2));
+        SmartDashboard.putBoolean("DI 3", driverStation.getDigitalIn(3));
+        SmartDashboard.putBoolean("DI 4", driverStation.getDigitalIn(4));
+        SmartDashboard.putBoolean("DI 5", driverStation.getDigitalIn(5));
+        SmartDashboard.putBoolean("DI 6", driverStation.getDigitalIn(6));
+        SmartDashboard.putBoolean("DI 7", driverStation.getDigitalIn(7));
+        SmartDashboard.putBoolean("DI 8", driverStation.getDigitalIn(8));
+    }
+    
     public void testDriveStationInputs() {
         returnDriverStationInputs();
-        sendDriverStationInputsSmartDashboard();
+        sendDriveStationsInputsSDB();
     }
 }
