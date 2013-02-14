@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Autonomous {
 
+    private int autoStage = 0;
+    
     Timer autoTimer;
     double waitTime = 6.5;//in seconds; this is an approximate
     double uWaitTime = (waitTime * MathUtils.pow(10.0, 6.0)); //in microSeconds (uSeconds)
@@ -77,10 +79,47 @@ public class Autonomous {
         }
     }
 
+    private void runSequentialAutonomous() {
+        switch (autoStage) {
+            case 0:
+                if (true) {
+                    autoStage = 1;
+                }
+                break;
+            case 1:
+                if (true) {
+                    autoStage = 2;
+                }
+                break;
+            case 2:
+                if (true) {
+                    autoStage = 3;
+                }
+                break;
+            case 3:
+                if (true) {
+                    autoStage = 4;
+                }
+                break;
+            case 4:
+                if (true) {
+                    autoStage = 5;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
     /**
      * Skeleton for a test function
      */
     private void testAutoMode() {
+        
+    }
+    
+    private void runCompetitionAutonomous() {
+        runSequentialAutonomous();
     }
 
     /**
@@ -91,6 +130,7 @@ public class Autonomous {
     }
 
     public void initAutonomous() {
+        autoStage = 0;
         autoChooser.testDriveStationInputs();
     }
 }
