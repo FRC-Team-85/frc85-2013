@@ -6,6 +6,7 @@ public class Climber {
 
     private double encoderDistanceRatio = 0.150; //Every encoder revolution is 0.150 linear inches moved on the climber
     private double encoderCPR = 250;
+    private double calcEncDistance;
     
     private double linearClimberMotorOutputCoefficient = -0.05;
     private double linearClimberMotorOutputOffset = 1.5;
@@ -54,12 +55,18 @@ public class Climber {
         climberMotorOutput = 0;
     }
     
+    private void calcAvgEncDistance() {
+        calcEncDistance = ((rightClimberEncoder.getDistance() + leftClimberEncoder.getDistance()) / 2 );
+    }
+    
     private void getEncoderDistance() {
-        linearClimberDistance = rightClimberEncoder.getDistance();
+        calcAvgEncDistance();
+        linearClimberDistance = calcEncDistance;
         
         if (bottomClimberLimitSwitch.get()) {
             linearClimberDistance = 0;
             rightClimberEncoder.reset();
+            leftClimberEncoder.reset();
         }
     }
     
@@ -74,6 +81,13 @@ public class Climber {
     private void setClimberMotors() {
         leftClimberMotors.set(climberMotorOutput);
         rightClimberMotors.set(climberMotorOutput);
+    }
+    
+    private void backDriveAtTop() {
+        if (topClimberLimitSwitch.get() == true){
+            stopClimb();
+            
+        }
     }
     
     public void setClimberStage(boolean isStage1, boolean isStage2, boolean isStage3) {
