@@ -52,8 +52,8 @@ public class Drive {
     private double deadband = 0.1; //Deadband for drive motor output
     private double changeLimit = 0.25;
     
-    private double leftDriveServoDrivePosition = 1;
-    private double rightDriveServoDrivePosition = 0;
+    private double leftDriveServoDrivePosition = 0;
+    private double rightDriveServoDrivePosition = 1;
     
     private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
