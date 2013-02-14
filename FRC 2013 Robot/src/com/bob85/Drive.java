@@ -50,7 +50,8 @@ public class Drive {
     private double rightOldOutput;
             
     private double deadband = 0.1; //Deadband for drive motor output
-    private double changeLimit = 0.25;
+    private double changeLimit_val = 0.25;
+    private double changeLimit = changeLimit_val;
     
     private double leftDriveServoDrivePosition = 0;
     private double rightDriveServoDrivePosition = 1;
@@ -122,7 +123,7 @@ public class Drive {
     /**
      * Sets motor output setting to zero if it falls under the deadband
      */    
-    private void setMotorOutputDeadbands() {
+    public void setMotorOutputDeadbands() {
         if (Math.abs(leftMotorsOutput) < deadband) {
             leftMotorsOutput = 0;
         }
@@ -135,14 +136,14 @@ public class Drive {
     /**
      * Sets motor output setting to a linearized desired output
      */
-    private void setLinearizedOutput() {
+    public void setLinearizedOutput() {
         leftLinearMotorsOutput = MotorLinearization.calculateLinearOutput(leftMotorsOutput);
         rightLinearMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
         leftDriveMotors.set(leftLinearMotorsOutput);
         rightDriveMotors.set(rightLinearMotorsOutput);
     }
     
-    private void limitMotorsOutputChange(boolean isLeft, boolean isRight, boolean isLinear) {
+    public void limitMotorsOutputChange(boolean isLeft, boolean isRight) {       
         if (isLeft) {
             if (leftLinearMotorsOutput - leftDriveMotors.get() > changeLimit) {
                 leftLinearMotorsOutput = leftDriveMotors.get() + changeLimit;
@@ -191,6 +192,16 @@ public class Drive {
     }
     
     /**
+     * Sets the motors output settings values
+     * @param leftMotorsOutput
+     * @param rightMotorsOutput 
+     */
+    public void setMotorOutputSetting(double leftMotorsOutput, double rightMotorsOutput) {
+        this.leftMotorsOutput = leftMotorsOutput;
+        this.rightMotorsOutput = rightMotorsOutput;
+    }
+    
+    /**
      * Sets the motors output with the motor output settings
      */
     private void setMotorsOutput(double leftMotorsOutput, double rightMotorsOutput) {
@@ -208,12 +219,12 @@ public class Drive {
         SmartDashboard.putNumber("Right Drive Output", rightDriveMotors.get());
     }
     
-    private void resetEncoders() {
+    public void resetEncoders() {
         leftDriveEncoder.reset();
         rightDriveEncoder.reset();
     }
     
-    private void initEncoders() {
+    public void initEncoders() {
         if (!isEncodersStarted) {
             leftDriveEncoder.start();
             rightDriveEncoder.start();
@@ -227,7 +238,7 @@ public class Drive {
         }
     }
     
-    private void disableEncoders() {
+    public void disableEncoders() {
         if (isEncodersStarted) {
             leftDriveEncoder.stop();
             rightDriveEncoder.stop();
@@ -235,7 +246,7 @@ public class Drive {
         }
     }    
     
-    private void sendEncoderDriveDiagnosticsSDB() {
+    public void sendEncoderDriveDiagnosticsSDB() {
         SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
         SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance());
         SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.get());
@@ -243,7 +254,7 @@ public class Drive {
  
     }
     
-    private boolean getServoDrivePosition() {
+    public boolean getServoDrivePosition() {
         if (leftDriveServo.get() == leftDriveServoDrivePosition && 
                 rightDriveServo.get() == rightDriveServoDrivePosition) {
             return true;
@@ -254,7 +265,7 @@ public class Drive {
     }
 
     
-    private void setServoDrivePosition() {
+    public void setServoDrivePosition() {
 
         if (!getServoDrivePosition()){
             leftDriveServo.set(leftDriveServoDrivePosition);
@@ -268,14 +279,14 @@ public class Drive {
     public void joystickBasedTankDrive() {
         getTankDriveJoystickInput();
         setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
+        limitMotorsOutputChange(true, true);
         setLinearizedOutput();
     }
     
     public void joystickBasedTestDrive() {
         getTestDriveJoystickInput();
         setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
+        limitMotorsOutputChange(true, true);
         setLinearizedOutput();
         sendTestDriveDiagnosticsSDB();
     }
@@ -284,8 +295,19 @@ public class Drive {
         leftMotorsOutput = leftMotorOutput;
         rightMotorsOutput = rightMotorOutput;
         setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
+        limitMotorsOutputChange(true, true);
         setLinearizedOutput();
+    }
+    
+    public void runRampUpTrapezoidalMotionProfile(double maxSpeed) {
+        setMotorOutputSetting(maxSpeed, maxSpeed);
+        limitMotorsOutputChange(true, true);
+    }
+    
+    public void runRampDownTrapezoidalMotionProfile(double minSpeed) {
+        leftMotorsOutput = minSpeed;
+        rightMotorsOutput = minSpeed;
+        limitMotorsOutputChange(true, true);
     }
     
     public void encoderTestDrive() {

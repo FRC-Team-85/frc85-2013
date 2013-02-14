@@ -4,7 +4,9 @@
  */
 package com.bob85.auto;
 
+import com.bob85.Drive;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -12,12 +14,18 @@ import edu.wpi.first.wpilibj.*;
  */
 public class DriveCommand {
 
-    private RobotDrive m_drive;
+    private Drive drive;
     private double initialDist;
     private boolean isInitialDistSet;
 
-    public DriveCommand(RobotDrive drive) {
-        m_drive = drive;
+    private String endDistanceOffset = "Drive Command Offset";
+    
+    public DriveCommand(Drive drive) {
+        this.drive = drive;
+    }
+    
+    public static void initSmartDashboardDefaultValues() {
+        SmartDashboard.putNumber("Drive Command Offset", 5);
     }
 
     /**
@@ -31,15 +39,18 @@ public class DriveCommand {
     public void driveCommand(boolean isEnabled, double currentDist, double desiredDist) {
         if (isEnabled) {
             if (!isInitialDistSet) {
+                drive.resetEncoders();
                 initialDist = currentDist;
                 isInitialDistSet = true;
             }
-            if ((currentDist - initialDist) < desiredDist) {
-                m_drive.drive(1, 0);
+            if ((currentDist - initialDist) < (desiredDist - SmartDashboard.getNumber(endDistanceOffset))) {
+                drive.runRampUpTrapezoidalMotionProfile(0.75);
             } else {
-                m_drive.drive(0, 0);
+                drive.runRampDownTrapezoidalMotionProfile(0);
                 isInitialDistSet = false;
+     
             }
+            drive.setLinearizedOutput();
         }
     }
 }
