@@ -99,6 +99,8 @@ public class Drive {
         this.rightDriveMotors = rightDriveMotors;
         this.leftDriveJoystick = leftDriveJoystick;
         this.rightDriveJoystick = rightDriveJoystick;
+        this.leftDriveServo = leftDriveServo;
+        this.rightDriveServo = rightDriveServo;
         
         this.leftDriveEncoder = leftDriveEncoder;
         this.rightDriveEncoder = rightDriveEncoder;
