@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.*;
 
 public class Climber {
 
-    private double encoderDistanceRatio = 0.150; //Every encoder revolution is 0.150 linear inches moved on the climber
+    private double encoderDistanceRatio = (4/3) * Math.PI; //Every encoder revolution is 1 linear inches moved on the climber
     private double encoderCPR = 250;
     private double calcEncDistance;
     
-    private double linearClimberMotorOutputCoefficient = -0.05;
+    private double linearClimberMotorOutputCoefficient = -0.026;
     private double linearClimberMotorOutputOffset = 1.5;
     
     private double linearClimberDistance;
@@ -53,6 +53,7 @@ public class Climber {
     
     private void stopClimb() {
         climberMotorOutput = 0;
+        setClimberMotors();
     }
     
     private void calcAvgEncDistance() {
@@ -70,8 +71,24 @@ public class Climber {
         }
     }
     
-    private void scaleStage1LinearClimberMotorOutput() {
-        climberMotorOutput = (linearClimberMotorOutputCoefficient*linearClimberDistance + linearClimberMotorOutputOffset);
+    private void scaleStage1LinearClimberMotorOutputUp() {
+        climberMotorOutput = (linearClimberMotorOutputCoefficient * linearClimberDistance + linearClimberMotorOutputOffset);
+    }
+    
+    private void scaleStage1LinearClimberMotorOutputDown(){
+        boolean speedLimitReached = false;
+        double speedSwitchPoint = -0.8;
+        
+        if (climberMotorOutput > speedSwitchPoint && speedLimitReached != true) {
+            //Speed increases
+            climberMotorOutput = (-linearClimberMotorOutputCoefficient * linearClimberDistance - linearClimberMotorOutputOffset);
+        } else if (climberMotorOutput <= speedSwitchPoint){
+            speedLimitReached = true;
+            //Speed decreases 
+            climberMotorOutput = (linearClimberMotorOutputCoefficient * linearClimberDistance - 0.1);
+        } else {
+            stopClimb();
+        }
     }
     
     private void stage2LinearClimb() {
@@ -107,9 +124,22 @@ public class Climber {
         
         switch(climberStage) {
             case 1:
-                scaleStage1LinearClimberMotorOutput();
-                setClimberMotors();
+                /** 1) Goes up at full speed then scales down to the top then stops at limit
+                 * 2) Goes downward at a scaling speed increasing then decreases when speed > -0.8
+                 * 3) Stops when Climber hits bottom limit
+                 */ 
+                if (topClimberLimitSwitch.get() != true) {
+                    scaleStage1LinearClimberMotorOutputUp();
+                    setClimberMotors();
+                } else if (topClimberLimitSwitch.get() == true && bottomClimberLimitSwitch.get() != true) {
+                    stopClimb();
+                    scaleStage1LinearClimberMotorOutputDown();
+                    setClimberMotors();
+                } else if (bottomClimberLimitSwitch.get() == true){
+                    stopClimb();
+                }
                 break;
+                
             case 2:
                 
             default:
@@ -130,20 +160,18 @@ public class Climber {
      */
     public void setManualElevDrive(Joystick auxStick, double climbSpeed, int upButton, int downButton) {
         if (inDriveMode == false) {
-            if (auxStick.getRawButton(upButton) == true) {
+            if (auxStick.getRawButton(upButton) == true && topClimberLimitSwitch.get() != true) {
                 //Drive Elev Up
                 climberMotorOutput = climbSpeed;
                 setClimberMotors();
-            } else if (auxStick.getRawButton(downButton) == true) {
+            } else if (auxStick.getRawButton(downButton) == true && bottomClimberLimitSwitch.get() != true) {
                 //Drive Elev Down
                 climberMotorOutput = -climbSpeed;
                 setClimberMotors();
             } else {
                 //Stop Elev
                 stopClimb();
-                setClimberMotors();
             }
-
         }
     }
     /**
