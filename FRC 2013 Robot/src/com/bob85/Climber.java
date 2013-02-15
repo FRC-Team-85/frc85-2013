@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj.*;
 
 public class Climber {
 
-    private double encoderDistanceRatio = (4/3) * Math.PI; //Every encoder revolution is 1 linear inches moved on the climber
+    private double encoderDistanceRatio = (1/1.9) * Math.PI; //Every encoder revolution is 1 linear inches moved on the climber
     private double encoderCPR = 250;
     private double calcEncDistance;
     
     private double linearClimberMotorOutputCoefficient = -0.026;
     private double linearClimberMotorOutputOffset = 1.5;
+    boolean speedLimitReached = false;
     
     private double linearClimberDistance;
     
@@ -76,7 +77,7 @@ public class Climber {
     }
     
     private void scaleStage1LinearClimberMotorOutputDown(){
-        boolean speedLimitReached = false;
+        
         double speedSwitchPoint = -0.8;
         
         if (climberMotorOutput > speedSwitchPoint && speedLimitReached != true) {
@@ -125,8 +126,8 @@ public class Climber {
         switch(climberStage) {
             case 1:
                 /** 1) Goes up at full speed then scales down to the top then stops at limit
-                 * 2) Goes downward at a scaling speed increasing then decreases when speed > -0.8
-                 * 3) Stops when Climber hits bottom limit
+                 *  2) Goes downward at a scaling speed increasing then decreases when speed > -0.8
+                 *  3) Stops when Climber hits bottom limit
                  */ 
                 if (topClimberLimitSwitch.get() != true) {
                     scaleStage1LinearClimberMotorOutputUp();
