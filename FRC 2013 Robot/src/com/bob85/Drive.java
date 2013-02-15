@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Michael Chau <mchau95@gmail.com>
  */
 public class Drive {
+        boolean isClimbMode;
     
     private SpeedController leftDriveMotors; //class reference to left drive
     private SpeedController rightDriveMotors; //class reference to right drive
@@ -55,6 +56,8 @@ public class Drive {
     
     private double leftDriveServoDrivePosition = 0;
     private double rightDriveServoDrivePosition = 1;
+    private double leftDriveServoClimbPosition = 1;
+    private double rightDriveServoClimbPosition = 0;
     
     private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
@@ -268,6 +271,15 @@ public class Drive {
         }
     }
 
+    public boolean getServoClimbPosition() {
+       if (leftDriveServo.get() == leftDriveServoClimbPosition && 
+                rightDriveServo.get() == rightDriveServoClimbPosition) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     
     public void setServoDrivePosition() {
 
@@ -275,6 +287,13 @@ public class Drive {
             leftDriveServo.set(leftDriveServoDrivePosition);
             rightDriveServo.set(rightDriveServoDrivePosition);
         } 
+    }
+    
+    public void setServoClimbPosition() {
+        if (!getServoClimbPosition()) {
+            leftDriveServo.set(leftDriveServoClimbPosition);
+            rightDriveServo.set(rightDriveServoClimbPosition);
+        }
     }
     
     /**
@@ -315,8 +334,19 @@ public class Drive {
     }
     
     public void encoderTestDrive() {
-        joystickBasedTankDrive();
+        if (!isClimbMode) {
+            joystickBasedTankDrive();          
+        } else if (isClimbMode) {
+            autoBasedDrive(-leftDriveJoystick.getY(), leftDriveJoystick.getY());
+        }
         sendEncoderDriveDiagnosticsSDB();
+        if (leftDriveJoystick.getTrigger()) {
+            setServoDrivePosition();
+            isClimbMode = false;
+        } else if (rightDriveJoystick.getTrigger()) {
+            setServoClimbPosition();
+            isClimbMode = true;
+        }
     }
     
     public void driveInit() {

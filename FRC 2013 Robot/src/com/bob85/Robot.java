@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-    
+    boolean isClimbMode;
    
     AutoModeChooser testChooser = new AutoModeChooser();
     AutoTimer autoTimer = new AutoTimer();
