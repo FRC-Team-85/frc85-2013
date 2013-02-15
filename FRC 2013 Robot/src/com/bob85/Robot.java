@@ -25,6 +25,18 @@ public class Robot extends IterativeRobot {
             leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
     Autonomous auto = new Autonomous(testChooser, gyro, drive);
 
+
+    Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
+    Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
+    
+    HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
+    
+    Joystick opStick = new Joystick(3);
+    
+    PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
+    
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opStick);
+    
     public void robotInit() {
         drive.driveInit();
         autoTimer.initAutoTimer();
@@ -56,6 +68,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
+        shooter.runShooter();
         drive.runDrive();
         if (leftDriveStick.getTrigger()) {
             leftDriveServo.set(1);
