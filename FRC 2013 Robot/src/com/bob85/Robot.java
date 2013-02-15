@@ -10,7 +10,6 @@ public class Robot extends IterativeRobot {
     
    
     AutoModeChooser testChooser = new AutoModeChooser();
-    Autonomous auto = new Autonomous(testChooser);
     AutoTimer autoTimer = new AutoTimer();
     Gyro gyro = new Gyro(1);
     
@@ -24,6 +23,7 @@ public class Robot extends IterativeRobot {
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
+    Autonomous auto = new Autonomous(testChooser, gyro, drive);
 
     public void robotInit() {
         drive.driveInit();
