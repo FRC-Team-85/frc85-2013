@@ -4,6 +4,7 @@
  */
 package com.bob85.auto;
 
+import com.bob85.Drive;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.*;
 //import src.com.bob85.FrisbeeLoader;
@@ -19,9 +20,21 @@ public class Autonomous {
     double waitTime = 6.5;//in seconds; this is an approximate
     double uWaitTime = (waitTime * MathUtils.pow(10.0, 6.0)); //in microSeconds (uSeconds)
     AutoModeChooser autoChooser;
+    Gyro gyro;
+    Drive drive;
+    TurnCommand turn180Command;
+    DriveCommand drivetoCenterCommand;
+    
+    private void initCommands() {
+        turn180Command = new TurnCommand(gyro, drive, 180);
+        drivetoCenterCommand = new DriveCommand(drive);
+    }
 
-    public Autonomous(AutoModeChooser autoChooser) {
+    public Autonomous(AutoModeChooser autoChooser, Gyro gyro, Drive drive) {
         this.autoChooser = autoChooser;
+        this.gyro = gyro;
+        this.drive = drive;
+        initCommands();
     }
 
     public void stageAutoDrive(double driveSpeed, SpeedController leftFrontSpControl, SpeedController leftBackSpControl, SpeedController rightFrontSpControl, SpeedController rightBackSpControl, Encoder leftDriveEnc, Encoder rightDriveEnc) {
@@ -87,12 +100,13 @@ public class Autonomous {
                 }
                 break;
             case 1:
-                if (true) {
+                
+                if (turn180Command.turnCommand()) {
                     autoStage = 2;
                 }
                 break;
             case 2:
-                if (true) {
+                if (drivetoCenterCommand.driveCommand(drive.getEncodersDistance(), 50)) {
                     autoStage = 3;
                 }
                 break;
