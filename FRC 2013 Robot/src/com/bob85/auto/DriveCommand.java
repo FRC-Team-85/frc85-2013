@@ -34,10 +34,8 @@ public class DriveCommand {
      *
      * @param currentDist current displacement robot is at
      * @param desiredDist goal displacement of the robot
-     * @param isEnabled is the method enabled
      */
-    public void driveCommand(boolean isEnabled, double currentDist, double desiredDist) {
-        if (isEnabled) {
+    public boolean driveCommand(double currentDist, double desiredDist) {
             if (!isInitialDistSet) {
                 drive.resetEncoders();
                 initialDist = currentDist;
@@ -45,12 +43,13 @@ public class DriveCommand {
             }
             if ((currentDist - initialDist) < (desiredDist - SmartDashboard.getNumber(endDistanceOffset))) {
                 drive.runRampUpTrapezoidalMotionProfile(0.75);
+                drive.setLinearizedOutput();
+                return false;
             } else {
                 drive.runRampDownTrapezoidalMotionProfile(0);
-                isInitialDistSet = false;
-     
+                drive.setLinearizedOutput();
+                return true;
             }
-            drive.setLinearizedOutput();
-        }
+        
     }
 }
