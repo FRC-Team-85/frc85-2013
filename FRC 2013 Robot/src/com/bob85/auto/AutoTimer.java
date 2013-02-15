@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Developer
  */
 public class AutoTimer {
-    Timer autotimer;
+    Timer autoTimer = new Timer();
     
     AutoModeChooser m_autoChooser;
     
@@ -99,6 +99,7 @@ public class AutoTimer {
     
     public void initAutoTimer() {
         initSmartDashboardTimers();
+        autoTimer.start();
     }
     
     public void runAutoTimer() {
