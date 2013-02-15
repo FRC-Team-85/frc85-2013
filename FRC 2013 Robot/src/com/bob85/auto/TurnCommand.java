@@ -15,16 +15,30 @@ public class TurnCommand {
     Gyro gyro;
     Drive drive;
     private boolean gyroReset;
+    private double angle;
     
-    public TurnCommand(Gyro gyro, Drive drive) {
+    public TurnCommand(Gyro gyro, Drive drive, double angle) {
         this.gyro = gyro;
         this.drive = drive;
+        this.angle = angle;
     }
     
-    public void turnCommand(double angle) {
+    public boolean turnCommand() {
         if (!gyroReset) {
             gyro.reset();
             gyroReset = true;
+        }
+        
+        if (gyro.getAngle() < angle) {
+            drive.setMotorOutputSetting(0.5, 0.5);
+            drive.setLinearizedOutput();
+            return false;
+        } else if (gyro.getAngle() > angle) {
+            drive.setMotorOutputSetting(0, 0);
+            drive.setLinearizedOutput();
+            return true;
+        } else {
+            return false;
         }
     }
 }

@@ -12,6 +12,7 @@ public class Robot extends IterativeRobot {
     AutoModeChooser testChooser = new AutoModeChooser();
     Autonomous auto = new Autonomous(testChooser);
     AutoTimer autoTimer = new AutoTimer();
+    Gyro gyro = new Gyro(1);
     
     Victor leftDriveMotor = new Victor(Drive.kLEFTDRIVE_VICTORS);
     Victor rightDriveMotor = new Victor(Drive.kRIGHTDRIVE_VICTORS);
