@@ -244,7 +244,11 @@ public class Drive {
             rightDriveEncoder.stop();
             isEncodersStarted = false;
         }
-    }    
+    }
+    
+    public double getEncodersDistance() {
+        return (leftDriveEncoder.getDistance() + rightDriveEncoder.getDistance()) / 2;
+    }
     
     public void sendEncoderDriveDiagnosticsSDB() {
         SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
