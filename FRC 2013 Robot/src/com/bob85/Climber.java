@@ -7,6 +7,8 @@ public class Climber {
     private double encoderDistanceRatio = (1/1.9) * Math.PI; //Every encoder revolution is 1 linear inches moved on the climber
     private double encoderCPR = 250;
     private double calcEncDistance;
+    private double leftMotorOutput;
+    private double rightMotorOutput;
     
     private double linearClimberMotorOutputCoefficient = -0.026;
     private double linearClimberMotorOutputOffset = 1.5;
@@ -152,6 +154,15 @@ public class Climber {
         
     }
     
+    public void manualDoubleJoystickElevDrive(Joystick leftStick, Joystick rightStick){
+        leftMotorOutput = MotorLinearization.calculateLinearOutput(-leftStick.getY());
+        rightMotorOutput = MotorLinearization.calculateLinearOutput(rightStick.getY());
+        
+        climberMotorOutput = ((leftMotorOutput + rightMotorOutput) / 2);// double Joystick Control; singleStick @ 100% = 50% motor speed
+        
+        setClimberMotors();
+    }
+    
     /**
      *
      * @param auxStick Joystick
@@ -159,7 +170,7 @@ public class Climber {
      * @param downButton Button to go down
      * @param inDriveMode Boolean Check
      */
-    public void setManualElevDrive(Joystick auxStick, double climbSpeed, int upButton, int downButton) {
+    public void manualButtonElevDrive(Joystick auxStick, double climbSpeed, int upButton, int downButton) {
         if (inDriveMode == false) {
             if (auxStick.getRawButton(upButton) == true && topClimberLimitSwitch.get() != true) {
                 //Drive Elev Up
