@@ -10,7 +10,7 @@ public class Climber {
     private double leftMotorOutput;
     private double rightMotorOutput;
     
-    private double linearClimberMotorOutputCoefficient = -0.026;
+    private double linearClimberMotorOutputCoefficient = -0.058;
     private double linearClimberMotorOutputOffset = 1.5;
     boolean speedLimitReached = false;
     
@@ -67,7 +67,7 @@ public class Climber {
         calcAvgEncDistance();
         linearClimberDistance = calcEncDistance;
         
-        if (bottomClimberLimitSwitch.get()) {
+        if (bottomClimberLimitSwitch.get() == true) {
             linearClimberDistance = 0;
             rightClimberEncoder.reset();
             leftClimberEncoder.reset();
@@ -154,13 +154,26 @@ public class Climber {
         
     }
     
-    public void manualDoubleJoystickElevDrive(Joystick leftStick, Joystick rightStick){
+    public void manualDoubleJoystickElevDrive(Joystick leftStick, Joystick rightStick, double topEncoderLimitValue){
+        getEncoderDistance();
         leftMotorOutput = MotorLinearization.calculateLinearOutput(-leftStick.getY());
         rightMotorOutput = MotorLinearization.calculateLinearOutput(rightStick.getY());
-        
         climberMotorOutput = ((leftMotorOutput + rightMotorOutput) / 2);// double Joystick Control; singleStick @ 100% = 50% motor speed
         
-        setClimberMotors();
+        if (inDriveMode != true) {
+            if (topEncoderLimitValue <= linearClimberDistance && climberMotorOutput > 0) {
+                stopClimb();
+            }
+            if (bottomClimberLimitSwitch.get() == true && climberMotorOutput < 0) {
+                stopClimb();
+            }
+            if (topClimberLimitSwitch.get() != true && linearClimberDistance < topEncoderLimitValue) {
+                setClimberMotors();
+            } else {
+                stopClimb();
+            }
+        }
+
     }
     
     /**
