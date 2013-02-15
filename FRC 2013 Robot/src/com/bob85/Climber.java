@@ -18,7 +18,7 @@ public class Climber {
     
     private int climberStage;
     
-    private boolean inDriveMode = true;
+    public boolean inDriveMode = true;
 
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
@@ -97,7 +97,7 @@ public class Climber {
     }
     
     private void setClimberMotors() {
-        leftClimberMotors.set(climberMotorOutput);
+        leftClimberMotors.set(-climberMotorOutput);
         rightClimberMotors.set(climberMotorOutput);
     }
     
