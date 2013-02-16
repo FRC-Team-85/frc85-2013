@@ -252,7 +252,7 @@ public class Shooter {
         runAutomaticShooterPID(gamepad.getRawButton(8));
     }
     
-    public void switchShooterStates() {
+    private void switchShooterStates() {
         switch (shooterState) {
             case 0:
                 if (gamepad.getButton(ButtonType.kRB) && FrisbeeLoader.getHopperState() ==1) {
@@ -280,12 +280,12 @@ public class Shooter {
                 setShooterSpeed(0);
                 break;
             case 1:
-                initPID();
-                setShooterBeltSpeed(1);
+                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
+                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
                 break;
             case 2:
-                initPID();
-                setShooterBeltSpeed(1);
+                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
+                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
                 break;
             default:
                 setShooterBeltSpeed(0);                
@@ -297,5 +297,10 @@ public class Shooter {
     public void runShooter() {
         runShooterStates();
         switchShooterStates();
+    }
+    
+    public void initShooter() {
+        SmartDashboard.putNumber("Shooter Speed", 0);
+        SmartDashboard.putNumber("Shooter Belt Speed", 1);
     }
 }

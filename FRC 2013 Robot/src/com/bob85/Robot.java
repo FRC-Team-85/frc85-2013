@@ -20,11 +20,11 @@ public class Robot extends IterativeRobot {
     PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
     Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
-    FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, shooterSensor, hopperBelt, 
-            shooterMotor, shooterPID, opPad);
+    FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
     
     public void robotInit() {
         SmartDashboard.putNumber("runIfNothingElseWorks", 0);
+        shooter.initShooter();
     }
     
     public void disabledInit() {
