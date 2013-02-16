@@ -48,10 +48,13 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         //drive.encoderTestDrive();
-        climber.manualJoystickElevDrive(rightDriveStick, 500);
+        //climber.manualJoystickElevDrive(rightDriveStick, 500);
         
         SmartDashboard.putNumber("LeftSideEncoder", leftDriveEncoder.getDistance());
         SmartDashboard.putNumber("rightSideEncoder", rightDriveEncoder.getDistance());
+        
+        leftDriveMotor.set(MotorLinearization.calculateLinearOutput(-rightDriveStick.getY()));
+        leftDriveMotor.set(MotorLinearization.calculateLinearOutput(rightDriveStick.getY()));
         
         if (leftDriveStick.getTrigger()) {
             leftDriveServo.set(1);
