@@ -18,7 +18,7 @@ public class Shooter {
     public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
     public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
     
-    private int shooterState; // 0 is standby, 1 is readying, 2 is shoot
+    private static int shooterState; // 0 is standby, 1 is readying, 2 is shoot
     
     private double kOnTargetPercentTolerance = 0.1;
     
@@ -222,7 +222,7 @@ public class Shooter {
         return shooterBeltMotorSpeed;
     }
     
-    public int getShooterState() {
+    public static int getShooterState() {
         return shooterState;
     }
     
