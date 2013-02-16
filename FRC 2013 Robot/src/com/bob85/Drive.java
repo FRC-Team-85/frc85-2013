@@ -306,20 +306,25 @@ public class Drive {
         return isClimb;
     }
     
+    private void sendDriveStateDiagnostics() {
+        SmartDashboard.putBoolean("isDrive", isDrive);
+        SmartDashboard.putBoolean("isClimb", isClimb);
+    }
+    
     /**
      * Uses two joysticks in a tank drive setup to run the motors
      */
     public void joystickBasedTankDrive() {
         getTankDriveJoystickInput();
         setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
+        //limitMotorsOutputChange(true, true, true);
         setLinearizedOutput();
     }
     
     public void encoderTestDrive() {
         joystickBasedTankDrive();
         sendEncoderDriveDiagnosticsSDB();
-    }
+    }       
     
     private void runDriveStates() {    
         if (getIsDrive()) {
@@ -327,15 +332,11 @@ public class Drive {
             joystickBasedServoShift();
         } else if (!getIsDrive()) {
             joystickBasedServoShift();
+            joystickBasedTankDrive();
         }
         sendDriveStateDiagnostics();
     }
-    
-    private void sendDriveStateDiagnostics() {
-        SmartDashboard.putBoolean("isDrive", isDrive);
-        SmartDashboard.putBoolean("isClimb", isClimb);
-    }
-    
+       
     public void driveInit() {
         initEncoders();
     }
