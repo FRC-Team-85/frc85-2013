@@ -20,6 +20,9 @@ public class FrisbeeLoader {
     private Servo dropServo;
     
     private Victor hopperBeltMotor;
+    private Victor shooterMotor;
+    private PIDController shooterPID;
+    private HallEffect shooterSensor;
     
     private F310Gamepad opPad;
     
@@ -35,17 +38,20 @@ public class FrisbeeLoader {
     private double lockedPosition = 0;
     
     private int hopperState;
-    
+    private double beltIntakeSpeed;
     private double dropSpeed = .5;
     
-    public FrisbeeLoader(Servo dropServo, Victor hopperBeltMotor, 
-            F310Gamepad opPad) {
+    public FrisbeeLoader(Servo dropServo, HallEffect shooterSensor, Victor hopperBeltMotor, 
+            Victor shooterMotor, PIDController shooterPID, F310Gamepad opPad) {
         this.dropServo = dropServo;
         this.hopperBeltMotor = hopperBeltMotor;
         this.opPad = opPad;
+        this.shooterMotor = shooterMotor;
         this.timer = new Timer();
         timer.reset();
     }
+    
+    Shooter shooter = new Shooter(shooterMotor, shooterPID, shooterSensor, opPad);
     
     /**
      * Tell servo to pull pin out of hopper area
@@ -188,38 +194,61 @@ public class FrisbeeLoader {
         testFrisbeeLoader();
     }
     
-    public void hopperSwitchStates(int intakeButton, double beltIntakeSpeed, int unlockServoButton, boolean shooterReady, int shootButton){
-        switch(hopperState){
-            case 0: 
-                if (opPad.getRawButton(intakeButton)){
-                    lockServo(dropServo);
+    private void runHopperStates() {
+        switch (hopperState) {
+            case 0:
+                lockServo(dropServo);
+                if (opPad.getAxis(F310Gamepad.AxisType.kDPadY) == -1){
                     setHopperBeltMotor(beltIntakeSpeed);
                 }
-                if (opPad.getRawButton(unlockServoButton)){
-                    hopperState = 1;
-                    break;
-                }
+                break;
+                
             case 1:
-                if (opPad.getRawButton(unlockServoButton)){
-                    unlockServo(dropServo);
-                    hopperState = 2;
-                    break;
-                }
+                unlockServo(dropServo);
+                break;
+                
             case 2:
-                if (shooterReady && opPad.getRawButton(shootButton)){
-                    unlockServo(dropServo);
-                    if (!getShiftDone()){
-                       setHopperBeltMotor(dropSpeed); 
-                    }
-                    else {
+                if (shooter.onTarget()) {
+                    if (!getShiftDone()) {
+                        setHopperBeltMotor(dropSpeed);
+                    } else {
                         isShiftDone = false;
                     }
-                    break;
                 }
+                break;
+                
+        }
+    }
+    
+    public void switchHopperStates(){
+        switch(hopperState){
+            case 0: 
+                
+                if (opPad.getButton(ButtonType.kRB)){
+                    hopperState = 1;
+                }    
+                break;
+            case 1:
+                if (opPad.getButton(ButtonType.kRB)){
+                    hopperState = 2;
+                }    
+                break;
+            case 2:
+                if (!opPad.getButton(ButtonType.kRB)) {
+                    hopperState = 0;
+                } else if (opPad.getButton(ButtonType.kRB) && !(shooter.getShooterState() == 0)) {
+                    hopperState = 1;
+                
+                }  
+                break;
             default:
                 lockServo(dropServo);
                 setHopperBeltMotor(0);
         }
+    }
+    
+    public int getHopperState(){
+        return hopperState;
     }
     
 }

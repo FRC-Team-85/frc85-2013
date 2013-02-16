@@ -7,7 +7,7 @@ public class Robot extends IterativeRobot {
     Servo dropServo = new Servo(FrisbeeLoader.kDROPSERVO_CHANNEL);
     Victor hopperBelt = new Victor(FrisbeeLoader.kHOPPERBELTMOTOR_CHANNEL);
     F310Gamepad opPad = new F310Gamepad(3);
-    FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
+    
     
     Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
     Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
@@ -17,7 +17,8 @@ public class Robot extends IterativeRobot {
     PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
     Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
-
+    FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, shooterSensor, hopperBelt, 
+            shooterMotor, shooterPID, opPad);
     
     public void robotInit() {
 

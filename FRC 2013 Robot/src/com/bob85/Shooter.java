@@ -83,6 +83,8 @@ public class Shooter {
         initPIDConstants();
     }
     
+
+    
     /**
      * Returns an RPM's equivalence in a 0 to 1 PWM scale
      * 
@@ -140,7 +142,7 @@ public class Shooter {
         }
     }
     
-    private boolean onTarget() {
+    public boolean onTarget() {
         if (shooterPID.isEnable()) {
             return shooterPID.onTarget();
         } else {
