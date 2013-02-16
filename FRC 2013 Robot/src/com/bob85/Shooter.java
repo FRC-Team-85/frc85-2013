@@ -5,6 +5,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -16,6 +17,8 @@ public class Shooter {
     public static final int SHOOTER_MOTOR_CHANNEL = 5;
     public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
     public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
+    
+    private int shooterState; // 0 is standby, 1 is readying, 2 is shoot
     
     private double kOnTargetPercentTolerance = 0.1;
     
@@ -41,7 +44,7 @@ public class Shooter {
     
     private HallEffect shooterSensor;
     
-    private Joystick joystick;
+    private F310Gamepad gamepad;
     
     /**
      * Initializes Shooter PID Controller Settings
@@ -61,22 +64,22 @@ public class Shooter {
     }
     
     public Shooter(Victor shooterMotor, PIDController shooterPID, HallEffect shooterSensor, 
-            Joystick joystick) {
+            F310Gamepad joystick) {
         this.shooterMotor = shooterMotor;
         this.shooterPID = shooterPID;
         this.shooterSensor = shooterSensor;
-        this.joystick = joystick;
+        this.gamepad = joystick;
         initPIDConstants();
     }
     
     public Shooter(Victor shooterMotor, Victor shooterBeltMotor, 
             PIDController shooterPID, HallEffect shooterSensor, 
-            Joystick joystick) {
+            F310Gamepad joystick) {
         this.shooterMotor = shooterMotor;
         this.shooterBeltMotor = shooterBeltMotor;
         this.shooterPID = shooterPID;
         this.shooterSensor = shooterSensor;
-        this.joystick = joystick;
+        this.gamepad = joystick;
         initPIDConstants();
     }
     
@@ -109,6 +112,10 @@ public class Shooter {
      */
     private void calculateShooterSpeed(double distance) {
         shooterPID_kSetPoint = distance;
+    }
+    
+    private void setShooterSpeed(double speed) {
+        shooterMotor.set(speed);
     }
     
     /**
@@ -213,16 +220,21 @@ public class Shooter {
         return shooterBeltMotorSpeed;
     }
     
+    public int getShooterState() {
+        return shooterState;
+    }
+    
     private void runDiagnostics() {
         SmartDashboard.putNumber("Shooter PWM Setting", shooterMotor.get());
         SmartDashboard.putNumber("Shooter RPM", shooterSensor.getRPM());
         SmartDashboard.putNumber("Shooter Belt PWM Setting", shooterBeltMotor.get());
         SmartDashboard.putBoolean("Shooter On Target", onTarget());
+        SmartDashboard.putNumber("Shooter State", getShooterState());
     }
     
     private void runCompetitionShooter() {
         setShooterBeltSpeed(0.5);
-        runAutomaticShooterPID(joystick.getRawButton(8));
+        runAutomaticShooterPID(gamepad.getRawButton(8));
         
     }
     
@@ -231,11 +243,61 @@ public class Shooter {
      * @param distance distance from target in inches
      */
     private void runAutomaticShooterSpeedTest(double distance) {
-        testAutomaticShooterSpeedCalculation(joystick.getTrigger(), distance);
+        testAutomaticShooterSpeedCalculation(gamepad.getTrigger(), distance);
     }
     
     private void runShooterPIDTest() {
-        runAutomaticShooterPID(joystick.getRawButton(8));
+        runAutomaticShooterPID(gamepad.getRawButton(8));
+    }
+    
+    /**
+     * Returns the Shooter State
+     * @return 
+     */
+    private int getShooterStates() {
+        return shooterState;
+    }
+    
+    private void switchShooterStates() {
+        switch (shooterState) {
+            case 0:
+                if (gamepad.getButton(ButtonType.kRB)) {
+                    shooterState = 1;
+                }
+                break;
+            case 1:
+                if (gamepad.getButton(ButtonType.kRB) && onTarget()) {
+                    shooterState = 2;
+                }
+                break;
+            case 2:
+                if (!gamepad.getButton(ButtonType.kRB)) {
+                    shooterState = 0;
+                } else if (gamepad.getButton(ButtonType.kRB) && !onTarget()) {
+                    shooterState = 1;
+                }
+        }
+    }
+    
+    private void runShooterStates() {
+        switch (shooterState) {
+            case 0:
+                setShooterBeltSpeed(0);                
+                setShooterSpeed(0);
+                break;
+            case 1:
+                initPID();
+                setShooterBeltSpeed(1);
+                break;
+            case 2:
+                initPID();
+                setShooterBeltSpeed(1);
+                break;
+            default:
+                setShooterBeltSpeed(0);                
+                setShooterSpeed(0);
+                break;
+        }
     }
     
     public void runShooter() {

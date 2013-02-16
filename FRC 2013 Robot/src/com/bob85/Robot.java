@@ -11,7 +11,7 @@ public class Robot extends IterativeRobot {
     
     HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
     
-    Joystick opStick = new Joystick(3);
+    F310Gamepad opStick = new F310Gamepad(3);
     
     PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
