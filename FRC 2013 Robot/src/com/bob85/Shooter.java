@@ -252,14 +252,6 @@ public class Shooter {
         runAutomaticShooterPID(gamepad.getRawButton(8));
     }
     
-    /**
-     * Returns the Shooter State
-     * @return 
-     */
-    private int getShooterStates() {
-        return shooterState;
-    }
-    
     private void switchShooterStates() {
         switch (shooterState) {
             case 0:
@@ -288,12 +280,12 @@ public class Shooter {
                 setShooterSpeed(0);
                 break;
             case 1:
-                initPID();
-                setShooterBeltSpeed(1);
+                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
+                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
                 break;
             case 2:
-                initPID();
-                setShooterBeltSpeed(1);
+                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
+                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
                 break;
             default:
                 setShooterBeltSpeed(0);                
@@ -305,5 +297,10 @@ public class Shooter {
     public void runShooter() {
         runShooterStates();
         switchShooterStates();
+    }
+    
+    public void initShooter() {
+        SmartDashboard.putNumber("Shooter Speed", 0);
+        SmartDashboard.putNumber("Shooter Belt Speed", 1);
     }
 }

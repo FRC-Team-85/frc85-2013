@@ -21,7 +21,7 @@ public class Robot extends IterativeRobot {
             shooterMotor, shooterPID, opPad);
     
     public void robotInit() {
-
+        shooter.initShooter();
     }
     
     public void disabledInit() {
