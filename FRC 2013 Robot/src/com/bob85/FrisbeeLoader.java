@@ -14,12 +14,10 @@ import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 public class FrisbeeLoader {
     
     public static final int kDROPSERVO_CHANNEL = 8;
-    public static final int kREADYSERVO_CHANNEL = 9;
     
     public static final int kHOPPERBELTMOTOR_CHANNEL = 7;
     
     private Servo dropServo;
-    private Servo readyServo;
     
     private Victor hopperBeltMotor;
     
@@ -36,10 +34,9 @@ public class FrisbeeLoader {
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
     
-    public FrisbeeLoader(Servo dropServo, Servo readyServo, Victor hopperBeltMotor, 
+    public FrisbeeLoader(Servo dropServo, Victor hopperBeltMotor, 
             F310Gamepad opPad) {
         this.dropServo = dropServo;
-        this.readyServo = readyServo;
         this.hopperBeltMotor = hopperBeltMotor;
         this.opPad = opPad;
         this.timer = new Timer();
@@ -90,7 +87,6 @@ public class FrisbeeLoader {
     private void readyFrisbeeServoPositions(boolean isEnabled) {
         if (isEnabled) {
             lockServo(dropServo);
-            unlockServo(readyServo);
         }
     }
     
@@ -101,7 +97,6 @@ public class FrisbeeLoader {
     private void dropFrisbeeServoPositions(boolean isEnabled) {
         if (isEnabled) {
             unlockServo(dropServo);
-            lockServo(readyServo);
         }
     }
     
@@ -146,15 +141,12 @@ public class FrisbeeLoader {
         if (isEnabled) {
             if (!getShiftDone()) {
                 unlockServo(dropServo);
-                lockServo(readyServo);
             }
             else if (getShiftDone()) {
                 lockServo(dropServo);
-                unlockServo(readyServo);
             }
         } else {
             lockServo(dropServo);
-            lockServo(readyServo);
             resetGetShiftDoneTimer();
         }
     }
@@ -189,5 +181,9 @@ public class FrisbeeLoader {
     
     public void runFrisbeeLoader() {
         testFrisbeeLoader();
+    }
+    
+    public void hopperSwitchStates(){
+        
     }
 }
