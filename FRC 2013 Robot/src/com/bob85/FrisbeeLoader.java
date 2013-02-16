@@ -5,6 +5,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.F310Gamepad.AxisType;
 import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 
 /**
@@ -55,7 +56,7 @@ public class FrisbeeLoader {
      * Tell servo to pull pin out of hopper area
      * @param servo 
      */
-    private void unlockServo(Servo servo) {
+    public void unlockServo(Servo servo) {
         if (!(servo.get() == unlockedPosition)) {
             servo.set(unlockedPosition);
         }
@@ -65,7 +66,7 @@ public class FrisbeeLoader {
      * Tell servo to push pin into hopper area
      * @param servo 
      */
-    private void lockServo(Servo servo) {
+    public void lockServo(Servo servo) {
         if (!(servo.get() == lockedPosition)) {
             servo.set(lockedPosition);
         }
@@ -74,9 +75,9 @@ public class FrisbeeLoader {
      * Sets the Hopper Belt Motor TODO: add motor linearization
      * @param speed desired input
      */
-    private void setHopperBeltMotor(double speed) {
-        hopperBeltSpeed = speed;
-        hopperBeltMotor.set(hopperBeltSpeed);
+    public void setHopperBeltMotor(double speed) {
+        hopperBeltSpeed = MotorLinearization.calculateLinearOutput(speed);
+        hopperBeltMotor.set(-hopperBeltSpeed);
     }
     
     /**
@@ -189,15 +190,18 @@ public class FrisbeeLoader {
     }
     
     public void runFrisbeeLoader() {
-        testFrisbeeLoader();
+        runHopperStates();
+        switchHopperStates();
     }
     
-    private void runHopperStates() {
+    public void runHopperStates() {
         switch (hopperState) {
             case 0:
                 lockServo(dropServo);
-                if (opPad.getAxis(F310Gamepad.AxisType.kDPadY) == -1){
-                    MotorLinearization.linearizeVictor884Output(hopperBeltMotor, beltIntakeSpeed);
+                if (opPad.getAxis(AxisType.kDPadY) == -1){
+                    setHopperBeltMotor(beltIntakeSpeed);
+                } else if (opPad.getAxis(AxisType.kDPadY) == 1) {
+                    setHopperBeltMotor(-beltIntakeSpeed);
                 }
                 break;
                 
@@ -206,12 +210,12 @@ public class FrisbeeLoader {
                 break;
                 
             case 2:
-                if (Shooter.getShooterState() != 2) {
-                    if (!getShiftDone()) {
-                        setHopperBeltMotor(dropSpeed);
-                    } else {
-                        isShiftDone = false;
-                    }
+                unlockServo(dropServo);
+                
+                if (opPad.getAxis(AxisType.kDPadY) == -1){
+                    setHopperBeltMotor(beltIntakeSpeed);
+                } else if (opPad.getAxis(AxisType.kDPadY) == 1) {
+                    setHopperBeltMotor(-beltIntakeSpeed);
                 }
                 break;
                 
@@ -227,7 +231,7 @@ public class FrisbeeLoader {
                 }    
                 break;
             case 1:
-                if (opPad.getButton(ButtonType.kRB)){
+                if (Shooter.getShooterState() == 1){
                     hopperState = 2;
                 }    
                 break;

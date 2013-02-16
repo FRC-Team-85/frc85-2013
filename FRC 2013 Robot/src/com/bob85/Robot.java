@@ -1,6 +1,9 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.F310Gamepad.AxisType;
+import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
@@ -21,7 +24,7 @@ public class Robot extends IterativeRobot {
             shooterMotor, shooterPID, opPad);
     
     public void robotInit() {
-
+        SmartDashboard.putNumber("runIfNothingElseWorks", 0);
     }
     
     public void disabledInit() {
@@ -58,4 +61,14 @@ public class Robot extends IterativeRobot {
         shooter.runShooter();
     }
     
+    public void runIfNothingElseWorks() {
+        frisbeeLoader.setHopperBeltMotor(opPad.getAxis(AxisType.kDPadY) * -0.4);
+        shooter.setShooterSpeed(SmartDashboard.getNumber("runIfNothingElseWorks"));
+        shooter.setShooterBeltSpeed(1);
+        if (opPad.getButton(ButtonType.kRB)) {
+            frisbeeLoader.unlockServo(dropServo);
+        } else if (opPad.getButton(ButtonType.kLB)) {
+            frisbeeLoader.lockServo(dropServo);
+        }
+    }
 }
