@@ -10,7 +10,8 @@ public class Robot extends IterativeRobot {
     Servo dropServo = new Servo(FrisbeeLoader.kDROPSERVO_CHANNEL);
     Victor hopperBelt = new Victor(FrisbeeLoader.kHOPPERBELTMOTOR_CHANNEL);
     F310Gamepad opPad = new F310Gamepad(3);
-    
+    Joystick leftStick = new Joystick(1);
+    Joystick rightStick = new Joystick(2);
     
     Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
     Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
@@ -24,6 +25,10 @@ public class Robot extends IterativeRobot {
     
     public void robotInit() {
         SmartDashboard.putNumber("runIfNothingElseWorks", 0);
+        SmartDashboard.putNumber("hopperBelt", 0);
+        SmartDashboard.putNumber("shooterMotor", 0);
+        SmartDashboard.putNumber("shooterBelt", 0);
+        
         shooter.initShooter();
     }
     
@@ -36,7 +41,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit() {
-        
+        shooterSensor.start();
     }
     
     public void testInit() {
@@ -52,19 +57,35 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        frisbeeLoader.runFrisbeeLoader();
-        shooter.runShooter();
+        //frisbeeLoader.runFrisbeeLoader();
+        //shooter.runShooter();
+        runIfNothingElseWorks();
+        SmartDashboard.putNumber("hallEffectRaw", shooterSensor.get());
+        SmartDashboard.putNumber("HallEffect", shooterSensor.getRPM());
+        MotorLinearization.linearizeVictor884Output(shooterMotor, SmartDashboard.getNumber("shooterMotor"));
+        if (rightStick.getTrigger()){
+           MotorLinearization.linearizeVictor884Output(shooterBeltMotor, SmartDashboard.getNumber("shooterBelt")); 
+        } else {
+            shooterBeltMotor.set(0);
+        }
+        
+        if (leftStick.getTrigger()){
+            MotorLinearization.linearizeVictor884Output(hopperBelt, SmartDashboard.getNumber("hopperBelt"));
+        } else {
+            hopperBelt.set(0);
+        }
     }
     
     public void testPeriodic() {
-        frisbeeLoader.runFrisbeeLoader();
-        shooter.runShooter();
+        //frisbeeLoader.runFrisbeeLoader();
+        //shooter.runShooter();
+     
     }
     
     public void runIfNothingElseWorks() {
-        frisbeeLoader.setHopperBeltMotor(opPad.getAxis(AxisType.kDPadY) * -0.4);
+        frisbeeLoader.setHopperBeltMotor(0.5);
         shooter.setShooterSpeed(SmartDashboard.getNumber("runIfNothingElseWorks"));
-        shooter.setShooterBeltSpeed(1);
+        shooter.setShooterBeltSpeed(-1);
         if (opPad.getButton(ButtonType.kRB)) {
             frisbeeLoader.unlockServo(dropServo);
         } else if (opPad.getButton(ButtonType.kLB)) {
