@@ -104,7 +104,8 @@ public class Drive {
         this.rightDriveMotors = rightDriveMotors;
         this.leftDriveJoystick = leftDriveJoystick;
         this.rightDriveJoystick = rightDriveJoystick;
-        
+        this.leftDriveServo = leftDriveServo;
+        this.rightDriveServo = rightDriveServo;
         this.leftDriveEncoder = leftDriveEncoder;
         this.rightDriveEncoder = rightDriveEncoder;
     }
@@ -113,7 +114,7 @@ public class Drive {
      * Maps the motor outputs to the joysticks Y axis
      */
     private void getTankDriveJoystickInput() {
-        leftMotorsOutput = leftDriveJoystick.getY();
+        leftMotorsOutput = -leftDriveJoystick.getY();
         rightMotorsOutput = -rightDriveJoystick.getY();
     }
     
@@ -335,6 +336,7 @@ public class Drive {
             joystickBasedTankDrive();
         }
         sendDriveStateDiagnostics();
+        sendEncoderDriveDiagnosticsSDB();
     }
        
     public void driveInit() {
