@@ -45,15 +45,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        drive.encoderTestDrive();
-        if (leftDriveStick.getTrigger()) {
-            leftDriveServo.set(1);
-            rightDriveServo.set(0);
-        }
-        if (rightDriveStick.getTrigger()) {
-            leftDriveServo.set(0);
-            rightDriveServo.set(1);
-        }
+        drive.runDrive();
     }
     
     public void testPeriodic() {

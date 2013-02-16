@@ -54,9 +54,14 @@ public class Drive {
     
     private double leftDriveServoDrivePosition = 1;
     private double rightDriveServoDrivePosition = 0;
+    private double leftDriveServoClimbPosition = 0;
+    private double rightDriveServoClimbPosition = 1;
     
     private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
+    
+    private boolean isDrive = false;
+    private boolean isClimb = false;
     
     /**
      * Constructs a Robot Drive with two PWM channels
@@ -207,12 +212,14 @@ public class Drive {
     }
     
     private void resetEncoders() {
-        leftDriveEncoder.reset();
-        rightDriveEncoder.reset();
+        if (leftDriveEncoder != null && rightDriveEncoder != null) {
+            leftDriveEncoder.reset();
+            rightDriveEncoder.reset();
+        }
     }
     
     private void initEncoders() {
-        if (!isEncodersStarted) {
+        if (!isEncodersStarted && leftDriveEncoder != null && rightDriveEncoder != null) {
             leftDriveEncoder.start();
             rightDriveEncoder.start();
             
@@ -244,20 +251,64 @@ public class Drive {
     private boolean getServoDrivePosition() {
         if (leftDriveServo.get() == leftDriveServoDrivePosition && 
                 rightDriveServo.get() == rightDriveServoDrivePosition) {
-            return true;
+            isDrive = true;
+            isClimb = false;
+            return isDrive;
         }
         else {
-            return false;
+            isDrive = false;
+            return isDrive;
         }
     }
 
+    private boolean getServoClimbPosition() {
+        if (leftDriveServo.get() == leftDriveServoClimbPosition && 
+                rightDriveServo.get() == rightDriveServoClimbPosition) {
+            isDrive = false;
+            isClimb = true;
+            return isClimb;
+        } else {
+            isClimb = false;
+            return isClimb;
+        }
+    }
     
     private void setServoDrivePosition() {
 
         if (!getServoDrivePosition()){
             leftDriveServo.set(leftDriveServoDrivePosition);
             rightDriveServo.set(rightDriveServoDrivePosition);
-        } 
+        } else {
+            isDrive = true;
+        }
+        isClimb = false;
+    }
+    
+    private void setServoClimbPosition() {
+        if (!getServoClimbPosition()) {
+            leftDriveServo.set(leftDriveServoClimbPosition);
+            rightDriveServo.set(rightDriveServoClimbPosition);
+            isClimb = false;
+        } else {
+            isClimb = true;
+        }
+        isDrive = false;
+    }
+    
+    private void joystickBasedServoShift() {
+        if (leftDriveJoystick.getTrigger()) {
+            setServoDrivePosition();
+        } else if (rightDriveJoystick.getTrigger()) {
+            setServoClimbPosition();
+        }
+    }
+    
+    public boolean getIsDrive() {
+        return isDrive;
+    }
+    
+    public boolean getIsClimb() {
+        return isClimb;
     }
     
     /**
@@ -298,5 +349,13 @@ public class Drive {
     
     public void disabledInit() {
         disableEncoders();
+    }
+    
+    public void runDrive() {
+        joystickBasedServoShift();
+        
+        if (getIsDrive()) {
+            joystickBasedTankDrive();
+        }
     }
 }
