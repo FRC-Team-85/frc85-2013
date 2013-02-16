@@ -20,7 +20,7 @@ public class Climber {
     
     private int climberStage;
     
-    public boolean inDriveMode = true;
+    public boolean inDriveMode;
 
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
@@ -50,6 +50,29 @@ public class Climber {
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         this.leftShiftServo = leftShiftServo;
         this.rightShiftServo = rightShiftServo;
+        
+        initEncoderSetting();
+    }
+    
+    public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
+            Encoder leftClimberEncoder, Encoder rightClimberEncoder, 
+            Servo leftShiftServo, Servo rightShiftServo) {
+        this.leftClimberMotors = leftClimberMotors;
+        this.rightClimberMotors = rightClimberMotors;
+        this.leftClimberEncoder = leftClimberEncoder;
+        this.rightClimberEncoder = rightClimberEncoder;
+        this.leftShiftServo = leftShiftServo;
+        this.rightShiftServo = rightShiftServo;
+        
+        initEncoderSetting();
+    }
+    
+    public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
+            Encoder leftClimberEncoder, Encoder rightClimberEncoder) {
+        this.leftClimberMotors = leftClimberMotors;
+        this.rightClimberMotors = rightClimberMotors;
+        this.leftClimberEncoder = leftClimberEncoder;
+        this.rightClimberEncoder = rightClimberEncoder;
         
         initEncoderSetting();
     }
@@ -154,11 +177,9 @@ public class Climber {
         
     }
     
-    public void manualDoubleJoystickElevDrive(Joystick leftStick, Joystick rightStick, double topEncoderLimitValue){
+    public void manualJoystickElevDrive(Joystick joyStick, double topEncoderLimitValue){
         getEncoderDistance();
-        leftMotorOutput = MotorLinearization.calculateLinearOutput(-leftStick.getY());
-        rightMotorOutput = MotorLinearization.calculateLinearOutput(rightStick.getY());
-        climberMotorOutput = ((leftMotorOutput + rightMotorOutput) / 2);// double Joystick Control; singleStick @ 100% = 50% motor speed
+        climberMotorOutput = MotorLinearization.calculateLinearOutput(joyStick.getY());
         
         if (inDriveMode != true) {
             if (topEncoderLimitValue <= linearClimberDistance && climberMotorOutput > 0) {

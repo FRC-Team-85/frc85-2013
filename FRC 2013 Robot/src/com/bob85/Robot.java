@@ -16,6 +16,7 @@ public class Robot extends IterativeRobot {
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
+    Climber climber = new Climber(leftDriveMotor,  rightDriveMotor, leftDriveEncoder, rightDriveEncoder);
 
     public void robotInit() {
         drive.driveInit();
@@ -46,15 +47,23 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        drive.encoderTestDrive();
+        //drive.encoderTestDrive();
+        climber.manualJoystickElevDrive(rightDriveStick, 500);
+        
+        SmartDashboard.putNumber("LeftSideEncoder", leftDriveEncoder.getDistance());
+        SmartDashboard.putNumber("rightSideEncoder", rightDriveEncoder.getDistance());
+        
         if (leftDriveStick.getTrigger()) {
             leftDriveServo.set(1);
             rightDriveServo.set(0);
+            climber.inDriveMode = true;
         }
         if (rightDriveStick.getTrigger()) {
             leftDriveServo.set(0);
             rightDriveServo.set(1);
+            climber.inDriveMode = false;
         }
+        
     }
     
     public void testPeriodic() {
