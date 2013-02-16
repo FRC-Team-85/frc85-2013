@@ -38,8 +38,8 @@ public class FrisbeeLoader {
     private double lockedPosition = 0;
     
     private static int hopperState;
-    private double beltIntakeSpeed;
-    private double dropSpeed = .5;
+    private double beltIntakeSpeed = 0.4;
+    private double dropSpeed = .4;
     
     public FrisbeeLoader(Servo dropServo, HallEffect shooterSensor, Victor hopperBeltMotor, 
             Victor shooterMotor, PIDController shooterPID, F310Gamepad opPad) {
@@ -197,7 +197,7 @@ public class FrisbeeLoader {
             case 0:
                 lockServo(dropServo);
                 if (opPad.getAxis(F310Gamepad.AxisType.kDPadY) == -1){
-                    setHopperBeltMotor(beltIntakeSpeed);
+                    MotorLinearization.linearizeVictor884Output(hopperBeltMotor, beltIntakeSpeed);
                 }
                 break;
                 
