@@ -9,6 +9,16 @@ public class Robot extends IterativeRobot {
     F310Gamepad opPad = new F310Gamepad(3);
     FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
     
+    Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
+    Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
+    
+    HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
+    
+    PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
+    
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
+
+    
     public void robotInit() {
 
     }
@@ -28,7 +38,7 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         
     }
-    
+
     public void disabledPeriodic() {
         
     }
@@ -39,10 +49,12 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         frisbeeLoader.runFrisbeeLoader();
+        shooter.runShooter();
     }
     
     public void testPeriodic() {
         frisbeeLoader.runFrisbeeLoader();
+        shooter.runShooter();
     }
     
 }
