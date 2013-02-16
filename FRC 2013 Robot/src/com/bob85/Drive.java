@@ -321,6 +321,16 @@ public class Drive {
         sendEncoderDriveDiagnosticsSDB();
     }
     
+    private void runDriveStates() {    
+        if (getIsDrive()) {
+            joystickBasedTankDrive();
+            joystickBasedServoShift();
+        } else if (!getIsDrive()) {
+            joystickBasedServoShift();
+        }
+        sendDriveStateDiagnostics();
+    }
+    
     private void sendDriveStateDiagnostics() {
         SmartDashboard.putBoolean("isDrive", isDrive);
         SmartDashboard.putBoolean("isClimb", isClimb);
@@ -335,10 +345,6 @@ public class Drive {
     }
     
     public void runDrive() {
-        joystickBasedServoShift();
-        if (getIsDrive()) {
-            joystickBasedTankDrive();
-        }
-        sendDriveStateDiagnostics();
+        runDriveStates();
     }
 }
