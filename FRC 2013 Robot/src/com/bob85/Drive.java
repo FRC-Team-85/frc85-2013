@@ -113,8 +113,8 @@ public class Drive {
      * Maps the motor outputs to the joysticks Y axis
      */
     private void getTankDriveJoystickInput() {
-        leftMotorsOutput = -leftDriveJoystick.getY();
-        rightMotorsOutput = rightDriveJoystick.getY();
+        leftMotorsOutput = leftDriveJoystick.getY();
+        rightMotorsOutput = -rightDriveJoystick.getY();
     }
     
     /**
@@ -137,7 +137,7 @@ public class Drive {
         leftLinearMotorsOutput = MotorLinearization.calculateLinearOutput(leftMotorsOutput);
         rightLinearMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
         leftDriveMotors.set(leftLinearMotorsOutput);
-        rightDriveMotors.set(rightLinearMotorsOutput);
+        rightDriveMotors.set(-rightLinearMotorsOutput);
     }
     
     private void limitMotorsOutputChange(boolean isLeft, boolean isRight, boolean isLinear) {
@@ -193,7 +193,7 @@ public class Drive {
      */
     private void setMotorsOutput(double leftMotorsOutput, double rightMotorsOutput) {
      leftDriveMotors.set(leftMotorsOutput);
-     rightDriveMotors.set(rightMotorsOutput);
+     rightDriveMotors.set(-rightMotorsOutput);
     }
     
     /**
