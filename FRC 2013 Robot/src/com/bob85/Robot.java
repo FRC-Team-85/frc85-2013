@@ -54,7 +54,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("rightSideEncoder", rightDriveEncoder.getDistance());
         
         leftDriveMotor.set(MotorLinearization.calculateLinearOutput(-rightDriveStick.getY()));
-        leftDriveMotor.set(MotorLinearization.calculateLinearOutput(rightDriveStick.getY()));
+        rightDriveMotor.set(MotorLinearization.calculateLinearOutput(rightDriveStick.getY()));
         
         if (leftDriveStick.getTrigger()) {
             leftDriveServo.set(1);
