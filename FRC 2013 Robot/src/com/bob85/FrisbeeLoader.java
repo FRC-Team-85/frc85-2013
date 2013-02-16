@@ -7,6 +7,7 @@ package com.bob85;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.F310Gamepad.AxisType;
 import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -21,9 +22,6 @@ public class FrisbeeLoader {
     private Servo dropServo;
     
     private Victor hopperBeltMotor;
-    private Victor shooterMotor;
-    private PIDController shooterPID;
-    private HallEffect shooterSensor;
     
     private F310Gamepad opPad;
     
@@ -42,14 +40,29 @@ public class FrisbeeLoader {
     private double beltIntakeSpeed = 0.4;
     private double dropSpeed = .4;
     
-    public FrisbeeLoader(Servo dropServo, HallEffect shooterSensor, Victor hopperBeltMotor, 
-            Victor shooterMotor, PIDController shooterPID, F310Gamepad opPad) {
+    public FrisbeeLoader(Servo dropServo, Victor hopperBeltMotor, 
+            F310Gamepad opPad) {
         this.dropServo = dropServo;
         this.hopperBeltMotor = hopperBeltMotor;
         this.opPad = opPad;
-        this.shooterMotor = shooterMotor;
         this.timer = new Timer();
         timer.reset();
+    }
+    
+    public boolean getUnlockServo() {
+        if (dropServo.get() == unlockedPosition) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public boolean getLockServo() {
+        if (dropServo.get() == lockedPosition) {
+            return true;
+        } else {
+            return false;
+        }
     }
       
     /**
@@ -192,6 +205,7 @@ public class FrisbeeLoader {
     public void runFrisbeeLoader() {
         runHopperStates();
         switchHopperStates();
+        sendDiagnosticsSDB();
     }
     
     public void runHopperStates() {
@@ -253,4 +267,10 @@ public class FrisbeeLoader {
         return hopperState;
     }
     
+    public void sendDiagnosticsSDB() {
+        SmartDashboard.putNumber("Hopper Belt", hopperBeltMotor.get());
+        SmartDashboard.putNumber("Hopper State", getHopperState());
+        SmartDashboard.putBoolean("Servo Lock", getLockServo());
+        SmartDashboard.putBoolean("Servo Unlock", getUnlockServo());
+    }
 }
