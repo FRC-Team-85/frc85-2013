@@ -34,6 +34,10 @@ public class FrisbeeLoader {
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
     
+    private int hopperState;
+    
+    private double dropSpeed = .5;
+    
     public FrisbeeLoader(Servo dropServo, Victor hopperBeltMotor, 
             F310Gamepad opPad) {
         this.dropServo = dropServo;
@@ -119,6 +123,7 @@ public class FrisbeeLoader {
             isShiftDone = false;
         } else if (time >= shiftTime) {
             timer.stop();
+            timerReset = false;
             isShiftDone = true;
         }
         
@@ -183,7 +188,38 @@ public class FrisbeeLoader {
         testFrisbeeLoader();
     }
     
-    public void hopperSwitchStates(){
-        
+    public void hopperSwitchStates(int intakeButton, double beltIntakeSpeed, int unlockServoButton, boolean shooterReady, int shootButton){
+        switch(hopperState){
+            case 0: 
+                if (opPad.getRawButton(intakeButton)){
+                    lockServo(dropServo);
+                    setHopperBeltMotor(beltIntakeSpeed);
+                }
+                if (opPad.getRawButton(unlockServoButton)){
+                    hopperState = 1;
+                    break;
+                }
+            case 1:
+                if (opPad.getRawButton(unlockServoButton)){
+                    unlockServo(dropServo);
+                    hopperState = 2;
+                    break;
+                }
+            case 2:
+                if (shooterReady && opPad.getRawButton(shootButton)){
+                    unlockServo(dropServo);
+                    if (!getShiftDone()){
+                       setHopperBeltMotor(dropSpeed); 
+                    }
+                    else {
+                        isShiftDone = false;
+                    }
+                    break;
+                }
+            default:
+                lockServo(dropServo);
+                setHopperBeltMotor(0);
+        }
     }
+    
 }
