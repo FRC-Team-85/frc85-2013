@@ -181,18 +181,18 @@ public class Climber {
     
     public void manualJoystickElevDrive(Joystick joyStick, double topEncoderLimitValue){
         getEncoderDistance();
-        climberMotorOutput = MotorLinearization.calculateLinearOutput(-joyStick.getY());
         drive.setMotorOutputDeadbands();
-        
+                
         if (inDriveMode != true) {
-            if (topEncoderLimitValue <= linearClimberDistance && climberMotorOutput > 0) {
+            if (topEncoderLimitValue <= linearClimberDistance && joyStick.getY() > 0) {
                 stopClimb();
             }
-            if (bottomClimberLimitSwitch.get() == true && climberMotorOutput < 0) {
+            if (bottomClimberLimitSwitch.get() == true && joyStick.getY() < 0) {
                 stopClimb();
             }
             if (topClimberLimitSwitch.get() != true && linearClimberDistance < topEncoderLimitValue) {
-                setClimberMotors();
+                MotorLinearization.linearizeVictor884Output(leftClimberMotors, -joyStick.getY());
+                MotorLinearization.linearizeVictor884Output(rightClimberMotors, joyStick.getY());
             } else {
                 stopClimb();
             }
