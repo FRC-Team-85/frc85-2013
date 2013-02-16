@@ -17,8 +17,6 @@ public class FrisbeeLoader {
     
     public static final int kHOPPERBELTMOTOR_CHANNEL = 7;
     
-    private Shooter shooter;
-    
     private Servo dropServo;
     
     private Victor hopperBeltMotor;
@@ -43,14 +41,13 @@ public class FrisbeeLoader {
     private double beltIntakeSpeed;
     private double dropSpeed = .5;
     
-    public FrisbeeLoader(Shooter shooter, Servo dropServo, HallEffect shooterSensor, Victor hopperBeltMotor, 
+    public FrisbeeLoader(Servo dropServo, HallEffect shooterSensor, Victor hopperBeltMotor, 
             Victor shooterMotor, PIDController shooterPID, F310Gamepad opPad) {
         this.dropServo = dropServo;
         this.hopperBeltMotor = hopperBeltMotor;
         this.opPad = opPad;
         this.shooterMotor = shooterMotor;
         this.timer = new Timer();
-        this.shooter = shooter;
         timer.reset();
     }
       
@@ -209,7 +206,7 @@ public class FrisbeeLoader {
                 break;
                 
             case 2:
-                if (shooter.onTarget()) {
+                if (Shooter.getShooterState() != 2) {
                     if (!getShiftDone()) {
                         setHopperBeltMotor(dropSpeed);
                     } else {
@@ -237,7 +234,7 @@ public class FrisbeeLoader {
             case 2:
                 if (!opPad.getButton(ButtonType.kRB)) {
                     hopperState = 0;
-                } else if (opPad.getButton(ButtonType.kRB) && !(shooter.getShooterState() == 0)) {
+                } else if (opPad.getButton(ButtonType.kRB) && !(Shooter.getShooterState() == 0)) {
                     hopperState = 1;
                 
                 }  
