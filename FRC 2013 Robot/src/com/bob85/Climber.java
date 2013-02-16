@@ -200,6 +200,17 @@ public class Climber {
 
     }
     
+    public void setClimberToPresetHeight(Joystick joystick, int topButton, double presetHeight){
+        if (joystick.getRawButton(topButton) == true){
+            if (presetHeight > linearClimberDistance && topClimberLimitSwitch.get() != true){
+                climberMotorOutput = -0.5;
+                setClimberMotors();
+            } else {
+                stopClimb();
+            }
+        }
+    }
+    
     /**
      *
      * @param auxStick Joystick

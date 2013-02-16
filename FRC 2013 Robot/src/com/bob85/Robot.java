@@ -48,7 +48,7 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         //drive.encoderTestDrive();
-        //climber.manualJoystickElevDrive(rightDriveStick, 500);
+        //climber.manualJoystickElevDrive(rightDriveStick, 500); no limitswitches implemented yet
         
         SmartDashboard.putNumber("LeftSideEncoder", leftDriveEncoder.getDistance());
         SmartDashboard.putNumber("rightSideEncoder", rightDriveEncoder.getDistance());
