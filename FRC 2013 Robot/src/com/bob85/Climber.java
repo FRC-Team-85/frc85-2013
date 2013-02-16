@@ -242,23 +242,4 @@ public class Climber {
             inDriveMode = true;
         }
     }
-    
-    /**
-     * 
-     * @param auxStick Joystick
-     * @param intakeRoller Motor for hopper
-     * @param feedInButton Intake Button
-     * @param feedOutButton Out Button
-     */
-    public void diskIntake(Joystick auxStick, SpeedController intakeRoller, int feedInButton, int feedOutButton){
-        if (auxStick.getRawButton(feedInButton)){
-            intakeRoller.set(0.6);
-        }
-        else if (auxStick.getRawButton(feedOutButton)){
-            intakeRoller.set(-0.6);
-        }
-        else {
-            intakeRoller.set(0);
-        }
-    }
 }
