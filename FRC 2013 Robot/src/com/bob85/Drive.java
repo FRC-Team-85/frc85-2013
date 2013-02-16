@@ -117,11 +117,6 @@ public class Drive {
         rightMotorsOutput = rightDriveJoystick.getY();
     }
     
-    private void getTestDriveJoystickInput() {
-        leftMotorsOutput = m_testDriveJoystick.getRawAxis(2);
-        rightMotorsOutput = m_testDriveJoystick.getRawAxis(4);
-    }
-    
     /**
      * Sets motor output setting to zero if it falls under the deadband
      */    
@@ -321,26 +316,14 @@ public class Drive {
         setLinearizedOutput();
     }
     
-    public void joystickBasedTestDrive() {
-        getTestDriveJoystickInput();
-        setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
-        setLinearizedOutput();
-        sendTestDriveDiagnosticsSDB();
-    }
-    
-    public void autoBasedDrive(double leftMotorOutput, double rightMotorOutput) {
-        leftMotorsOutput = leftMotorOutput;
-        rightMotorsOutput = rightMotorOutput;
-        setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
-        setLinearizedOutput();
-    }
-    
     public void encoderTestDrive() {
         joystickBasedTankDrive();
         sendEncoderDriveDiagnosticsSDB();
-        setServoDrivePosition();
+    }
+    
+    private void sendDriveStateDiagnostics() {
+        SmartDashboard.putBoolean("isDrive", isDrive);
+        SmartDashboard.putBoolean("isClimb", isClimb);
     }
     
     public void driveInit() {
@@ -353,9 +336,9 @@ public class Drive {
     
     public void runDrive() {
         joystickBasedServoShift();
-        
         if (getIsDrive()) {
             joystickBasedTankDrive();
         }
+        sendDriveStateDiagnostics();
     }
 }
