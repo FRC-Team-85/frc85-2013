@@ -17,6 +17,8 @@ public class FrisbeeLoader {
     
     public static final int kHOPPERBELTMOTOR_CHANNEL = 7;
     
+    private Shooter shooter;
+    
     private Servo dropServo;
     
     private Victor hopperBeltMotor;
@@ -41,18 +43,17 @@ public class FrisbeeLoader {
     private double beltIntakeSpeed;
     private double dropSpeed = .5;
     
-    public FrisbeeLoader(Servo dropServo, HallEffect shooterSensor, Victor hopperBeltMotor, 
+    public FrisbeeLoader(Shooter shooter, Servo dropServo, HallEffect shooterSensor, Victor hopperBeltMotor, 
             Victor shooterMotor, PIDController shooterPID, F310Gamepad opPad) {
         this.dropServo = dropServo;
         this.hopperBeltMotor = hopperBeltMotor;
         this.opPad = opPad;
         this.shooterMotor = shooterMotor;
         this.timer = new Timer();
+        this.shooter = shooter;
         timer.reset();
     }
-    
-    Shooter shooter = new Shooter(shooterMotor, shooterPID, shooterSensor, opPad);
-    
+      
     /**
      * Tell servo to pull pin out of hopper area
      * @param servo 
