@@ -32,6 +32,8 @@ public class Climber {
     Servo leftShiftServo;
     Servo rightShiftServo;
     
+    Drive drive = new Drive(leftClimberMotors, rightClimberMotors);
+    
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -179,7 +181,8 @@ public class Climber {
     
     public void manualJoystickElevDrive(Joystick joyStick, double topEncoderLimitValue){
         getEncoderDistance();
-        climberMotorOutput = MotorLinearization.calculateLinearOutput(joyStick.getY());
+        climberMotorOutput = MotorLinearization.calculateLinearOutput(-joyStick.getY());
+        drive.setMotorOutputDeadbands();
         
         if (inDriveMode != true) {
             if (topEncoderLimitValue <= linearClimberDistance && climberMotorOutput > 0) {

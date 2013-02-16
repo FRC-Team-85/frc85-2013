@@ -55,7 +55,7 @@ public class Drive {
     private double leftDriveServoDrivePosition = 1;
     private double rightDriveServoDrivePosition = 0;
     
-    private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
+    private double encoderDistanceRatio = (1 / 1.9) * Math.PI; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
     
     /**
@@ -120,7 +120,7 @@ public class Drive {
     /**
      * Sets motor output setting to zero if it falls under the deadband
      */    
-    private void setMotorOutputDeadbands() {
+    public void setMotorOutputDeadbands() {
         if (Math.abs(leftMotorsOutput) < deadband) {
             leftMotorsOutput = 0;
         }
@@ -212,7 +212,7 @@ public class Drive {
     }
     
     private void initEncoders() {
-        if (!isEncodersStarted) {
+        if (!isEncodersStarted == true) {
             leftDriveEncoder.start();
             rightDriveEncoder.start();
             
@@ -226,7 +226,7 @@ public class Drive {
     }
     
     private void disableEncoders() {
-        if (isEncodersStarted) {
+        if (isEncodersStarted == true) {
             leftDriveEncoder.stop();
             rightDriveEncoder.stop();
             isEncodersStarted = false;
