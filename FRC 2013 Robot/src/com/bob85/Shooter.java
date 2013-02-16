@@ -263,12 +263,12 @@ public class Shooter {
     private void switchShooterStates() {
         switch (shooterState) {
             case 0:
-                if (gamepad.getButton(ButtonType.kRB)) {
+                if (gamepad.getButton(ButtonType.kRB) && FrisbeeLoader.getHopperState() ==1) {
                     shooterState = 1;
                 }
                 break;
             case 1:
-                if (gamepad.getButton(ButtonType.kRB) && onTarget()) {
+                if (gamepad.getButton(ButtonType.kRB) && onTarget() && FrisbeeLoader.getHopperState() ==1) {
                     shooterState = 2;
                 }
                 break;
@@ -303,7 +303,7 @@ public class Shooter {
     }
     
     public void runShooter() {
-        runShooterPIDTest();
-        runDiagnostics();
+        runShooterStates();
+        switchShooterStates();
     }
 }

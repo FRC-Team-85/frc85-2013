@@ -37,7 +37,7 @@ public class FrisbeeLoader {
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
     
-    private int hopperState;
+    private static int hopperState;
     private double beltIntakeSpeed;
     private double dropSpeed = .5;
     
@@ -232,7 +232,7 @@ public class FrisbeeLoader {
                 }    
                 break;
             case 2:
-                if (!opPad.getButton(ButtonType.kRB)) {
+                if (!opPad.getButton(ButtonType.kRB) && Shooter.getShooterState() == 0) {
                     hopperState = 0;
                 } else if (opPad.getButton(ButtonType.kRB) && !(Shooter.getShooterState() == 0)) {
                     hopperState = 1;
@@ -245,7 +245,7 @@ public class FrisbeeLoader {
         }
     }
     
-    public int getHopperState(){
+    public static int getHopperState(){
         return hopperState;
     }
     
