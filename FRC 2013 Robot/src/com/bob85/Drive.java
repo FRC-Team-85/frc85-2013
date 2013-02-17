@@ -66,24 +66,6 @@ public class Drive {
     private boolean isClimb = false;
     
     /**
-     * Constructs a Robot Drive with two PWM channels
-     * 
-     * @param leftDriveMotors left drive PWM channel
-     * @param rightDriveMotors right drive PWM channel
-     */
-    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors) {
-        this.leftDriveMotors = leftDriveMotors;
-        this.rightDriveMotors = rightDriveMotors;
-    }
-    
-    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors,
-            Joystick testDriveJoystick) {
-        this.leftDriveMotors = leftDriveMotors;
-        this.rightDriveMotors = rightDriveMotors;
-        m_testDriveJoystick = testDriveJoystick;
-    }
-    
-    /**
      * Constructs a Robot Drive with two PWM channels and joystick input
      * 
      * @param leftDriveMotors left drive PWM channel
@@ -160,37 +142,6 @@ public class Drive {
         }
     }
     
-    private void motorsChangeLimit() {
-        
-        if (Math.abs(leftMotorsOutput-leftOldOutput)>0.5) {     //checks if the change is above 0.5
-            if (leftMotorsOutput>0) {                           //checks if positive and rewrites
-                leftOldOutput +=0.5;                            //oldoutput to change by +0.5
-                }
-            else if (leftMotorsOutput<0) {                      //check if negative and rewrites
-                leftOldOutput -=0.5;                            //oldoutput to change by -0.5
-                }                                           
-        }
-        else {                                                  //if change is acceptable
-            leftOldOutput = leftMotorsOutput;                   //set change to oldoutput
-        }
-        
-        if (Math.abs(rightMotorsOutput-rightOldOutput)>0.5) {   //same for right
-            if (rightMotorsOutput>0) {
-                rightOldOutput += 0.5;
-                }
-            else if (rightMotorsOutput<0) {
-                rightOldOutput -= 0.5;
-                }
-        }
-        else {
-            rightOldOutput = rightMotorsOutput;
-        }
-        
-        leftMotorsOutput = leftOldOutput;                       //sets changes to motors
-        rightMotorsOutput = rightOldOutput;
-            
-    }
-    
     /**
      * Sets the motors output settings values
      * @param leftMotorsOutput
@@ -199,24 +150,6 @@ public class Drive {
     public void setMotorOutputSetting(double leftMotorsOutput, double rightMotorsOutput) {
         this.leftMotorsOutput = leftMotorsOutput;
         this.rightMotorsOutput = rightMotorsOutput;
-    }
-    
-    /**
-     * Sets the motors output with the motor output settings
-     */
-    private void setMotorsOutput(double leftMotorsOutput, double rightMotorsOutput) {
-     leftDriveMotors.set(leftMotorsOutput);
-     rightDriveMotors.set(-rightMotorsOutput);
-    }
-    
-    /**
-     * Sends input and output of joystickBasedTestDrive()
-     */
-    private void sendTestDriveDiagnosticsSDB() {
-        SmartDashboard.putNumber("Left Drive Input", m_testDriveJoystick.getRawAxis(2));
-        SmartDashboard.putNumber("Right Drive Input", m_testDriveJoystick.getRawAxis(4));
-        SmartDashboard.putNumber("Left Drive Output", leftDriveMotors.get());
-        SmartDashboard.putNumber("Right Drive Output", rightDriveMotors.get());
     }
     
     public void resetEncoders() {
@@ -232,7 +165,7 @@ public class Drive {
             rightDriveEncoder.start();
             
             resetEncoders();
-            
+
             leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             
@@ -303,14 +236,6 @@ public class Drive {
             isClimb = true;
         }
         isDrive = false;
-    }
-    
-    private void joystickBasedServoShift() {
-        if (leftDriveJoystick.getTrigger()) {
-            setServoDrivePosition();
-        } else if (rightDriveJoystick.getTrigger()) {
-            setServoClimbPosition();
-        }
     }
     
     public boolean getIsDrive() {
