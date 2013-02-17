@@ -55,8 +55,9 @@ public class Drive {
     private double leftDriveServoDrivePosition = 1;
     private double rightDriveServoDrivePosition = 0;
     
-    private double encoderDistanceRatio = (1 / 1.9) * Math.PI; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
+    private double encoderDistanceRatio = ((1.9 * Math.PI) / encoderCPR); //Each encoder pulse = 5.969 inches traveled
+    
     
     /**
      * Constructs a Robot Drive with two PWM channels

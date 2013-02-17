@@ -3,12 +3,9 @@ package com.bob85;
 import edu.wpi.first.wpilibj.*;
 
 public class Climber {
-
-    private double encoderDistanceRatio = (1/1.9) * Math.PI; //Every encoder revolution is 1 linear inches moved on the climber
     private double encoderCPR = 250;
+    private double encoderDistanceRatio = ((1.9 * Math.PI) / encoderCPR); //Every encoder revolution is 5.969 linear inches moved on the climber
     private double calcEncDistance;
-    private double leftMotorOutput;
-    private double rightMotorOutput;
     
     private double linearClimberMotorOutputCoefficient = -0.058;
     private double linearClimberMotorOutputOffset = 1.5;

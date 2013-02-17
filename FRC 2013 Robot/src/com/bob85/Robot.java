@@ -12,11 +12,14 @@ public class Robot extends IterativeRobot {
     Servo rightDriveServo = new Servo (Drive.kRIGHTDRIVE_SERVO);
     Joystick leftDriveStick = new Joystick(1);
     Joystick rightDriveStick = new Joystick(2);
+    Joystick opPad = new Joystick(3);
     Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
     Climber climber = new Climber(leftDriveMotor,  rightDriveMotor, leftDriveEncoder, rightDriveEncoder);
+    
+    Victor hopperBelt = new Victor(7);
 
     public void robotInit() {
         drive.driveInit();
@@ -43,18 +46,26 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-
+        
     }
-
+    
     public void teleopPeriodic() {
         //drive.encoderTestDrive();
         //climber.manualJoystickElevDrive(rightDriveStick, 500); no limitswitches implemented yet
         
-        SmartDashboard.putNumber("LeftSideEncoder", leftDriveEncoder.getDistance());
-        SmartDashboard.putNumber("rightSideEncoder", rightDriveEncoder.getDistance());
+        SmartDashboard.putNumber("leftSideEncoderDist", leftDriveEncoder.getDistance());
+        SmartDashboard.putNumber("rightSideEncoderDist", rightDriveEncoder.getDistance());
+        SmartDashboard.putNumber("leftEncRaw", leftDriveEncoder.get());
+        SmartDashboard.putNumber("rightEncRaw", rightDriveEncoder.get());
         
-        leftDriveMotor.set(MotorLinearization.calculateLinearOutput(-rightDriveStick.getY()));
-        rightDriveMotor.set(MotorLinearization.calculateLinearOutput(rightDriveStick.getY()));
+        leftDriveMotor.set(MotorLinearization.calculateLinearOutput(rightDriveStick.getY()));
+        rightDriveMotor.set(MotorLinearization.calculateLinearOutput(-rightDriveStick.getY()));
+        
+        if (opPad.getRawButton(8)){
+            MotorLinearization.linearizeVictor884Output(hopperBelt, 1.0);
+        } else {
+            hopperBelt.set(0);
+        }
         
         if (leftDriveStick.getTrigger()) {
             leftDriveServo.set(1);
