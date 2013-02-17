@@ -18,54 +18,21 @@ public class AutoModeChooser {
     private SendableChooser autoChooser;
     private AnalogChannel m_analogAutoChooser;
     
-    private String m_optionZeroName;
-    private String m_optionOneName;
-    private String m_optionTwoName;
-    
     private Object m_choice;
     private int analogChoice;
     
     public boolean[] driverStationInputs;
     private int driverStationInputsAmount = 8;
     
-    DriverStation driverStation = DriverStation.getInstance();
+    public boolean shootStage;
+    public boolean turnStage;
+    public boolean driveStage;
     
-    /**
-     * Adds the choices to the SmartDashboard
-     * The objects are all strings
-     */
-    private void initChoices() {
-        autoChooser.addDefault(m_optionZeroName, m_optionZeroName);
-        autoChooser.addObject(m_optionOneName, m_optionOneName);
-        autoChooser.addObject(m_optionTwoName, m_optionTwoName);
-    }
+    DriverStation driverStation;
     
-    public AutoModeChooser(String optionZeroName, String optionOneName, String optionTwoName) {
-        autoChooser = new SendableChooser();
         
-        m_optionZeroName = optionZeroName;
-        m_optionOneName = optionOneName;
-        m_optionTwoName = optionTwoName;
-        
-        initChoices();
-    }
-      
-    /**
-     * Gets choice selected from SmartDashboard
-     * 
-     * @return mode Object chosen
-     */
-    private void returnChoice() {
-        m_choice = autoChooser.getSelected();
-    }
-    
-    /**
-     * Returns the chosen mode object
-     * @return Object returned
-     */
-    public Object chooseMode() {
-        returnChoice();
-        return m_choice;
+    public AutoModeChooser() {
+        driverStation = DriverStation.getInstance();
     }
     
     /**
@@ -94,8 +61,10 @@ public class AutoModeChooser {
         return analogChoice;
     }
     
-    public AutoModeChooser() {
-        
+    private void getDriverStationInputs() {
+        shootStage = driverStation.getDigitalIn(1);
+        turnStage = driverStation.getDigitalIn(2);
+        driveStage = driverStation.getDigitalIn(3);
     }
     
     private void returnDriverStationInputs() {
@@ -136,5 +105,9 @@ public class AutoModeChooser {
     public void testDriveStationInputs() {
         returnDriverStationInputs();
         sendDriveStationsInputsSDB();
+    }
+    
+    public void runAutoModeChooser() {
+        getDriverStationInputs();
     }
 }
