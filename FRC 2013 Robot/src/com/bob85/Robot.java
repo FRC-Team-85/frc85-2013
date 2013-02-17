@@ -57,7 +57,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit() {
-        shooterSensor.start();
+
     }
     
     public void testInit() {
