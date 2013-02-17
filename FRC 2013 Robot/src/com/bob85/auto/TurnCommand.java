@@ -30,7 +30,7 @@ public class TurnCommand {
         }
         
         if (gyro.getAngle() < angle) {
-            drive.setMotorOutputSetting(0.5, 0.5);
+            drive.setMotorOutputSetting(0.5, -0.5);
             drive.setLinearizedOutput();
             return false;
         } else if (gyro.getAngle() > angle) {
