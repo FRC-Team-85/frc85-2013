@@ -5,6 +5,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -16,6 +17,8 @@ public class Shooter {
     public static final int SHOOTER_MOTOR_CHANNEL = 5;
     public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
     public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
+    
+    private static int shooterState; // 0 is standby, 1 is readying, 2 is shoot
     
     private double kOnTargetPercentTolerance = 0.1;
     
@@ -41,7 +44,7 @@ public class Shooter {
     
     private HallEffect shooterSensor;
     
-    private Joystick joystick;
+    private F310Gamepad gamepad;
     
     /**
      * Initializes Shooter PID Controller Settings
@@ -61,24 +64,26 @@ public class Shooter {
     }
     
     public Shooter(Victor shooterMotor, PIDController shooterPID, HallEffect shooterSensor, 
-            Joystick joystick) {
+            F310Gamepad joystick) {
         this.shooterMotor = shooterMotor;
         this.shooterPID = shooterPID;
         this.shooterSensor = shooterSensor;
-        this.joystick = joystick;
+        this.gamepad = joystick;
         initPIDConstants();
     }
     
     public Shooter(Victor shooterMotor, Victor shooterBeltMotor, 
             PIDController shooterPID, HallEffect shooterSensor, 
-            Joystick joystick) {
+            F310Gamepad joystick) {
         this.shooterMotor = shooterMotor;
         this.shooterBeltMotor = shooterBeltMotor;
         this.shooterPID = shooterPID;
         this.shooterSensor = shooterSensor;
-        this.joystick = joystick;
+        this.gamepad = joystick;
         initPIDConstants();
     }
+    
+
     
     /**
      * Returns an RPM's equivalence in a 0 to 1 PWM scale
@@ -107,33 +112,37 @@ public class Shooter {
      * Calculates a shooter RPM SetPoint based on distance away from target
      * @param distance distance from target in inches
      */
-    private void calculateShooterSpeed(double distance) {
+    public void calculateShooterSpeed(double distance) {
         shooterPID_kSetPoint = distance;
+    }
+    
+    public void setShooterSpeed(double speed) {
+        shooterMotor.set(speed);
     }
     
     /**
      * Enables PID Controller if it is not already enabled
      */
-    private void initPID() {
+    public void initPID() {
         if (!shooterPID.isEnable()) {
             shooterPID.enable();
             shooterPID.setSetpoint(shooterPID_kSetPoint);
         }
     }
     
-    private void disablePID() {
+    public void disablePID() {
         if (shooterPID.isEnable()) {
             shooterPID.disable();
         }
     }
     
-    private void changePIDSetpoint(boolean isEnabled, double setpoint) {
+    public void changePIDSetpoint(boolean isEnabled, double setpoint) {
         if (isEnabled && shooterPID.getSetpoint() != setpoint) {
             shooterPID.setSetpoint(setpoint);
         }
     }
     
-    private boolean onTarget() {
+    public boolean onTarget() {
         if (shooterPID.isEnable()) {
             return shooterPID.onTarget();
         } else {
@@ -159,7 +168,7 @@ public class Shooter {
      * @param minRPM Minimum RPM to turn off PID Controller
      * @param maxRPM Maximum RPM to turn off PID Controller
      */
-    private void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
+    public void testSingleSpeedPID(boolean isEnabled, double setSpeed, 
             double minRPM, double maxRPM) {
         
         int getRPM = shooterSensor.getRPM();
@@ -182,7 +191,7 @@ public class Shooter {
         }
     }
     
-    private void runAutomaticShooterPID(boolean isEnabled) {
+    public void runAutomaticShooterPID(boolean isEnabled) {
         if (isEnabled) {
             initPID();            
         } else {
@@ -195,7 +204,7 @@ public class Shooter {
      * @param isEnabled
      * @param distance 
      */
-    private void testAutomaticShooterSpeedCalculation(boolean isEnabled, double distance) {
+    public void testAutomaticShooterSpeedCalculation(boolean isEnabled, double distance) {
         if (isEnabled) {
             calculateShooterSpeed(distance);
             initPID();
@@ -204,25 +213,30 @@ public class Shooter {
         }
     }
     
-    private void setShooterBeltSpeed(double speed) {
+    public void setShooterBeltSpeed(double speed) {
         shooterBeltMotorSpeed = speed;
-        shooterBeltMotor.set(shooterBeltMotorSpeed);
+        shooterBeltMotor.set(-shooterBeltMotorSpeed);
     }
     
-    private double getShooterBeltSpeed() {
+    public double getShooterBeltSpeed() {
         return shooterBeltMotorSpeed;
     }
     
-    private void runDiagnostics() {
+    public static int getShooterState() {
+        return shooterState;
+    }
+    
+    public void runDiagnostics() {
         SmartDashboard.putNumber("Shooter PWM Setting", shooterMotor.get());
         SmartDashboard.putNumber("Shooter RPM", shooterSensor.getRPM());
         SmartDashboard.putNumber("Shooter Belt PWM Setting", shooterBeltMotor.get());
         SmartDashboard.putBoolean("Shooter On Target", onTarget());
+        SmartDashboard.putNumber("Shooter State", getShooterState());
     }
     
-    private void runCompetitionShooter() {
+    public void runCompetitionShooter() {
         setShooterBeltSpeed(0.5);
-        runAutomaticShooterPID(joystick.getRawButton(8));
+        runAutomaticShooterPID(gamepad.getRawButton(8));
         
     }
     
@@ -230,16 +244,63 @@ public class Shooter {
      * Runs a shooter feature needed to be tested
      * @param distance distance from target in inches
      */
-    private void runAutomaticShooterSpeedTest(double distance) {
-        testAutomaticShooterSpeedCalculation(joystick.getTrigger(), distance);
+    public void runAutomaticShooterSpeedTest(double distance) {
+        testAutomaticShooterSpeedCalculation(gamepad.getTrigger(), distance);
     }
     
-    private void runShooterPIDTest() {
-        runAutomaticShooterPID(joystick.getRawButton(8));
+    public void runShooterPIDTest() {
+        runAutomaticShooterPID(gamepad.getRawButton(8));
+    }
+    
+    private void switchShooterStates() {
+        switch (shooterState) {
+            case 0:
+                if (gamepad.getButton(ButtonType.kRB) && FrisbeeLoader.getHopperState() ==1) {
+                    shooterState = 1;
+                }
+                break;
+            case 1:
+                if (gamepad.getButton(ButtonType.kRB) && onTarget() && FrisbeeLoader.getHopperState() ==1) {
+                    shooterState = 2;
+                }
+                break;
+            case 2:
+                if (!gamepad.getButton(ButtonType.kRB)) {
+                    shooterState = 0;
+                } else if (gamepad.getButton(ButtonType.kRB) && !onTarget()) {
+                    shooterState = 1;
+                }
+        }
+    }
+    
+    public void runShooterStates() {
+        switch (shooterState) {
+            case 0:
+                setShooterBeltSpeed(0);                
+                setShooterSpeed(0);
+                break;
+            case 1:
+                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
+                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
+                break;
+            case 2:
+                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
+                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
+                break;
+            default:
+                setShooterBeltSpeed(0);                
+                setShooterSpeed(0);
+                break;
+        }
     }
     
     public void runShooter() {
-        runShooterPIDTest();
-        runDiagnostics();
+        runShooterStates();
+        switchShooterStates();
+    }
+    
+    public void initShooter() {
+        SmartDashboard.putNumber("Shooter Speed", 0);
+        SmartDashboard.putNumber("Shooter Belt Speed", 1);
     }
 }

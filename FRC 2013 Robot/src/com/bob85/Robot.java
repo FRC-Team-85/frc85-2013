@@ -4,6 +4,8 @@ import com.bob85.auto.AutoModeChooser;
 import com.bob85.auto.AutoTimer;
 import com.bob85.auto.Autonomous;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.F310Gamepad.AxisType;
+import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
@@ -12,6 +14,10 @@ public class Robot extends IterativeRobot {
     AutoModeChooser testChooser = new AutoModeChooser();
     AutoTimer autoTimer = new AutoTimer();
     Gyro gyro = new Gyro(1);
+
+    Servo dropServo = new Servo(FrisbeeLoader.kDROPSERVO_CHANNEL);
+    Victor hopperBelt = new Victor(FrisbeeLoader.kHOPPERBELTMOTOR_CHANNEL);
+    F310Gamepad opPad = new F310Gamepad(3);
     
     Victor leftDriveMotor = new Victor(Drive.kLEFTDRIVE_VICTORS);
     Victor rightDriveMotor = new Victor(Drive.kRIGHTDRIVE_VICTORS);
@@ -31,15 +37,20 @@ public class Robot extends IterativeRobot {
     
     HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
     
-    Joystick opStick = new Joystick(3);
-    
     PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
-    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opStick);
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
+    FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
     
     public void robotInit() {
         drive.driveInit();
         autoTimer.initAutoTimer();
+        SmartDashboard.putNumber("runIfNothingElseWorks", 0);
+        SmartDashboard.putNumber("hopperBelt", 0);
+        SmartDashboard.putNumber("shooterMotor", 0);
+        SmartDashboard.putNumber("shooterBelt", 0);
+        
+        shooter.initShooter();
     }
     
     public void disabledInit() {
@@ -51,13 +62,13 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit() {
-        
+        shooterSensor.start();
     }
     
     public void testInit() {
         
     }
-    
+
     public void disabledPeriodic() {
         
     }
@@ -77,11 +88,38 @@ public class Robot extends IterativeRobot {
         if (rightDriveStick.getTrigger()) {
             leftDriveServo.set(0);
             rightDriveServo.set(1);
+        //frisbeeLoader.runFrisbeeLoader();
+        //shooter.runShooter();
+        //runIfNothingElseWorks();
+        SmartDashboard.putNumber("hallEffectRaw", shooterSensor.get());
+        SmartDashboard.putNumber("HallEffect", shooterSensor.getRPM());
+        MotorLinearization.linearizeVictor884Output(shooterMotor, SmartDashboard.getNumber("shooterMotor"));
+        if (rightDriveStick.getTrigger()){
+           MotorLinearization.linearizeVictor884Output(shooterBeltMotor, SmartDashboard.getNumber("shooterBelt")); 
+        } else {
+            shooterBeltMotor.set(0);
+        }
+        
+        if (leftDriveStick.getTrigger()){
+            MotorLinearization.linearizeVictor884Output(hopperBelt, SmartDashboard.getNumber("hopperBelt"));
+        } else {
+            hopperBelt.set(0);
+        }
         }
     }
     
     public void testPeriodic() {
-    
+
     }
     
+    public void runIfNothingElseWorks() {
+        frisbeeLoader.setHopperBeltMotor(0.5);
+        shooter.setShooterSpeed(SmartDashboard.getNumber("runIfNothingElseWorks"));
+        shooter.setShooterBeltSpeed(-1);
+        if (opPad.getButton(ButtonType.kRB)) {
+            frisbeeLoader.unlockServo(dropServo);
+        } else if (opPad.getButton(ButtonType.kLB)) {
+            frisbeeLoader.lockServo(dropServo);
+        }
+    }
 }
