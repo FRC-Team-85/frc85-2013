@@ -282,8 +282,6 @@ public class Drive {
             return false;
         }
     }
-        }
-    }
     
     public void setServoDrivePosition() {
 
@@ -296,7 +294,7 @@ public class Drive {
         isClimb = false;
     }
     
-    private void setServoClimbPosition() {
+    public void setServoClimbPosition() {
         if (!getServoClimbPosition()) {
             leftDriveServo.set(leftDriveServoClimbPosition);
             rightDriveServo.set(rightDriveServoClimbPosition);
@@ -328,12 +326,7 @@ public class Drive {
         SmartDashboard.putBoolean("isClimb", isClimb);
     }
     
-    public void setServoClimbPosition() {
-        if (!getServoClimbPosition()) {
-            leftDriveServo.set(leftDriveServoClimbPosition);
-            rightDriveServo.set(rightDriveServoClimbPosition);
-        }
-    }
+
     
     public void setJoystickBasedPTOShift() {
         if (leftDriveJoystick.getTrigger()) {
@@ -370,21 +363,6 @@ public class Drive {
         leftMotorsOutput = minSpeed;
         rightMotorsOutput = minSpeed;
         limitMotorsOutputChange(true, true);
-    }
-    
-        if (!isClimbMode) {
-            joystickBasedTankDrive();          
-        } else if (isClimbMode) {
-            autoBasedDrive(-leftDriveJoystick.getY(), leftDriveJoystick.getY());
-        }
-        sendEncoderDriveDiagnosticsSDB();
-        if (leftDriveJoystick.getTrigger()) {
-            setServoDrivePosition();
-            isClimbMode = false;
-        } else if (rightDriveJoystick.getTrigger()) {
-            setServoClimbPosition();
-            isClimbMode = true;
-        }
     }
        
     public void driveInit() {
