@@ -202,10 +202,12 @@ public class FrisbeeLoader {
         dropFrisbeeServoPositions(opPad.getButton(ButtonType.kX));
     }
     
+    public void runAlexHopperSetup() {
+        setHopperBeltMotor(opPad.getAxis(AxisType.kDPadY));
+    }
+    
     public void runFrisbeeLoader() {
-        runHopperStates();
-        switchHopperStates();
-        sendDiagnosticsSDB();
+        runAlexHopperSetup();
     }
     
     public void runHopperStates() {

@@ -13,8 +13,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 public class HallEffect extends Counter implements CounterBase, PIDSource, LiveWindowSendable{
 
     public HallEffect(int channel) {
-        initCounter(Mode.kTwoPulse);
-        setUpSource(channel);
+        super(channel);
     }
     
     public int getRPM() {

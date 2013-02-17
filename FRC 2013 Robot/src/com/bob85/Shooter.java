@@ -294,13 +294,21 @@ public class Shooter {
         }
     }
     
+    public void runAlexShooterSetup() {
+        if (gamepad.getButton(ButtonType.kRB)) {
+            setShooterSpeed(1);
+            setShooterBeltSpeed(1);
+        } else {
+            setShooterSpeed(0);
+            setShooterBeltSpeed(0);
+        }
+    }
+    
     public void runShooter() {
-        runShooterStates();
-        switchShooterStates();
+        runAlexShooterSetup();
     }
     
     public void initShooter() {
-        SmartDashboard.putNumber("Shooter Speed", 0);
-        SmartDashboard.putNumber("Shooter Belt Speed", 1);
+        shooterSensor.start();
     }
 }

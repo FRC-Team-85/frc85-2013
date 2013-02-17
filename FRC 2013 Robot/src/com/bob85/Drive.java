@@ -114,8 +114,8 @@ public class Drive {
      * Maps the motor outputs to the joysticks Y axis
      */
     private void getTankDriveJoystickInput() {
-        leftMotorsOutput = -leftDriveJoystick.getY();
-        rightMotorsOutput = rightDriveJoystick.getY();
+        leftMotorsOutput = leftDriveJoystick.getY();
+        rightMotorsOutput = -rightDriveJoystick.getY();
     }
     
     private void getTestDriveJoystickInput() {
@@ -142,8 +142,8 @@ public class Drive {
     public void setLinearizedOutput() {
         leftLinearMotorsOutput = MotorLinearization.calculateLinearOutput(leftMotorsOutput);
         rightLinearMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
-        leftDriveMotors.set(leftLinearMotorsOutput);
-        rightDriveMotors.set(rightLinearMotorsOutput);
+        leftDriveMotors.set(-leftLinearMotorsOutput);
+        rightDriveMotors.set(-rightLinearMotorsOutput);
     }
     
     public void limitMotorsOutputChange(boolean isLeft, boolean isRight) {       
@@ -296,6 +296,14 @@ public class Drive {
         }
     }
     
+    public void setJoystickBasedPTOShift() {
+        if (leftDriveJoystick.getTrigger()) {
+            setServoDrivePosition();
+        } else if (rightDriveJoystick.getTrigger()) {
+            setServoClimbPosition();
+        }
+    }
+    
     /**
      * Uses two joysticks in a tank drive setup to run the motors
      */
@@ -304,6 +312,7 @@ public class Drive {
         setMotorOutputDeadbands();
         limitMotorsOutputChange(true, true);
         setLinearizedOutput();
+        setJoystickBasedPTOShift();
     }
     
     public void joystickBasedTestDrive() {
@@ -359,6 +368,6 @@ public class Drive {
     }
     
     public void runDrive() {
-        encoderTestDrive();
+        joystickBasedTankDrive();
     }
 }
