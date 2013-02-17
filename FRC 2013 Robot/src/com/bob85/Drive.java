@@ -345,7 +345,6 @@ public class Drive {
         limitMotorsOutputChange(true, true);
         setLinearizedOutput();
         setJoystickBasedPTOShift();
-        limitMotorsOutputChange(true, true);
     }
     
     public void encoderTestDrive() {
@@ -364,7 +363,19 @@ public class Drive {
         rightMotorsOutput = minSpeed;
         limitMotorsOutputChange(true, true);
     }
+    
+    public void switchDriveStates() {
+        isDrive = getServoDrivePosition();
+        isClimb = getServoClimbPosition();
+    }
        
+    public void runDriveStates() {
+        setJoystickBasedPTOShift();
+        if (getIsDrive()) {
+            joystickBasedTankDrive();
+        }
+    }
+    
     public void driveInit() {
         initEncoders();
         setServoDrivePosition();
@@ -375,6 +386,7 @@ public class Drive {
     }
     
     public void runDrive() {
-        joystickBasedTankDrive();
+        switchDriveStates();
+        runDriveStates();
     }
 }
