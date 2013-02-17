@@ -1,11 +1,7 @@
 package com.bob85;
 
-import com.bob85.auto.AutoModeChooser;
-import com.bob85.auto.AutoTimer;
-import com.bob85.auto.Autonomous;
+import com.bob85.auto.*;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.F310Gamepad.AxisType;
-import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
@@ -15,8 +11,8 @@ public class Robot extends IterativeRobot {
     Joystick rightDriveStick = new Joystick(2);
     F310Gamepad opPad = new F310Gamepad(3);
 
-    AutoModeChooser testChooser = new AutoModeChooser();
-    AutoTimer autoTimer = new AutoTimer();
+    AutoModeChooser autoChooser = new AutoModeChooser();
+    ShotTimer shotTimer = new ShotTimer(ShootCommand.frisbee_val);
     Gyro gyro = new Gyro(1);
 
     Servo dropServo = new Servo(FrisbeeLoader.kDROPSERVO_CHANNEL);
@@ -40,11 +36,11 @@ public class Robot extends IterativeRobot {
             leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
     Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
     FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
-    Autonomous auto = new Autonomous(testChooser, gyro, drive);
+    Autonomous auto = new Autonomous(autoChooser, shotTimer, gyro, drive, shooter, frisbeeLoader);
     
     public void robotInit() {
         drive.driveInit();
-        autoTimer.initAutoTimer();        
+        shotTimer.initShotTimer();        
         shooter.initShooter();
     }
     
@@ -53,7 +49,8 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit() {
-        
+        auto.initAutonomous();
+        shotTimer.runShotTimer();
     }
     
     public void teleopInit() {
@@ -69,8 +66,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-        auto.initAutonomous();
-        autoTimer.runAutoTimer();
     }
 
     public void teleopPeriodic() {
