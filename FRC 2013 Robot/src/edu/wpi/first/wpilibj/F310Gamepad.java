@@ -46,15 +46,24 @@ public class F310Gamepad extends Joystick{
         }
     }
     
+        
+        
     public static class AxisType {
         public final int value;
-        static final int kLeftX = 1;
-        static final int kLeftY = 2;
-        static final int kRightX = 3;
-        static final int kRightY = 4;
-        static final int kDPadX = 5;
-        static final int kDPadY = 6;
+        static final int kLeftX_val = 1;
+        static final int kLeftY_val = 2;
+        static final int kRightX_val = 3;
+        static final int kRightY_val = 4;
+        static final int kDPadX_val = 5;
+        static final int kDPadY_val = 6;
         
+        public static final AxisType kLeftX = new AxisType(kLeftX_val);
+        public static final AxisType kLeftY = new AxisType(kLeftY_val);
+        public static final AxisType kRightX = new AxisType(kRightX_val);
+        public static final AxisType kRightY = new AxisType(kRightY_val);
+        public static final AxisType kDPadX = new AxisType(kDPadX_val);
+        public static final AxisType kDPadY = new AxisType(kDPadY_val);
+
         private AxisType(int value) {
             this.value = value;
         }
