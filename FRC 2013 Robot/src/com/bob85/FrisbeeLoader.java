@@ -69,9 +69,9 @@ public class FrisbeeLoader {
      * Tell servo to pull pin out of hopper area
      * @param servo 
      */
-    public void unlockServo(Servo servo) {
-        if (!(servo.get() == unlockedPosition)) {
-            servo.set(unlockedPosition);
+    public void unlockServo() {
+        if (!(dropServo.get() == unlockedPosition)) {
+            dropServo.set(unlockedPosition);
         }
     }
     
@@ -79,9 +79,9 @@ public class FrisbeeLoader {
      * Tell servo to push pin into hopper area
      * @param servo 
      */
-    public void lockServo(Servo servo) {
-        if (!(servo.get() == lockedPosition)) {
-            servo.set(lockedPosition);
+    public void lockServo() {
+        if (!(dropServo.get() == lockedPosition)) {
+            dropServo.set(lockedPosition);
         }
     }
     /**
@@ -100,26 +100,6 @@ public class FrisbeeLoader {
      */
     private double getHopperBeltMotor() {
         return hopperBeltSpeed;
-    }
-    
-    /**
-     * Servo positions to allow a frisbee to be locked for dropping to shooter
-     * @param isEnabled 
-     */
-    private void readyFrisbeeServoPositions(boolean isEnabled) {
-        if (isEnabled) {
-            lockServo(dropServo);
-        }
-    }
-    
-    /**
-     * Servo positions to allow locked frisbee to fall to shooter
-     * @param isEnabled 
-     */
-    private void dropFrisbeeServoPositions(boolean isEnabled) {
-        if (isEnabled) {
-            unlockServo(dropServo);
-        }
     }
     
     /**
@@ -163,13 +143,13 @@ public class FrisbeeLoader {
     public void loadFrisbee(boolean isEnabled) {
         if (isEnabled) {
             if (!getShiftDone()) {
-                unlockServo(dropServo);
+                unlockServo();
             }
             else if (getShiftDone()) {
-                lockServo(dropServo);
+                lockServo();
             }
         } else {
-            lockServo(dropServo);
+            lockServo();
             resetGetShiftDoneTimer();
         }
     }
@@ -192,6 +172,11 @@ public class FrisbeeLoader {
     
     public void runAlexHopperSetup() {
         setHopperBeltMotor(opPad.getAxis(AxisType.kDPadY));
+        if (opPad.getButton(ButtonType.kRB)) {
+            unlockServo();
+        } else {
+            lockServo();
+        }
     }
     
     public void runFrisbeeLoader() {
@@ -201,7 +186,7 @@ public class FrisbeeLoader {
     public void runHopperStates() {
         switch (hopperState) {
             case 0:
-                lockServo(dropServo);
+                lockServo();
                 if (opPad.getAxis(AxisType.kDPadY) == -1){
                     setHopperBeltMotor(beltIntakeSpeed);
                 } else if (opPad.getAxis(AxisType.kDPadY) == 1) {
@@ -210,11 +195,11 @@ public class FrisbeeLoader {
                 break;
                 
             case 1:
-                unlockServo(dropServo);
+                unlockServo();
                 break;
                 
             case 2:
-                unlockServo(dropServo);
+                unlockServo();
                 
                 if (opPad.getAxis(AxisType.kDPadY) == -1){
                     setHopperBeltMotor(beltIntakeSpeed);
@@ -248,7 +233,7 @@ public class FrisbeeLoader {
                 }  
                 break;
             default:
-                lockServo(dropServo);
+                lockServo();
                 setHopperBeltMotor(0);
         }
     }
