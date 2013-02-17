@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Michael Chau <mchau95@gmail.com>
  */
 public class Drive {
-        boolean isClimbMode;
     
     private SpeedController leftDriveMotors; //class reference to left drive
     private SpeedController rightDriveMotors; //class reference to right drive
@@ -27,7 +26,6 @@ public class Drive {
     
     Joystick leftDriveJoystick; //reference to left drive joystick
     Joystick rightDriveJoystick; //reference to right drive joystick
-    Joystick m_testDriveJoystick;
     
     public static final int kLEFTDRIVE_VICTORS = 1;
     public static final int kRIGHTDRIVE_VICTORS = 2;
@@ -46,9 +44,6 @@ public class Drive {
     private double rightMotorsOutput; //right drive motor output setting
     private double leftLinearMotorsOutput;
     private double rightLinearMotorsOutput;
-
-    private double leftOldOutput;
-    private double rightOldOutput;
             
     private double deadband = 0.1; //Deadband for drive motor output
     private double changeLimit_val = 0.25;
