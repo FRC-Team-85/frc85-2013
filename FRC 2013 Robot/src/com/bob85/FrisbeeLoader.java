@@ -37,8 +37,8 @@ public class FrisbeeLoader {
     private double lockedPosition = 0;
     
     private static int hopperState;
-    private double beltIntakeSpeed = 0.4;
-    private double dropSpeed = .4;
+    private double beltIntakeSpeed = 1;
+    private double dropSpeed = 1;
     
     public FrisbeeLoader(Servo dropServo, Victor hopperBeltMotor, 
             F310Gamepad opPad) {
@@ -89,8 +89,8 @@ public class FrisbeeLoader {
      * @param speed desired input
      */
     public void setHopperBeltMotor(double speed) {
-        hopperBeltSpeed = MotorLinearization.calculateLinearOutput(speed);
-        hopperBeltMotor.set(-hopperBeltSpeed);
+        hopperBeltSpeed = speed;
+        hopperBeltMotor.set(-MotorLinearization.calculateLinearOutput(hopperBeltSpeed));
     }
     
     /**
@@ -190,18 +190,6 @@ public class FrisbeeLoader {
         }
     }
     
-    private void testFrisbeeLoader() {
-        if (opPad.getButton(ButtonType.kA)) {
-            setHopperBeltMotor(0.3);
-        } else if(opPad.getButton(ButtonType.kY)) {
-            setHopperBeltMotor(-0.3);
-        } else {
-            setHopperBeltMotor(0);
-        }
-        readyFrisbeeServoPositions(opPad.getButton(ButtonType.kB));
-        dropFrisbeeServoPositions(opPad.getButton(ButtonType.kX));
-    }
-    
     public void runAlexHopperSetup() {
         setHopperBeltMotor(opPad.getAxis(AxisType.kDPadY));
     }
@@ -270,7 +258,7 @@ public class FrisbeeLoader {
     }
     
     public void sendDiagnosticsSDB() {
-        SmartDashboard.putNumber("Hopper Belt", hopperBeltMotor.get());
+        SmartDashboard.putNumber("Hopper Belt", -hopperBeltMotor.get());
         SmartDashboard.putNumber("Hopper State", getHopperState());
         SmartDashboard.putBoolean("Servo Lock", getLockServo());
         SmartDashboard.putBoolean("Servo Unlock", getUnlockServo());
