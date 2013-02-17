@@ -215,7 +215,7 @@ public class Shooter {
     
     public void setShooterBeltSpeed(double speed) {
         shooterBeltMotorSpeed = speed;
-        shooterBeltMotor.set(shooterBeltMotorSpeed);
+        shooterBeltMotor.set(-shooterBeltMotorSpeed);
     }
     
     public double getShooterBeltSpeed() {
