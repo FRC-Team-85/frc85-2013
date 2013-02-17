@@ -4,7 +4,7 @@
  */
 package com.bob85.auto;
 
-import com.bob85.Drive;
+import com.bob85.*;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.*;
 //import src.com.bob85.FrisbeeLoader;
@@ -20,93 +20,58 @@ public class Autonomous {
     double waitTime = 6.5;//in seconds; this is an approximate
     double uWaitTime = (waitTime * MathUtils.pow(10.0, 6.0)); //in microSeconds (uSeconds)
     AutoModeChooser autoChooser;
+    ShotTimer shotTimer;
     Gyro gyro;
     Drive drive;
+    Shooter shooter;
+    FrisbeeLoader frisbeeLoader;
+    ShootCommand shoot3Command;
     TurnCommand turn180Command;
     DriveCommand drivetoCenterCommand;
     
     private void initCommands() {
+        shoot3Command = new ShootCommand(shooter, shotTimer, frisbeeLoader);
         turn180Command = new TurnCommand(gyro, drive, 180);
         drivetoCenterCommand = new DriveCommand(drive);
     }
 
-    public Autonomous(AutoModeChooser autoChooser, Gyro gyro, Drive drive) {
+    public Autonomous(AutoModeChooser autoChooser, ShotTimer shotTimer, Gyro gyro, Drive drive,
+            Shooter shooter, FrisbeeLoader frisbeeLoader) {
         this.autoChooser = autoChooser;
+        this.shotTimer = shotTimer;
         this.gyro = gyro;
         this.drive = drive;
+        this.shooter = shooter;
+        this.frisbeeLoader = frisbeeLoader;
         initCommands();
-    }
-
-    public void stageAutoDrive(double driveSpeed, SpeedController leftFrontSpControl, SpeedController leftBackSpControl, SpeedController rightFrontSpControl, SpeedController rightBackSpControl, Encoder leftDriveEnc, Encoder rightDriveEnc) {
-        /*if (((leftDriveEnc.get() + rightDriveEnc.get()) / 2) < 200) { //twelveInches~200encCounts
-         leftFrontSpControl.set(driveSpeed);
-         leftBackSpControl.set(driveSpeed);
-         rightFrontSpControl.set(driveSpeed);
-         leftBackSpControl.set(driveSpeed);
-         } else {
-         leftFrontSpControl.set(0.0);
-         leftBackSpControl.set(0.0);
-         rightFrontSpControl.set(0.0);
-         rightBackSpControl.set(0.0);
-         autoTimer.start();
-         }*/
-       //Need to switch to stages
-        autoTimer.start();
-//Timer.get() is in microSeconds
-        if (autoTimer.get() > uWaitTime && ((leftDriveEnc.get() + rightDriveEnc.get()) / 2) > -100) { //stage2-->4?
-            leftFrontSpControl.set(-driveSpeed); 
-            leftBackSpControl.set(-driveSpeed);
-            rightFrontSpControl.set(-driveSpeed);
-            rightBackSpControl.set(-driveSpeed);
-        } else if (autoTimer.get() > uWaitTime && ((leftDriveEnc.get() + rightDriveEnc.get()) / 2) == -100) { //need to check this by testing
-            leftFrontSpControl.set(1.0);
-            leftBackSpControl.set(1.0);
-            rightFrontSpControl.set(-1.0);
-            rightBackSpControl.set(-1.0);
-        } else if (autoTimer.get() == (uWaitTime * 1.5)) {
-            leftFrontSpControl.set(0.0);
-            leftBackSpControl.set(0.0);
-            rightFrontSpControl.set(0.0);
-            rightBackSpControl.set(0.0);
-        } else {
-            leftFrontSpControl.set(0.0);
-            leftBackSpControl.set(0.0);
-            rightFrontSpControl.set(0.0);
-            rightBackSpControl.set(0.0);
-        }
-    }
-
-    public void stageAutoShoot(double shooterSpeed, SpeedController shooterMotor, Servo dropServo, Servo readyServo) {
-        if (autoTimer.get() > 0.0) { //stage1
-            shooterMotor.set(shooterSpeed);
-            //unlockServo(dropServo); 
-            //unlockServo(readyServo);
-            //~unfinished, write for disk loader mechanism
-        } else if (autoTimer.get() >= uWaitTime) {
-            shooterMotor.set(0.0);
-            //lockServo(readyServo);
-        } else {
-            shooterMotor.set(0.0);
-            //lockServo(dropServo);
-            //lockServo(readyServo);
-        }
     }
 
     private void runSequentialAutonomous() {
         switch (autoStage) {
             case 0:
-                if (true) {
+                if (autoChooser.shootStage) {
+                    if (shoot3Command.shootCommand()) {
+                        autoStage = 1;
+                    }
+                } else {
                     autoStage = 1;
                 }
                 break;
             case 1:
-                
-                if (turn180Command.turnCommand()) {
+                if (autoChooser.turnStage) {
+                    if (turn180Command.turnCommand()) {
+                        autoStage = 2;
+                    }
+                } else {
                     autoStage = 2;
                 }
                 break;
             case 2:
-                if (drivetoCenterCommand.driveCommand(drive.getEncodersDistance(), 50)) {
+                if (autoChooser.driveStage) {
+                    if (drivetoCenterCommand.driveCommand(drive.getEncodersDistance(), 500)) {
+                        autoStage = 3;
+                    }
+                } else {
                     autoStage = 3;
                 }
                 break;
@@ -140,11 +105,13 @@ public class Autonomous {
      * Only public access to the class
      */
     public void runAutonomous() {
-        testAutoMode();
+        shotTimer.runShotTimer();
+        runSequentialAutonomous();
     }
 
     public void initAutonomous() {
         autoStage = 0;
-        autoChooser.testDriveStationInputs();
+        autoChooser.runAutoModeChooser();
+        shotTimer.initShotTimer();
     }
 }
