@@ -23,13 +23,16 @@ public class Climber {
     private double linearClimberMotorOutputOffset = 1.5;
     boolean speedLimitReached = false;
     
-    private double linearClimberDistance;
+    private double encoderClimberDistance;
     
     private double climberMotorOutput;
     
     private int climberStage;
     
     public boolean inDriveMode;
+    
+    private double speedSwitchPoint = -0.8;
+    private double topEncoderLimitValue;
 
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
@@ -56,7 +59,6 @@ public class Climber {
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         
-        
         initEncoderSetting();
     }
     
@@ -65,85 +67,72 @@ public class Climber {
         setClimberMotors();
     }
     
-    private void calcAvgEncDistance() {
-        calcEncDistance = ((rightClimberEncoder.getDistance() + leftClimberEncoder.getDistance()) / 2 );
-    }
-    
-    private void getEncoderDistance() {
-        calcAvgEncDistance();
-        linearClimberDistance = calcEncDistance;
-        
-        if (bottomClimberLimitSwitch.get() == true) {
-            linearClimberDistance = 0;
-            rightClimberEncoder.reset();
-            leftClimberEncoder.reset();
-        }
-    }
-    
-    private void scaleStage1LinearClimberMotorOutputUp() {
-        climberMotorOutput = (linearClimberMotorOutputCoefficient * linearClimberDistance + linearClimberMotorOutputOffset);
-    }
-    
-    private void scaleStage1LinearClimberMotorOutputDown(){
-        
-        double speedSwitchPoint = -0.8;
-        
-        if (climberMotorOutput > speedSwitchPoint && speedLimitReached != true) {
-            //Speed increases
-            climberMotorOutput = (-linearClimberMotorOutputCoefficient * linearClimberDistance - linearClimberMotorOutputOffset);
-        } else if (climberMotorOutput <= speedSwitchPoint){
-            speedLimitReached = true;
-            //Speed decreases 
-            climberMotorOutput = (linearClimberMotorOutputCoefficient * linearClimberDistance - 0.1);
-        } else {
-            stopClimb();
-        }
-    }
-    
-    private void stage2LinearClimb() {
-        climberMotorOutput = -1;
-    }
-    
     private void setClimberMotors() {
         leftClimberMotors.set(-climberMotorOutput);
         rightClimberMotors.set(climberMotorOutput);
     }
     
-    private void backDriveAtTop() {
-        if (topClimberLimitSwitch.get() == true){
-            stopClimb();
-            
+    private void calcAvgEncDistance() {
+        encoderClimberDistance = ((rightClimberEncoder.getDistance() + leftClimberEncoder.getDistance()) / 2 );
+    }
+    
+    private void getEncoderDistance() {
+        calcAvgEncDistance();
+        
+        if (bottomClimberLimitSwitch.get() == true) {
+            encoderClimberDistance = 0;
+            rightClimberEncoder.reset();
+            leftClimberEncoder.reset();
         }
     }
     
-    public void runLinearClimber(boolean isEnabled) {
-        
-    }
-    
-    public void manualJoystickElevDrive(Joystick joyStick, double topEncoderLimitValue){
+    public void manualJoystickElevDrive(Joystick joyStick){
         getEncoderDistance();
         drive.setMotorOutputDeadbands();
                 
         if (inDriveMode != true) {
-            if (topEncoderLimitValue <= linearClimberDistance && joyStick.getY() > 0) {
+            if (topEncoderLimitValue <= encoderClimberDistance && joyStick.getY() > 0) {
                 stopClimb();
             }
             if (bottomClimberLimitSwitch.get() == true && joyStick.getY() < 0) {
                 stopClimb();
             }
-            if (topClimberLimitSwitch.get() != true && linearClimberDistance < topEncoderLimitValue) {
+            if (topClimberLimitSwitch.get() != true && encoderClimberDistance < topEncoderLimitValue) {
                 MotorLinearization.linearizeVictor884Output(leftClimberMotors, -joyStick.getY());
                 MotorLinearization.linearizeVictor884Output(rightClimberMotors, joyStick.getY());
             } else {
                 stopClimb();
             }
         }
+    }
+    
+    private void scaleStage1LinearClimberMotorOutputUp() {
+        getEncoderDistance();
+        
+        if (topClimberLimitSwitch.get() != true || encoderClimberDistance < topEncoderLimitValue){
+        climberMotorOutput = (linearClimberMotorOutputCoefficient * encoderClimberDistance + linearClimberMotorOutputOffset);
+        } else {
+            stopClimb();
+        }
+    }
+    
+    private void scaleStage2LinearClimberMotorOutputDown() {
 
+        if (!bottomClimberLimitSwitch.get()) {
+            if (climberMotorOutput > speedSwitchPoint && speedLimitReached != true) {//Speed increases
+                climberMotorOutput = (-linearClimberMotorOutputCoefficient * encoderClimberDistance - linearClimberMotorOutputOffset);
+            } else if (climberMotorOutput <= speedSwitchPoint) {//Speed decreases 
+                speedLimitReached = true;
+                climberMotorOutput = (linearClimberMotorOutputCoefficient * encoderClimberDistance - 0.1);
+            } else {
+                stopClimb();
+            }
+        }
     }
     
     public void setClimberToPresetHeight(Joystick joystick, int topButton, double presetHeight){
         if (joystick.getRawButton(topButton) == true){
-            if (presetHeight > linearClimberDistance && topClimberLimitSwitch.get() != true){
+            if (presetHeight > encoderClimberDistance && topClimberLimitSwitch.get() != true){
                 climberMotorOutput = -0.5;
                 setClimberMotors();
             } else {
@@ -152,27 +141,41 @@ public class Climber {
         }
     }
     
-     public void runAutoClimb(double topEncoderLimit) {
+    
+
+     public void runAutoClimb() {
         
         switch(climberStage) {
             case 0:
-                manualJoystickElevDrive(rightStick, topEncoderLimit);
+                manualJoystickElevDrive(rightStick);
                 break;
             case 1:
+                scaleStage1LinearClimberMotorOutputUp();
+                break;
+            case 2:
+                scaleStage2LinearClimberMotorOutputDown();
                 break;
             default:
                 stopClimb();
         }
     }
     
-     public void switchAutoClimb(int startAutoClimbButton){
+     public void switchAutoClimb(Joystick joystick, int startAutoClimbButton){
          switch(climberStage){
              case 0:
-                 if (bottomClimberLimitSwitch.get() && rightStick.getRawButton(startAutoClimbButton)){
+                 if (bottomClimberLimitSwitch.get() && joystick.getRawButton(startAutoClimbButton)){
                      climberStage = 1;
                  }
                  break;
              case 1:
+                 if (encoderClimberDistance >= topEncoderLimitValue || topClimberLimitSwitch.get() == true){
+                     climberStage = 2;
+                 }
+                 break;
+             case 2:
+                 if (bottomClimberLimitSwitch.get()){
+                     climberStage = 3;
+                 }
                  break;
              default:
                  stopClimb();
