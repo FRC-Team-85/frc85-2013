@@ -70,7 +70,6 @@ public class Robot extends IterativeRobot {
         shooter.runShooter();
         drive.runDrive();
         frisbeeLoader.runFrisbeeLoader();
-        SmartDashboard.putNumber("Hall Effect", shooterSensor.getRPM());
     }
     public void testPeriodic() {
 
