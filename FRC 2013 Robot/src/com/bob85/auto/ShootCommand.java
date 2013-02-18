@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bob85.auto;
 
 import com.bob85.FrisbeeLoader;
@@ -10,10 +6,6 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class ShootCommand {
     private Timer timer;
     private Shooter shooter;

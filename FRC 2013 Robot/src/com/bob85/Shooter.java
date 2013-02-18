@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class Shooter {
     
     public static final int SHOOTER_MOTOR_CHANNEL = 5;
