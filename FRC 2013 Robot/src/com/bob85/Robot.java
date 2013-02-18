@@ -30,7 +30,6 @@ public class Robot extends IterativeRobot {
     Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
     
     HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
-    PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, gyro, leftDriveStick, rightDriveStick);
