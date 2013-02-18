@@ -60,8 +60,8 @@ public class Climber {
         initEncoderSetting();
     }
     
-    private void getJoystickInput() {
-        climberMotorOutput = -rightStick.getY();
+    private void getJoystickInput(Joystick joystick) {
+        climberMotorOutput = -joystick.getY();
     }
     
     private void stopClimb() {
@@ -98,17 +98,13 @@ public class Climber {
         drive.setMotorOutputDeadbands();
                 
         if (drive.getIsClimb()) {
-            if (topEncoderLimitValue <= encoderClimberDistance && -joyStick.getY() > 0) {
+            if (topClimberLimitSwitch.get() && -joyStick.getY() > 0) {
                 stopClimb();
-            }
-            if (bottomClimberLimitSwitch.get() == true && -joyStick.getY() < 0) {
+            } else if (bottomClimberLimitSwitch.get() && -joyStick.getY() < 0) {
                 stopClimb();
-            }
-            if (topClimberLimitSwitch.get() != true && encoderClimberDistance < topEncoderLimitValue) {
-                MotorLinearization.linearizeVictor884Output(leftClimberMotors, -joyStick.getY());
-                MotorLinearization.linearizeVictor884Output(rightClimberMotors, joyStick.getY());
             } else {
-                stopClimb();
+                getJoystickInput(joyStick);
+                setLinearClimbOutput();
             }
         }
     }
@@ -196,7 +192,7 @@ public class Climber {
     public void runClimber() {
         drive.setJoystickBasedPTOShift();
         if (drive.getIsClimb()) {
-            getJoystickInput();
+            getJoystickInput(rightStick);
             setLinearClimbOutput();
         }
     }
