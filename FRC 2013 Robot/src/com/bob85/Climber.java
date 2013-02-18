@@ -97,11 +97,11 @@ public class Climber {
         getEncoderDistance();
         drive.setMotorOutputDeadbands();
                 
-        if (inDriveMode != true) {
-            if (topEncoderLimitValue <= encoderClimberDistance && joyStick.getY() > 0) {
+        if (drive.getIsClimb()) {
+            if (topEncoderLimitValue <= encoderClimberDistance && -joyStick.getY() > 0) {
                 stopClimb();
             }
-            if (bottomClimberLimitSwitch.get() == true && joyStick.getY() < 0) {
+            if (bottomClimberLimitSwitch.get() == true && -joyStick.getY() < 0) {
                 stopClimb();
             }
             if (topClimberLimitSwitch.get() != true && encoderClimberDistance < topEncoderLimitValue) {
