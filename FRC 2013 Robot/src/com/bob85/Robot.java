@@ -42,7 +42,7 @@ public class Robot extends IterativeRobot {
     Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterSensor, opPad);
     Climber climber = new Climber(drive, leftStick, rightStick,
             leftDriveMotor, rightDriveMotor,
-            leftDriveEncoder, rightDriveEncoder,
+            leftDriveEncoder, rightDriveEncoder,restClimberLimitSwitch, topClimberLimitSwitch,
             bottomClimberLimitSwitch, topClimberLimitSwitch);
   
     
