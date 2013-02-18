@@ -15,14 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class AutoModeChooser {
     
-    private SendableChooser autoChooser;
     private AnalogChannel m_analogAutoChooser;
     
-    private Object m_choice;
     private int analogChoice;
-    
-    public boolean[] driverStationInputs;
-    private int driverStationInputsAmount = 8;
     
     public boolean shootStage;
     public boolean driveStage1;
@@ -31,7 +26,6 @@ public class AutoModeChooser {
     
     DriverStation driverStation;
     
-        
     public AutoModeChooser() {
         driverStation = DriverStation.getInstance();
     }
@@ -69,30 +63,6 @@ public class AutoModeChooser {
         driveStage2 = driverStation.getDigitalIn(4);
     }
     
-    private void returnDriverStationInputs() {
-        int i;
-        
-        if (driverStationInputs == null) {
-            driverStationInputs = new boolean[driverStationInputsAmount];
-        }
-        for (i=0; i<driverStationInputsAmount; i++) {
-            driverStationInputs[i] = driverStation.getDigitalIn(i);
-        }
-    }
-    
-    public boolean getDriverStationInput(int channel) {
-        return driverStationInputs[channel];
-    }
-    
-    private void sendDriverStationInputsSmartDashboard() {
-        int i;
-        String key = "DS DIO ";
-        
-        for (i=0; i< driverStationInputsAmount; i++) {
-            SmartDashboard.putBoolean(key + (i++), driverStationInputs[i]);
-        }
-    }
-    
     private void sendDriveStationsInputsSDB() {
         SmartDashboard.putBoolean("DI 1", driverStation.getDigitalIn(1));
         SmartDashboard.putBoolean("DI 2", driverStation.getDigitalIn(2));
@@ -103,12 +73,7 @@ public class AutoModeChooser {
         SmartDashboard.putBoolean("DI 7", driverStation.getDigitalIn(7));
         SmartDashboard.putBoolean("DI 8", driverStation.getDigitalIn(8));
     }
-    
-    public void testDriveStationInputs() {
-        returnDriverStationInputs();
-        sendDriveStationsInputsSDB();
-    }
-    
+  
     public void runAutoModeChooser() {
         getDriverStationInputs();
     }
