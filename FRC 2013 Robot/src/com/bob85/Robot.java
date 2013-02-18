@@ -13,7 +13,7 @@ public class Robot extends IterativeRobot {
 
     AutoModeChooser autoChooser = new AutoModeChooser();
     ShotTimer shotTimer = new ShotTimer(ShootCommand.frisbee_val);
-    Gyro gyro = new Gyro(1);
+    Gyro gyro = new Gyro(Drive.kGYRO);
 
     Servo dropServo = new Servo(FrisbeeLoader.kDROPSERVO_CHANNEL);
     Victor hopperBelt = new Victor(FrisbeeLoader.kHOPPERBELTMOTOR_CHANNEL);
@@ -33,7 +33,7 @@ public class Robot extends IterativeRobot {
     PIDController shooterPID = new PIDController(0,0,0,0, shooterSensor, shooterMotor);
     
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
-            leftDriveEncoder, rightDriveEncoder, leftDriveStick, rightDriveStick);
+            leftDriveEncoder, rightDriveEncoder, gyro, leftDriveStick, rightDriveStick);
     Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
     FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
     Autonomous auto = new Autonomous(autoChooser, shotTimer, gyro, drive, shooter, frisbeeLoader);
@@ -45,7 +45,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledInit() {
-        
+        drive.disabledInit();
     }
     
     public void autonomousInit() {
