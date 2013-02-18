@@ -25,6 +25,7 @@ public class TurnCommand {
     
     public boolean turnCommand() {
         if (!gyroReset) {
+            gyro.setSensitivity(0.007);
             gyro.reset();
             gyroReset = true;
         }
