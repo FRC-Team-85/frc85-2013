@@ -311,5 +311,6 @@ public class Shooter {
     
     public void initShooter() {
         shooterSensor.start();
+        shooterSensor.setMaxPeriod(0.2);
     }
 }
