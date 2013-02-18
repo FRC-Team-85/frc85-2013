@@ -34,9 +34,8 @@ public class Climber {
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
     
-    
-    
-    Drive drive = new Drive(leftClimberMotors, rightClimberMotors);
+    Drive drive = new Drive(leftClimberMotors, rightClimberMotors,
+            leftStick, rightStick);
     
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -44,7 +43,7 @@ public class Climber {
     }
     
     
-    public Climber(Joystick leftStick, Joystick rightStick,
+    public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
             Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder, 
             DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
@@ -56,6 +55,7 @@ public class Climber {
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
+        
         
         initEncoderSetting();
     }

@@ -4,6 +4,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -24,9 +25,10 @@ public class Drive {
     private Encoder leftDriveEncoder;
     private Encoder rightDriveEncoder;
     
+    private Gyro gyro;
+    
     Joystick leftDriveJoystick; //reference to left drive joystick
     Joystick rightDriveJoystick; //reference to right drive joystick
-    Joystick m_testDriveJoystick;
     
     public static final int kLEFTDRIVE_VICTORS = 1;
     public static final int kRIGHTDRIVE_VICTORS = 2;
@@ -39,43 +41,30 @@ public class Drive {
     public static final int kRIGHTDRIVE_ENCODER_A = 3;
     public static final int kRIGHTDRIVE_ENCODER_B = 4;
     
+    public static final int kGYRO = 1;
+    
     private boolean isEncodersStarted = false;
     
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
     private double leftLinearMotorsOutput;
     private double rightLinearMotorsOutput;
-
-    private double leftOldOutput;
-    private double rightOldOutput;
             
     private double deadband = 0.1; //Deadband for drive motor output
-    private double changeLimit = 0.25;
+    private double changeLimit_val = 0.25;
+    private double changeLimit = changeLimit_val;
     
-    private double leftDriveServoDrivePosition = 1;
-    private double rightDriveServoDrivePosition = 0;
+    private double leftDriveServoDrivePosition = 0;
+    private double rightDriveServoDrivePosition = 1;
+    private double leftDriveServoClimbPosition = 1;
+    private double rightDriveServoClimbPosition = 0;
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((1.9 * Math.PI) / encoderCPR); //Each encoder pulse = 5.969 inches traveled
     
     
-    /**
-     * Constructs a Robot Drive with two PWM channels
-     * 
-     * @param leftDriveMotors left drive PWM channel
-     * @param rightDriveMotors right drive PWM channel
-     */
-    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors) {
-        this.leftDriveMotors = leftDriveMotors;
-        this.rightDriveMotors = rightDriveMotors;
-    }
-    
-    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors,
-            Joystick testDriveJoystick) {
-        this.leftDriveMotors = leftDriveMotors;
-        this.rightDriveMotors = rightDriveMotors;
-        m_testDriveJoystick = testDriveJoystick;
-    }
+    private boolean isDrive = false;
+    private boolean isClimb = false;
     
     /**
      * Constructs a Robot Drive with two PWM channels and joystick input
@@ -94,15 +83,17 @@ public class Drive {
     }
     
     public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, Servo leftDriveServo, Servo rightDriveServo,
-            Encoder leftDriveEncoder, Encoder rightDriveEncoder,
+            Encoder leftDriveEncoder, Encoder rightDriveEncoder, Gyro gyro,
             Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
         this.leftDriveMotors = leftDriveMotors;
         this.rightDriveMotors = rightDriveMotors;
         this.leftDriveJoystick = leftDriveJoystick;
         this.rightDriveJoystick = rightDriveJoystick;
-        
+        this.leftDriveServo = leftDriveServo;
+        this.rightDriveServo = rightDriveServo;
         this.leftDriveEncoder = leftDriveEncoder;
         this.rightDriveEncoder = rightDriveEncoder;
+        this.gyro = gyro;
     }
     
     /**
@@ -110,12 +101,7 @@ public class Drive {
      */
     private void getTankDriveJoystickInput() {
         leftMotorsOutput = -leftDriveJoystick.getY();
-        rightMotorsOutput = rightDriveJoystick.getY();
-    }
-    
-    private void getTestDriveJoystickInput() {
-        leftMotorsOutput = m_testDriveJoystick.getRawAxis(2);
-        rightMotorsOutput = m_testDriveJoystick.getRawAxis(4);
+        rightMotorsOutput = -rightDriveJoystick.getY();
     }
     
     /**
@@ -134,14 +120,14 @@ public class Drive {
     /**
      * Sets motor output setting to a linearized desired output
      */
-    private void setLinearizedOutput() {
+    public void setLinearizedOutput() {
         leftLinearMotorsOutput = MotorLinearization.calculateLinearOutput(leftMotorsOutput);
         rightLinearMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
-        leftDriveMotors.set(leftLinearMotorsOutput);
-        rightDriveMotors.set(rightLinearMotorsOutput);
+        leftDriveMotors.set(-leftLinearMotorsOutput);
+        rightDriveMotors.set(-rightLinearMotorsOutput);
     }
     
-    private void limitMotorsOutputChange(boolean isLeft, boolean isRight, boolean isLinear) {
+    public void limitMotorsOutputChange(boolean isLeft, boolean isRight) {       
         if (isLeft) {
             if (leftLinearMotorsOutput - leftDriveMotors.get() > changeLimit) {
                 leftLinearMotorsOutput = leftDriveMotors.get() + changeLimit;
@@ -158,67 +144,31 @@ public class Drive {
         }
     }
     
-    private void motorsChangeLimit() {
-        
-        if (Math.abs(leftMotorsOutput-leftOldOutput)>0.5) {     //checks if the change is above 0.5
-            if (leftMotorsOutput>0) {                           //checks if positive and rewrites
-                leftOldOutput +=0.5;                            //oldoutput to change by +0.5
-                }
-            else if (leftMotorsOutput<0) {                      //check if negative and rewrites
-                leftOldOutput -=0.5;                            //oldoutput to change by -0.5
-                }                                           
-        }
-        else {                                                  //if change is acceptable
-            leftOldOutput = leftMotorsOutput;                   //set change to oldoutput
-        }
-        
-        if (Math.abs(rightMotorsOutput-rightOldOutput)>0.5) {   //same for right
-            if (rightMotorsOutput>0) {
-                rightOldOutput += 0.5;
-                }
-            else if (rightMotorsOutput<0) {
-                rightOldOutput -= 0.5;
-                }
-        }
-        else {
-            rightOldOutput = rightMotorsOutput;
-        }
-        
-        leftMotorsOutput = leftOldOutput;                       //sets changes to motors
-        rightMotorsOutput = rightOldOutput;
-            
-    }
-    
     /**
-     * Sets the motors output with the motor output settings
+     * Sets the motors output settings values
+     * @param leftMotorsOutput
+     * @param rightMotorsOutput 
      */
-    private void setMotorsOutput(double leftMotorsOutput, double rightMotorsOutput) {
-     leftDriveMotors.set(leftMotorsOutput);
-     rightDriveMotors.set(rightMotorsOutput);
+    public void setMotorOutputSetting(double leftMotorsOutput, double rightMotorsOutput) {
+        this.leftMotorsOutput = leftMotorsOutput;
+        this.rightMotorsOutput = rightMotorsOutput;
     }
     
-    /**
-     * Sends input and output of joystickBasedTestDrive()
-     */
-    private void sendTestDriveDiagnosticsSDB() {
-        SmartDashboard.putNumber("Left Drive Input", m_testDriveJoystick.getRawAxis(2));
-        SmartDashboard.putNumber("Right Drive Input", m_testDriveJoystick.getRawAxis(4));
-        SmartDashboard.putNumber("Left Drive Output", leftDriveMotors.get());
-        SmartDashboard.putNumber("Right Drive Output", rightDriveMotors.get());
+    public void resetEncoders() {
+        if (leftDriveEncoder != null && rightDriveEncoder != null) {
+            leftDriveEncoder.reset();
+            rightDriveEncoder.reset();
+        }
     }
     
-    private void resetEncoders() {
-        leftDriveEncoder.reset();
-        rightDriveEncoder.reset();
-    }
-    
-    private void initEncoders() {
-        if (!isEncodersStarted == true) {
+
+    public void initEncoders() {
+        if (!isEncodersStarted && leftDriveEncoder != null && rightDriveEncoder != null) {
             leftDriveEncoder.start();
             rightDriveEncoder.start();
             
             resetEncoders();
-            
+
             leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             
@@ -226,15 +176,19 @@ public class Drive {
         }
     }
     
-    private void disableEncoders() {
-        if (isEncodersStarted == true) {
+    public void disableEncoders() {
+        if (isEncodersStarted) {
             leftDriveEncoder.stop();
             rightDriveEncoder.stop();
             isEncodersStarted = false;
         }
-    }    
+    }
     
-    private void sendEncoderDriveDiagnosticsSDB() {
+    public double getEncodersDistance() {
+        return (leftDriveEncoder.getDistance() + rightDriveEncoder.getDistance()) / 2;
+    }
+    
+    public void sendEncoderDriveDiagnosticsSDB() {
         SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
         SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance());
         SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.get());
@@ -242,23 +196,80 @@ public class Drive {
  
     }
     
-    private boolean getServoDrivePosition() {
+    public double getAngle() {
+        return gyro.getAngle();
+    }
+    
+    public void resetGyro() {
+        gyro.reset();
+    }
+    
+    public boolean getServoDrivePosition() {
         if (leftDriveServo.get() == leftDriveServoDrivePosition && 
                 rightDriveServo.get() == rightDriveServoDrivePosition) {
+            isDrive = true;
+            isClimb = false;
+            return isDrive;
+        }
+        else {
+            isDrive = false;
+            return isDrive;
+        }
+    }
+
+    public boolean getServoClimbPosition() {
+       if (leftDriveServo.get() == leftDriveServoClimbPosition && 
+                rightDriveServo.get() == rightDriveServoClimbPosition) {
             return true;
         }
         else {
             return false;
         }
     }
-
     
-    private void setServoDrivePosition() {
+    public void setServoDrivePosition() {
 
         if (!getServoDrivePosition()){
             leftDriveServo.set(leftDriveServoDrivePosition);
             rightDriveServo.set(rightDriveServoDrivePosition);
-        } 
+        } else {
+            isDrive = true;
+        }
+        isClimb = false;
+    }
+    
+    public void setServoClimbPosition() {
+        if (!getServoClimbPosition()) {
+            leftDriveServo.set(leftDriveServoClimbPosition);
+            rightDriveServo.set(rightDriveServoClimbPosition);
+            isClimb = false;
+        } else {
+            isClimb = true;
+        }
+        isDrive = false;
+    }
+    
+    public boolean getIsDrive() {
+        return isDrive;
+    }
+    
+    public boolean getIsClimb() {
+        return isClimb;
+    }
+    
+    private void sendDriveStateDiagnostics() {
+        SmartDashboard.putBoolean("isDrive", isDrive);
+        SmartDashboard.putBoolean("isClimb", isClimb);
+    }
+    
+
+    
+    public void setJoystickBasedPTOShift() {
+        if (leftDriveJoystick.getTrigger()) {
+            setServoDrivePosition();
+        } else if (rightDriveJoystick.getTrigger()) {
+            setServoClimbPosition();
+        }
     }
     
     /**
@@ -267,37 +278,53 @@ public class Drive {
     public void joystickBasedTankDrive() {
         getTankDriveJoystickInput();
         setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
+        limitMotorsOutputChange(true, true);
         setLinearizedOutput();
-    }
-    
-    public void joystickBasedTestDrive() {
-        getTestDriveJoystickInput();
-        setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
-        setLinearizedOutput();
-        sendTestDriveDiagnosticsSDB();
-    }
-    
-    public void autoBasedDrive(double leftMotorOutput, double rightMotorOutput) {
-        leftMotorsOutput = leftMotorOutput;
-        rightMotorsOutput = rightMotorOutput;
-        setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true, true);
-        setLinearizedOutput();
+        setJoystickBasedPTOShift();
     }
     
     public void encoderTestDrive() {
         joystickBasedTankDrive();
         sendEncoderDriveDiagnosticsSDB();
-        setServoDrivePosition();
+        limitMotorsOutputChange(true, true);
+    }       
+    
+    public void runRampUpTrapezoidalMotionProfile(double maxSpeed) {
+        setMotorOutputSetting(maxSpeed, maxSpeed);
+        limitMotorsOutputChange(true, true);
+    }
+    
+    public void runRampDownTrapezoidalMotionProfile(double minSpeed) {
+        leftMotorsOutput = minSpeed;
+        rightMotorsOutput = minSpeed;
+        limitMotorsOutputChange(true, true);
+    }
+    
+    public void switchDriveStates() {
+        isDrive = getServoDrivePosition();
+        isClimb = getServoClimbPosition();
+    }
+       
+    public void runDriveStates() {
+        setJoystickBasedPTOShift();
+        if (getIsDrive()) {
+            joystickBasedTankDrive();
+        }
     }
     
     public void driveInit() {
+        gyro.setSensitivity(.007);
         initEncoders();
+        setServoDrivePosition();
     }
     
     public void disabledInit() {
         disableEncoders();
+        gyro.reset();
+    }
+    
+    public void runDrive() {
+        switchDriveStates();
+        runDriveStates();
     }
 }
