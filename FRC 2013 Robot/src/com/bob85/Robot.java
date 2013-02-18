@@ -40,7 +40,7 @@ public class Robot extends IterativeRobot {
     
     public void robotInit() {
         drive.driveInit();
-        shotTimer.initShotTimer();        
+        shotTimer.initShotTimer();   
         shooter.initShooter();
     }
     
@@ -50,7 +50,6 @@ public class Robot extends IterativeRobot {
     
     public void autonomousInit() {
         auto.initAutonomous();
-        shotTimer.runShotTimer();
     }
     
     public void teleopInit() {

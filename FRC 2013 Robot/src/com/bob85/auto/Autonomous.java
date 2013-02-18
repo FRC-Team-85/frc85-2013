@@ -105,13 +105,12 @@ public class Autonomous {
      * Only public access to the class
      */
     public void runAutonomous() {
-        shotTimer.runShotTimer();
         runSequentialAutonomous();
     }
 
     public void initAutonomous() {
         autoStage = 0;
         autoChooser.runAutoModeChooser();
-        shotTimer.initShotTimer();
+        shotTimer.runShotTimer();
     }
 }
