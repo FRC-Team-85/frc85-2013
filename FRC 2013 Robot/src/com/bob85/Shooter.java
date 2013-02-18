@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class Shooter {
     
     public static final int SHOOTER_MOTOR_CHANNEL = 5;
@@ -255,12 +247,12 @@ public class Shooter {
     private void switchShooterStates() {
         switch (shooterState) {
             case 0:
-                if (gamepad.getButton(ButtonType.kRB) && FrisbeeLoader.getHopperState() ==1) {
+                if (gamepad.getButton(ButtonType.kRB)) {
                     shooterState = 1;
                 }
                 break;
             case 1:
-                if (gamepad.getButton(ButtonType.kRB) && onTarget() && FrisbeeLoader.getHopperState() ==1) {
+                if (gamepad.getButton(ButtonType.kRB) && onTarget()) {
                     shooterState = 2;
                 }
                 break;
@@ -280,12 +272,12 @@ public class Shooter {
                 setShooterSpeed(0);
                 break;
             case 1:
-                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
-                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
+                setShooterSpeed(1);
+                setShooterBeltSpeed(1);
                 break;
             case 2:
-                setShooterSpeed(SmartDashboard.getNumber("Shooter Speed"));
-                setShooterBeltSpeed(SmartDashboard.getNumber("Shooter Belt Speed"));
+                setShooterSpeed(1);
+                setShooterBeltSpeed(1);
                 break;
             default:
                 setShooterBeltSpeed(0);                
@@ -306,9 +298,11 @@ public class Shooter {
     
     public void runShooter() {
         runAlexShooterSetup();
+        runDiagnostics();
     }
     
     public void initShooter() {
         shooterSensor.start();
+        shooterSensor.setMaxPeriod(0.2);
     }
 }

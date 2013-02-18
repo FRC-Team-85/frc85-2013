@@ -1,6 +1,3 @@
-/*
- * MAKE SURE EACH SIDE OF THE DRIVE HAVE THE SAME POLARITY WHEN USING Y SPLITTER
- */
 package com.bob85;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -10,10 +7,6 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class Drive {
     
     private SpeedController leftDriveMotors; //class reference to left drive
