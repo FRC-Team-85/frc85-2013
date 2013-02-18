@@ -31,6 +31,8 @@ public class Robot extends IterativeRobot {
     
     DigitalInput bottomClimberLimitSwitch = new DigitalInput(Climber.kBOTTOM_LIMITSWITCH_CHANNEL);
     DigitalInput topClimberLimitSwitch = new DigitalInput(Climber.kTOP_LIMITSWITCH_CHANNEL);
+    DigitalInput restClimberLimitSwitch = new DigitalInput(Climber.kREST_LIMITSWITCH);
+    DigitalInput extendClimberLimitSwitch = new DigitalInput(Climber.kEXTEND_LIMITSWITCH);
     
     HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
     

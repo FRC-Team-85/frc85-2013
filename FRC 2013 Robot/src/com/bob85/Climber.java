@@ -3,9 +3,9 @@ package com.bob85;
 import edu.wpi.first.wpilibj.*;
 
 public class Climber {
-    
-    public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;
-    
+    public static final int kREST_LIMITSWITCH = 6;
+    public static final int kEXTEND_LIMITSWITCH = 7;
+    public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;  
     public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
     
     Victor leftClimberMotors;
@@ -33,6 +33,8 @@ public class Climber {
     private double speedSwitchPoint = -0.8;
     private double topEncoderLimitValue;
 
+    DigitalInput restClimberLimitSwitch;
+    DigitalInput extendClimberLimitSwitch;
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
     
@@ -46,18 +48,29 @@ public class Climber {
     
     public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
             Victor leftClimberMotors, Victor rightClimberMotors, 
-            Encoder leftClimberEncoder, Encoder rightClimberEncoder, 
+            Encoder leftClimberEncoder, Encoder rightClimberEncoder,
+            DigitalInput restClimberLimitSwitch, DigitalInput extendClimberLimitSwitch,
             DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
         this.rightClimberEncoder = rightClimberEncoder;
+        this.restClimberLimitSwitch = restClimberLimitSwitch;
+        this.extendClimberLimitSwitch = extendClimberLimitSwitch;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         this.drive = drive;
         initEncoderSetting();
+    }
+    
+    private boolean getIsRest() {
+        return restClimberLimitSwitch.get();
+    }
+    
+    private boolean getIsExtend() {
+        return extendClimberLimitSwitch.get();
     }
     
     private void getJoystickInput(Joystick joystick) {
