@@ -27,11 +27,13 @@ public class Autonomous {
     ShootCommand shoot3Command;
     TurnCommand turn180Command;
     DriveCommand drivetoCenterCommand;
+    DriveCommand driveBackOffCommand;
     
     private void initCommands() {
         shoot3Command = new ShootCommand(shooter, shotTimer, frisbeeLoader);
         turn180Command = new TurnCommand(drive, 180);
         drivetoCenterCommand = new DriveCommand(drive);
+        driveBackOffCommand = new DriveCommand(drive);
     }
 
     public Autonomous(AutoModeChooser autoChooser, ShotTimer shotTimer, Gyro gyro, Drive drive,
@@ -56,6 +58,10 @@ public class Autonomous {
                 }
                 break;
             case 1:
+                if (autoChooser.driveStage1) {
+                    if (driveBackOffCommand.driveCommand(drive.getEncodersDistance(), 200));
+                }
+            case 2:
                 if (autoChooser.turnStage) {
                     if (turn180Command.turnCommand()) {
                         autoStage = 2;
@@ -64,18 +70,13 @@ public class Autonomous {
                     autoStage = 2;
                 }
                 break;
-            case 2:
-                if (autoChooser.driveStage) {
+            case 3:
+                if (autoChooser.driveStage2) {
                     if (drivetoCenterCommand.driveCommand(drive.getEncodersDistance(), 500)) {
                         autoStage = 3;
                     }
                 } else {
                     autoStage = 3;
-                }
-                break;
-            case 3:
-                if (true) {
-                    autoStage = 4;
                 }
                 break;
             case 4:

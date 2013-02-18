@@ -25,8 +25,9 @@ public class AutoModeChooser {
     private int driverStationInputsAmount = 8;
     
     public boolean shootStage;
+    public boolean driveStage1;
     public boolean turnStage;
-    public boolean driveStage;
+    public boolean driveStage2;
     
     DriverStation driverStation;
     
@@ -63,8 +64,9 @@ public class AutoModeChooser {
     
     private void getDriverStationInputs() {
         shootStage = driverStation.getDigitalIn(1);
-        turnStage = driverStation.getDigitalIn(2);
-        driveStage = driverStation.getDigitalIn(3);
+        driveStage1 = driverStation.getDigitalIn(2);
+        turnStage = driverStation.getDigitalIn(3);
+        driveStage2 = driverStation.getDigitalIn(4);
     }
     
     private void returnDriverStationInputs() {
