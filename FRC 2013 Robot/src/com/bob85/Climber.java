@@ -3,6 +3,20 @@ package com.bob85;
 import edu.wpi.first.wpilibj.*;
 
 public class Climber {
+    
+    public static final int kBOTTOM_LIMITSWITCH_SLOT = 1;
+    public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;
+    
+    public static final int kTOP_LIMITSWITCH_SLOT = 1;
+    public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
+    
+    Victor leftClimberMotors;
+    Victor rightClimberMotors;
+    Encoder leftClimberEncoder;
+    Encoder rightClimberEncoder;
+    Joystick leftStick;
+    Joystick rightStick;
+    
     private double encoderCPR = 250;
     private double encoderDistanceRatio = ((1.9 * Math.PI) / encoderCPR); //Every encoder revolution is 5.969 linear inches moved on the climber
     private double calcEncDistance;
@@ -22,12 +36,7 @@ public class Climber {
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
     
-    Victor leftClimberMotors;
-    Victor rightClimberMotors;
-    Encoder leftClimberEncoder;
-    Encoder rightClimberEncoder;
-    Servo leftShiftServo;
-    Servo rightShiftServo;
+    
     
     Drive drive = new Drive(leftClimberMotors, rightClimberMotors);
     
@@ -37,41 +46,18 @@ public class Climber {
     }
     
     
-    public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
+    public Climber(Joystick leftStick, Joystick rightStick,
+            Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder, 
-            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch,
-            Servo leftShiftServo, Servo rightShiftServo) {
+            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
         this.rightClimberEncoder = rightClimberEncoder;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
-        this.leftShiftServo = leftShiftServo;
-        this.rightShiftServo = rightShiftServo;
-        
-        initEncoderSetting();
-    }
-    
-    public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
-            Encoder leftClimberEncoder, Encoder rightClimberEncoder, 
-            Servo leftShiftServo, Servo rightShiftServo) {
-        this.leftClimberMotors = leftClimberMotors;
-        this.rightClimberMotors = rightClimberMotors;
-        this.leftClimberEncoder = leftClimberEncoder;
-        this.rightClimberEncoder = rightClimberEncoder;
-        this.leftShiftServo = leftShiftServo;
-        this.rightShiftServo = rightShiftServo;
-        
-        initEncoderSetting();
-    }
-    
-    public Climber(Victor leftClimberMotors, Victor rightClimberMotors, 
-            Encoder leftClimberEncoder, Encoder rightClimberEncoder) {
-        this.leftClimberMotors = leftClimberMotors;
-        this.rightClimberMotors = rightClimberMotors;
-        this.leftClimberEncoder = leftClimberEncoder;
-        this.rightClimberEncoder = rightClimberEncoder;
+        this.leftStick = leftStick;
+        this.rightStick = rightStick;
         
         initEncoderSetting();
     }
@@ -132,46 +118,6 @@ public class Climber {
         }
     }
     
-    public void setClimberStage(boolean isStage1, boolean isStage2, boolean isStage3) {
-        if (isStage1 && climberStage < 2) {
-            climberStage = 1;
-        }
-        else if (isStage2 && (climberStage == 1)) {
-            climberStage = 2;
-        }
-        else if (isStage3 && (climberStage == 2)) {
-            climberStage = 3;
-        }
-    }
-    
-    public void driveLinearClimber() {
-        getEncoderDistance();
-        
-        switch(climberStage) {
-            case 1:
-                /** 1) Goes up at full speed then scales down to the top then stops at limit
-                 *  2) Goes downward at a scaling speed increasing then decreases when speed > -0.8
-                 *  3) Stops when Climber hits bottom limit
-                 */ 
-                if (topClimberLimitSwitch.get() != true) {
-                    scaleStage1LinearClimberMotorOutputUp();
-                    setClimberMotors();
-                } else if (topClimberLimitSwitch.get() == true && bottomClimberLimitSwitch.get() != true) {
-                    stopClimb();
-                    scaleStage1LinearClimberMotorOutputDown();
-                    setClimberMotors();
-                } else if (bottomClimberLimitSwitch.get() == true){
-                    stopClimb();
-                }
-                break;
-                
-            case 2:
-                
-            default:
-                stopClimb();
-        }
-    }
-    
     public void runLinearClimber(boolean isEnabled) {
         
     }
@@ -208,49 +154,31 @@ public class Climber {
         }
     }
     
-    /**
-     *
-     * @param auxStick Joystick
-     * @param upButton Button to go up
-     * @param downButton Button to go down
-     * @param inDriveMode Boolean Check
-     */
-    public void manualButtonElevDrive(Joystick auxStick, double climbSpeed, int upButton, int downButton) {
-        if (inDriveMode == false) {
-            if (auxStick.getRawButton(upButton) == true && topClimberLimitSwitch.get() != true) {
-                //Drive Elev Up
-                climberMotorOutput = climbSpeed;
-                setClimberMotors();
-            } else if (auxStick.getRawButton(downButton) == true && bottomClimberLimitSwitch.get() != true) {
-                //Drive Elev Down
-                climberMotorOutput = -climbSpeed;
-                setClimberMotors();
-            } else {
-                //Stop Elev
+     public void runAutoClimb(double topEncoderLimit) {
+        
+        switch(climberStage) {
+            case 0:
+                manualJoystickElevDrive(rightStick, topEncoderLimit);
+                break;
+            case 1:
+                break;
+            default:
                 stopClimb();
-            }
         }
     }
-    /**
-     * 
-     * @param leftStick Joystick
-     * @param driveShiftButton Button to go into driveMode
-     * @param elevShiftButton Button to go into elevMode
-     * @param leftShiftServo leftServo
-     * @param rightShiftServo rightServo
-     */
-    public void driveElevShift(Joystick leftStick, int driveShiftButton, int elevShiftButton) {
-        //elevModeButton
-        if (leftStick.getRawButton(driveShiftButton) == true) {
-            leftShiftServo.set(1.0);
-            rightShiftServo.set(0.0);
-            inDriveMode = false;
-        }
-        //driveModeButton  
-        if (leftStick.getRawButton(elevShiftButton) == true) {
-            leftShiftServo.set(0.0);
-            rightShiftServo.set(1.0);
-            inDriveMode = true;
-        }
+    
+     public void switchAutoClimb(int startAutoClimbButton){
+         switch(climberStage){
+             case 0:
+                 if (bottomClimberLimitSwitch.get() && rightStick.getRawButton(startAutoClimbButton)){
+                     climberStage = 1;
+                 }
+                 break;
+             case 1:
+                 break;
+             default:
+                 stopClimb();
+         }
     }
 }
+
