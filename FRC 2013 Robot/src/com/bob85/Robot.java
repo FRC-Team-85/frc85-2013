@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot {
     
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, gyro, leftDriveStick, rightDriveStick);
-    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterSensor, opPad);
     FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
     Autonomous auto = new Autonomous(autoChooser, shotTimer, gyro, drive, shooter, frisbeeLoader);
     
