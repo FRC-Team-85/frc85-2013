@@ -17,8 +17,6 @@ public class Autonomous {
     private int autoStage = 0;
     
     Timer autoTimer;
-    double waitTime = 6.5;//in seconds; this is an approximate
-    double uWaitTime = (waitTime * MathUtils.pow(10.0, 6.0)); //in microSeconds (uSeconds)
     AutoModeChooser autoChooser;
     ShotTimer shotTimer;
     Drive drive;
@@ -59,24 +57,26 @@ public class Autonomous {
                 break;
             case 1:
                 if (autoChooser.driveStage1) {
-                    if (driveBackOffCommand.driveCommand(drive.getEncodersDistance(), 200));
+                    if (driveBackOffCommand.driveCommand(drive.getEncodersDistance(), 200)) {
+                        autoStage = 2;
+                    }
                 }
             case 2:
                 if (autoChooser.turnStage) {
                     if (turn180Command.turnCommand()) {
-                        autoStage = 2;
+                        autoStage = 3;
                     }
                 } else {
-                    autoStage = 2;
+                    autoStage = 3;
                 }
                 break;
             case 3:
                 if (autoChooser.driveStage2) {
                     if (drivetoCenterCommand.driveCommand(drive.getEncodersDistance(), 500)) {
-                        autoStage = 3;
+                        autoStage = 4;
                     }
                 } else {
-                    autoStage = 3;
+                    autoStage = 4;
                 }
                 break;
             case 4:
