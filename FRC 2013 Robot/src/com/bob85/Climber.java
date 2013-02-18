@@ -16,8 +16,7 @@ public class Climber {
     Joystick rightStick;
     
     private double encoderCPR = 250;
-    private double encoderDistanceRatio = ((2 * Math.PI)); //Every encoder revolution is 5.969 linear inches moved on the climber
-    private double calcEncDistance;
+    private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 5.969 linear inches moved on the climber
     
     private double linearClimberMotorOutputCoefficient = -0.058;
     private double linearClimberMotorOutputOffset = 1.5;
