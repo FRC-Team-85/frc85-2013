@@ -17,7 +17,7 @@ public class HallEffect extends Counter implements CounterBase, PIDSource, LiveW
     }
     
     public int getRPM() {
-        return (int) ((get()/getPeriod()) * 60);
+        return (int) ((60/getPeriod()));
     }
 
     public double pidGet() {
