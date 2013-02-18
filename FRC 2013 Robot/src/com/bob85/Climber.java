@@ -1,6 +1,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climber {
     public static final int kREST_LIMITSWITCH = 6;
@@ -71,6 +72,14 @@ public class Climber {
     
     private boolean getIsExtend() {
         return extendClimberLimitSwitch.get();
+    }
+    
+    private boolean getIsBot() {
+        return bottomClimberLimitSwitch.get();
+    }
+    
+    private boolean getIsTop() {
+        return topClimberLimitSwitch.get();
     }
     
     private void getJoystickInput(Joystick joystick) {
@@ -198,11 +207,19 @@ public class Climber {
          }
     }
      
+    public void runDiagnostics() {
+        SmartDashboard.putBoolean("Rest LimitSwitch", getIsRest());
+        SmartDashboard.putBoolean("Extend LimitSwitch", getIsExtend());
+        SmartDashboard.putBoolean("Bot LimitSwitch", getIsBot());
+        SmartDashboard.putBoolean("Top LimitSwitch", getIsTop());
+    } 
+     
     public void initClimber() {
         
     } 
      
     public void runClimber() {
+        runDiagnostics();
         drive.setJoystickBasedPTOShift();
         if (drive.getIsClimb()) {
             getJoystickInput(rightStick);
