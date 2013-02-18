@@ -150,9 +150,9 @@ public class FRC85Camera extends StaticWidget {
                     (int) ((width + scale * drawnImage.getWidth()) / 2), (int) (height + scale * drawnImage.getHeight()) / 2,
                     0, 0, drawnImage.getWidth(), drawnImage.getHeight(), null);
             
-            int midpoint_y = drawnImage.getHeight() / 2;
-            int midpoint_x = drawnImage.getWidth() / 2;
-            int crosshair_size = 50;
+            int midpoint_y = height / 2;
+            int midpoint_x = width / 2;
+            int crosshair_size = 55;
             g.setColor(Color.GREEN);
             g.drawLine((int) (midpoint_x - (crosshair_size * scale)), midpoint_y, (int) (midpoint_x + (crosshair_size * scale)), midpoint_y);           
             g.drawLine(midpoint_x, (int) (midpoint_y - (crosshair_size * scale)), midpoint_x, (int) (midpoint_y + (crosshair_size * scale)));
@@ -161,7 +161,7 @@ public class FRC85Camera extends StaticWidget {
             g.setColor(Color.RED);
             g.fillRect(0, 0, getBounds().width, getBounds().height);
             g.setColor(Color.BLACK);
-            g.drawString("SOUND ONLY", 20, 50);
+            g.drawString("SOUND ONLY", getBounds().width/2, getBounds().height/2);
         }
     }
 
