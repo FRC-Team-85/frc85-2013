@@ -161,7 +161,7 @@ public class FRC85Camera extends StaticWidget {
             g.setColor(Color.RED);
             g.fillRect(0, 0, getBounds().width, getBounds().height);
             g.setColor(Color.BLACK);
-            g.drawString("SOUND ONLY", getBounds().width/2, getBounds().height/2);
+            g.drawString("SOUND ONLY", (getBounds().width/2 - 30), getBounds().height/2);
         }
     }
 
