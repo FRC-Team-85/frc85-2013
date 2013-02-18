@@ -1,4 +1,4 @@
-\package com.bob85.auto;
+package com.bob85.auto;
 
 import com.bob85.Drive;
 import com.sun.squawk.util.MathUtils;
