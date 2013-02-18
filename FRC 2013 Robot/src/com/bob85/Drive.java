@@ -1,6 +1,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -17,6 +18,8 @@ public class Drive {
     private Encoder leftDriveEncoder;
     private Encoder rightDriveEncoder;
     
+    private Gyro gyro;
+    
     Joystick leftDriveJoystick; //reference to left drive joystick
     Joystick rightDriveJoystick; //reference to right drive joystick
     
@@ -30,6 +33,8 @@ public class Drive {
     public static final int kLEFTDRIVE_ENCODER_B = 2;
     public static final int kRIGHTDRIVE_ENCODER_A = 3;
     public static final int kRIGHTDRIVE_ENCODER_B = 4;
+    
+    public static final int kGYRO = 1;
     
     private boolean isEncodersStarted = false;
     
@@ -70,7 +75,7 @@ public class Drive {
     }
     
     public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, Servo leftDriveServo, Servo rightDriveServo,
-            Encoder leftDriveEncoder, Encoder rightDriveEncoder,
+            Encoder leftDriveEncoder, Encoder rightDriveEncoder, Gyro gyro,
             Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
         this.leftDriveMotors = leftDriveMotors;
         this.rightDriveMotors = rightDriveMotors;
@@ -80,6 +85,7 @@ public class Drive {
         this.rightDriveServo = rightDriveServo;
         this.leftDriveEncoder = leftDriveEncoder;
         this.rightDriveEncoder = rightDriveEncoder;
+        this.gyro = gyro;
     }
     
     /**
@@ -179,6 +185,14 @@ public class Drive {
         SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.get());
         SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.get());
  
+    }
+    
+    public double getAngle() {
+        return gyro.getAngle();
+    }
+    
+    public void resetGyro() {
+        gyro.reset();
     }
     
     public boolean getServoDrivePosition() {
@@ -290,12 +304,14 @@ public class Drive {
     }
     
     public void driveInit() {
+        gyro.setSensitivity(.007);
         initEncoders();
         setServoDrivePosition();
     }
     
     public void disabledInit() {
         disableEncoders();
+        gyro.reset();
     }
     
     public void runDrive() {

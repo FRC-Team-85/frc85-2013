@@ -13,7 +13,6 @@ public class Autonomous {
     double uWaitTime = (waitTime * MathUtils.pow(10.0, 6.0)); //in microSeconds (uSeconds)
     AutoModeChooser autoChooser;
     ShotTimer shotTimer;
-    Gyro gyro;
     Drive drive;
     Shooter shooter;
     FrisbeeLoader frisbeeLoader;
@@ -23,7 +22,7 @@ public class Autonomous {
     
     private void initCommands() {
         shoot3Command = new ShootCommand(shooter, shotTimer, frisbeeLoader);
-        turn180Command = new TurnCommand(gyro, drive, 180);
+        turn180Command = new TurnCommand(drive, 180);
         drivetoCenterCommand = new DriveCommand(drive);
     }
 
@@ -31,7 +30,6 @@ public class Autonomous {
             Shooter shooter, FrisbeeLoader frisbeeLoader) {
         this.autoChooser = autoChooser;
         this.shotTimer = shotTimer;
-        this.gyro = gyro;
         this.drive = drive;
         this.shooter = shooter;
         this.frisbeeLoader = frisbeeLoader;
@@ -104,5 +102,6 @@ public class Autonomous {
         autoStage = 0;
         autoChooser.runAutoModeChooser();
         shotTimer.runShotTimer();
+        drive.resetGyro();
     }
 }
