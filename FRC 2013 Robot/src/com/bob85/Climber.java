@@ -4,10 +4,8 @@ import edu.wpi.first.wpilibj.*;
 
 public class Climber {
     
-    public static final int kBOTTOM_LIMITSWITCH_SLOT = 1;
     public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;
     
-    public static final int kTOP_LIMITSWITCH_SLOT = 1;
     public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
     
     Victor leftClimberMotors;
@@ -18,7 +16,7 @@ public class Climber {
     Joystick rightStick;
     
     private double encoderCPR = 250;
-    private double encoderDistanceRatio = ((1.9 * Math.PI) / encoderCPR); //Every encoder revolution is 5.969 linear inches moved on the climber
+    private double encoderDistanceRatio = ((2 * Math.PI)); //Every encoder revolution is 5.969 linear inches moved on the climber
     private double calcEncDistance;
     
     private double linearClimberMotorOutputCoefficient = -0.058;
