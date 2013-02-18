@@ -37,8 +37,7 @@ public class Climber {
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
     
-    Drive drive = new Drive(leftClimberMotors, rightClimberMotors,
-            leftStick, rightStick);
+    Drive drive;
     
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -58,13 +57,22 @@ public class Climber {
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
-        
+        this.drive = drive;
         initEncoderSetting();
+    }
+    
+    private void getJoystickInput() {
+        climberMotorOutput = -rightStick.getY();
     }
     
     private void stopClimb() {
         climberMotorOutput = 0;
         setClimberMotors();
+    }
+    
+    private void setLinearClimbOutput() {
+        leftClimberMotors.set(-MotorLinearization.calculateLinearOutput(climberMotorOutput));
+        rightClimberMotors.set(MotorLinearization.calculateLinearOutput(climberMotorOutput));
     }
     
     private void setClimberMotors() {
@@ -180,6 +188,18 @@ public class Climber {
              default:
                  stopClimb();
          }
+    }
+     
+    public void initClimber() {
+        
+    } 
+     
+    public void runClimber() {
+        drive.setJoystickBasedPTOShift();
+        if (drive.getIsClimb()) {
+            getJoystickInput();
+            setLinearClimbOutput();
+        }
     }
 }
 

@@ -34,17 +34,15 @@ public class Robot extends IterativeRobot {
     
     HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
     
-    PIDController shooterPID = new PIDController(0, 0, 0, 0, shooterSensor, shooterMotor);
     
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, gyro, leftStick, rightStick);
-    
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterSensor, opPad);
     Climber climber = new Climber(drive, leftStick, rightStick,
             leftDriveMotor, rightDriveMotor,
             leftDriveEncoder, rightDriveEncoder,
             bottomClimberLimitSwitch, topClimberLimitSwitch);
   
-    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterPID, shooterSensor, opPad);
     
     FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
     
@@ -54,6 +52,7 @@ public class Robot extends IterativeRobot {
         drive.driveInit();
         shotTimer.initShotTimer();   
         shooter.initShooter();
+        climber.initClimber();
     }
     
     public void disabledInit() {
@@ -81,28 +80,10 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {
-        //drive.encoderTestDrive();
-        //climber.manualJoystickElevDrive(rightDriveStick, 500); no limitswitches implemented yet
-        
-        SmartDashboard.putNumber("leftSideEncoderDist", leftDriveEncoder.getDistance());
-        SmartDashboard.putNumber("rightSideEncoderDist", rightDriveEncoder.getDistance());
-        SmartDashboard.putNumber("leftEncRaw", leftDriveEncoder.get());
-        SmartDashboard.putNumber("rightEncRaw", rightDriveEncoder.get());
-        SmartDashboard.putNumber("Hall Effect", shooterSensor.getRPM());
-        
         shooter.runShooter();
         drive.runDrive();
-        
+        climber.runClimber();
         frisbeeLoader.runFrisbeeLoader();
-        leftDriveMotor.set(MotorLinearization.calculateLinearOutput(rightStick.getY()));
-        rightDriveMotor.set(MotorLinearization.calculateLinearOutput(-rightStick.getY()));
-        
-        if (opPad.getRawButton(8)){
-            MotorLinearization.linearizeVictor884Output(hopperBelt, 1.0);
-        } else {
-            hopperBelt.set(0);
-        }
-        
     }
     public void testPeriodic() {
 

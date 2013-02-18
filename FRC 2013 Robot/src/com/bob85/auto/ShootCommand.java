@@ -6,10 +6,6 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class ShootCommand {
     private Timer timer;
     private Shooter shooter;

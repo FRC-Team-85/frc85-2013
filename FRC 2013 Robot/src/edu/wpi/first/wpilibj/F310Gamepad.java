@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.wpi.first.wpilibj;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class F310Gamepad extends Joystick{
     
     public static class ButtonType {

@@ -3,10 +3,6 @@ package com.bob85.auto;
 import com.bob85.Drive;
 import edu.wpi.first.wpilibj.Gyro;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class TurnCommand {
     Drive drive;
     private double angle;
