@@ -33,7 +33,7 @@ public class Shooter {
     private double shooterPID_kSetPoint = 2800;
     private double shooterPID_kPercentTolerance = kOnTargetPercentTolerance * 100;
     
-    private static double kRPM_TO_PWM;
+    private static final double kRPM_TO_PWM = (1/5310);
     
     private PIDController shooterPID;
     
