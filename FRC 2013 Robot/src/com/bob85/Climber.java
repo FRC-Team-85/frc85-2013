@@ -44,6 +44,8 @@ public class Climber {
     
     Drive drive;
     
+    private int climberState;
+    
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -230,6 +232,25 @@ public class Climber {
          }
     }
      
+    public void switchClimbStates() {
+        if (drive.getDriveState() == 3) {
+            climberState = 1;
+        } else if (drive.getDriveState() != 3) {
+            climberState = 0;
+        }
+    }
+    
+    public void runClimbStates() {
+        switch (climberState) {
+            case 0:
+                break;
+            case 1:
+                getJoystickInput(rightStick);
+                setLinearClimbOutput();
+                break;
+        }
+    }
+     
     public void runDiagnostics() {
         SmartDashboard.putBoolean("Rest LimitSwitch", getIsRest());
         SmartDashboard.putBoolean("Extend LimitSwitch", getIsExtend());
@@ -243,9 +264,7 @@ public class Climber {
      
     public void runClimber() {
         runDiagnostics();
-        drive.setJoystickBasedPTOShift();
-        joystickBasedShiftOneSide(rightStick);
-        joystickBasedShiftClimberLock(leftStick);
+
             getJoystickInput(rightStick);
             setLinearClimbOutput();
         

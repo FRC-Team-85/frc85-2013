@@ -360,6 +360,10 @@ public class Drive {
         }
     }
     
+    public int getDriveState() {
+        return driveState;
+    }
+    
     public void driveInit() {
         gyro.setSensitivity(.007);
         initEncoders();
