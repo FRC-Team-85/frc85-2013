@@ -246,7 +246,7 @@ public class Climber {
         drive.setJoystickBasedPTOShift();
         joystickBasedShiftOneSide(rightStick);
         joystickBasedShiftClimberLock(leftStick);
-        if (drive.getIsClimb()) {
+        if(drive.getIsClimb()) {
             getJoystickInput(rightStick);
             setLinearClimbOutput();
         }

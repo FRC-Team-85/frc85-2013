@@ -8,6 +8,8 @@ public class Robot extends IterativeRobot {
     
     boolean isClimbMode;
     
+    boolean isDrive;
+    
     Joystick leftStick = new Joystick(1);
     Joystick rightStick = new Joystick(2);
     F310Gamepad opPad = new F310Gamepad(3);
@@ -83,7 +85,19 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {
+        /**
+        if (leftStick.getRawButton(10)) {
+            isDrive = true;
+        } else if (leftStick.getRawButton(11)) {
+            isDrive = false;
+        }
         shooter.runShooter();
+        if (isDrive) {
+            drive.runDrive();
+        } else if (!isDrive) {
+            climber.runClimber();
+        }
+        * **/
         drive.runDrive();
         climber.runClimber();
         frisbeeLoader.runFrisbeeLoader();

@@ -221,37 +221,21 @@ public class Drive {
     }
     
     public void setServoDrivePosition() {
-
-        if (!getServoDrivePosition()){
-            leftDriveServo.set(leftDriveServoDrivePosition);
-            rightDriveServo.set(rightDriveServoDrivePosition);
-        } else {
-            isDrive = true;
-        }
-        isClimb = false;
+        leftDriveServo.set(leftDriveServoDrivePosition);
+        rightDriveServo.set(rightDriveServoDrivePosition);
     }
     
     public void setServoClimbPosition() {
-        if (!getServoClimbPosition()) {
-            leftDriveServo.set(leftDriveServoClimbPosition);
-            rightDriveServo.set(rightDriveServoClimbPosition);
-            isClimb = false;
-        } else {
-            isClimb = true;
-        }
-        isDrive = false;
+        leftDriveServo.set(leftDriveServoClimbPosition);
+        rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
     public void setleftServoClimbPosition() {
-        if (! (leftDriveServo.get() == leftDriveServoClimbPosition)) {
-            leftDriveServo.set(leftDriveServoClimbPosition);
-        }
+        leftDriveServo.set(leftDriveServoClimbPosition);
     }
     
     public void setRightServoClimbPosition() {
-        if (! (rightDriveServo.get() == rightDriveServoClimbPosition)) {
-            rightDriveServo.set(rightDriveServoClimbPosition);
-        }
+        rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
     public boolean getIsDrive() {
@@ -332,6 +316,6 @@ public class Drive {
     
     public void runDrive() {
         switchDriveStates();
-        runDriveStates();
+        runDriveStates();        
     }
 }
