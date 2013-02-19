@@ -70,6 +70,8 @@ public class Robot extends IterativeRobot {
     
     public void teleopInit() {
         gyro.reset();
+        leftDriveEncoder.start();
+        rightDriveEncoder.start();
     }
     
     public void testInit() {
@@ -98,6 +100,8 @@ public class Robot extends IterativeRobot {
         }
         frisbeeLoader.runFrisbeeLoader();
         SmartDashboard.putNumber("Gyro", gyro.getAngle());
+        SmartDashboard.putNumber("Left Drive Encoder",  leftDriveEncoder.get());
+        SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.get());
     }
     public void testPeriodic() {
 
