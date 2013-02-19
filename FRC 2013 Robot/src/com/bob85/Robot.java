@@ -87,18 +87,9 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {
-        drive.setJoystickBasedPTOShift();
-        if (leftStick.getRawButton(10)) {
-            isDrive = true;
-        } else if (leftStick.getRawButton(11)) {
-            isDrive = false;
-        }
         shooter.runShooter();
-        if (isDrive) {
-            drive.joystickBasedTankDrive();
-        } else if (!isDrive) {
-            climber.runClimber();
-        }
+        drive.runDrive();
+        climber.runClimber();
         frisbeeLoader.runFrisbeeLoader();
         SmartDashboard.putNumber("Gyro", gyro.getAngle());
         SmartDashboard.putNumber("Left Drive Encoder",  leftDriveEncoder.get());

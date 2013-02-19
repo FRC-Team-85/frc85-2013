@@ -264,9 +264,8 @@ public class Climber {
      
     public void runClimber() {
         runDiagnostics();
-
-            getJoystickInput(rightStick);
-            setLinearClimbOutput();
+        switchClimbStates();
+        runClimbStates();
         
     }
 }
