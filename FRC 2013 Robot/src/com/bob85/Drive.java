@@ -336,6 +336,10 @@ public class Drive {
             driveState = 2;
         } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
             driveState = 3;
+        } else if (driveState == 1 && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+            driveState = 3;
+        } else if (driveState == 2 && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+            driveState = 3;
         }
     }
        
