@@ -36,6 +36,11 @@ public class Drive {
     
     public static final int kGYRO = 1;
     
+    private static final int kSHIFT_DRIVE = 3;
+    private static final int kSHIFT_CLIMB = 2;
+    private static final int kSHIFT_CLIMB_LEFT = 4;
+    private static final int kSHIFT_CLIMB_RIGHT = 5;
+    
     private boolean isEncodersStarted = false;
     
     private double leftMotorsOutput; //left drive motor output setting
@@ -58,6 +63,7 @@ public class Drive {
     
     private boolean isDrive = false;
     private boolean isClimb = false;
+    private int driveState; //0 is drive 1 is left climb 2 is right climb 3 is both climb
     
     /**
      * Constructs a Robot Drive with two PWM channels and joystick input
@@ -92,9 +98,24 @@ public class Drive {
     /**
      * Maps the motor outputs to the joysticks Y axis
      */
-    private void getTankDriveJoystickInput() {
-        leftMotorsOutput = -leftDriveJoystick.getY();
-        rightMotorsOutput = -rightDriveJoystick.getY();
+    private void getTankDriveJoystickInput(double scaleFactor) {
+        if (rightDriveJoystick.getTrigger()) {
+            leftMotorsOutput = -leftDriveJoystick.getY();
+            rightMotorsOutput = -rightDriveJoystick.getY();
+        } else {
+            leftMotorsOutput = -leftDriveJoystick.getY() * scaleFactor;
+            rightMotorsOutput = -rightDriveJoystick.getY() * scaleFactor;
+        }
+    }
+    
+    private void getLeftClimbRightDriveJoystickInput(double scaleFactor) {
+        leftMotorsOutput = scaleFactor * leftDriveJoystick.getY();
+        rightMotorsOutput = scaleFactor * -rightDriveJoystick.getY();
+    }
+    
+    private void getRightClimbLeftDriveJoystickInput(double scaleFactor) {
+        leftMotorsOutput = scaleFactor * -leftDriveJoystick.getY();
+        rightMotorsOutput = scaleFactor * rightDriveJoystick.getY();
     }
     
     /**
@@ -254,10 +275,14 @@ public class Drive {
 
     
     public void setJoystickBasedPTOShift() {
-        if (leftDriveJoystick.getTrigger()) {
+        if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
             setServoDrivePosition();
-        } else if (rightDriveJoystick.getTrigger()) {
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
             setServoClimbPosition();
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+            setleftServoClimbPosition();
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+            setRightServoClimbPosition();
         }
     }
     
@@ -265,11 +290,24 @@ public class Drive {
      * Uses two joysticks in a tank drive setup to run the motors
      */
     public void joystickBasedTankDrive() {
-        getTankDriveJoystickInput();
+        getTankDriveJoystickInput(0.5);
         setMotorOutputDeadbands();
         limitMotorsOutputChange(true, true);
         setLinearizedOutput();
-        setJoystickBasedPTOShift();
+    }
+    
+    public void joystickBasedLeftClimbDrive() {
+        getLeftClimbRightDriveJoystickInput(1);
+        setMotorOutputDeadbands();
+        limitMotorsOutputChange(true, true);
+        setLinearizedOutput();
+    }
+    
+    public void joystickBasedRightClimbDrive() {
+        getRightClimbLeftDriveJoystickInput(1);
+        setMotorOutputDeadbands();
+        limitMotorsOutputChange(true, true);
+        setLinearizedOutput();
     }
     
     public void encoderTestDrive() {
@@ -290,16 +328,31 @@ public class Drive {
     }
     
     public void switchDriveStates() {
-        isDrive = getServoDrivePosition();
-        isClimb = getServoClimbPosition();
+        if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+            driveState = 0;
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+            driveState = 1;
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+            driveState = 2;
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+            driveState = 3;
+        }
     }
        
     public void runDriveStates() {
         setJoystickBasedPTOShift();
-        if (getIsDrive()) {
-            joystickBasedTankDrive();
-        } else if (!getIsClimb()) {
-            joystickBasedTankDrive();
+        switch (driveState) {
+            case 0:
+                joystickBasedTankDrive();
+                break;
+            case 1:
+                joystickBasedLeftClimbDrive();
+                break;
+            case 2:
+                joystickBasedRightClimbDrive();
+                break;
+            case 3:
+                break;
         }
     }
     
