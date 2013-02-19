@@ -9,12 +9,15 @@ public class Climber {
     public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;  
     public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
     
+    public static final int kCLIMBERLOCK_SERVO = 9;
+    
     Victor leftClimberMotors;
     Victor rightClimberMotors;
     Encoder leftClimberEncoder;
     Encoder rightClimberEncoder;
     Joystick leftStick;
     Joystick rightStick;
+    Servo lockClimberServo;
     
     private double encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 5.969 linear inches moved on the climber
@@ -51,7 +54,8 @@ public class Climber {
             Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder,
             DigitalInput restClimberLimitSwitch, DigitalInput extendClimberLimitSwitch,
-            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
+            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch,
+            Servo lockClimberServo) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
@@ -60,10 +64,29 @@ public class Climber {
         this.extendClimberLimitSwitch = extendClimberLimitSwitch;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
+        this.lockClimberServo = lockClimberServo;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         this.drive = drive;
         initEncoderSetting();
+    }
+    
+    private void joystickBasedShiftClimberLock(Joystick joystick) {
+        if (joystick.getRawButton(3)) {
+            lockClimberServo.set(1);
+        } else if (joystick.getRawButton(2)) {
+            lockClimberServo.set(0);
+        }
+    }
+    
+    private void joystickBasedShiftOneSide(Joystick joystick) {
+        if (joystick.getRawButton(4)) {
+            drive.setleftServoClimbPosition();
+        }
+        
+        if (joystick.getRawButton(5)) {
+            drive.setRightServoClimbPosition();
+        }
     }
     
     private boolean getIsRest() {
@@ -221,6 +244,8 @@ public class Climber {
     public void runClimber() {
         runDiagnostics();
         drive.setJoystickBasedPTOShift();
+        joystickBasedShiftOneSide(rightStick);
+        joystickBasedShiftClimberLock(leftStick);
         if (drive.getIsClimb()) {
             getJoystickInput(rightStick);
             setLinearClimbOutput();
