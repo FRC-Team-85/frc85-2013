@@ -116,7 +116,7 @@ public class Drive {
     public void setLinearizedOutput() {
         leftLinearMotorsOutput = MotorLinearization.calculateLinearOutput(leftMotorsOutput);
         rightLinearMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
-        leftDriveMotors.set(-leftLinearMotorsOutput);
+        leftDriveMotors.set(leftLinearMotorsOutput);
         rightDriveMotors.set(-rightLinearMotorsOutput);
     }
     

@@ -87,6 +87,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {
+        drive.setJoystickBasedPTOShift();
         if (leftStick.getRawButton(10)) {
             isDrive = true;
         } else if (leftStick.getRawButton(11)) {
@@ -94,7 +95,7 @@ public class Robot extends IterativeRobot {
         }
         shooter.runShooter();
         if (isDrive) {
-            drive.runDrive();
+            drive.joystickBasedTankDrive();
         } else if (!isDrive) {
             climber.runClimber();
         }
