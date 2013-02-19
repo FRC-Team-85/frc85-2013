@@ -85,7 +85,6 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopPeriodic() {
-        /**
         if (leftStick.getRawButton(10)) {
             isDrive = true;
         } else if (leftStick.getRawButton(11)) {
@@ -97,9 +96,6 @@ public class Robot extends IterativeRobot {
         } else if (!isDrive) {
             climber.runClimber();
         }
-        * **/
-        drive.runDrive();
-        climber.runClimber();
         frisbeeLoader.runFrisbeeLoader();
         SmartDashboard.putNumber("Gyro", gyro.getAngle());
     }
