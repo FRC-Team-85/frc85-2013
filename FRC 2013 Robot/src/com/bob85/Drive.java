@@ -242,6 +242,18 @@ public class Drive {
         isDrive = false;
     }
     
+    public void setleftServoClimbPosition() {
+        if (! (leftDriveServo.get() == leftDriveServoClimbPosition)) {
+            leftDriveServo.set(leftDriveServoClimbPosition);
+        }
+    }
+    
+    public void setRightServoClimbPosition() {
+        if (! (rightDriveServo.get() == rightDriveServoClimbPosition)) {
+            rightDriveServo.set(rightDriveServoClimbPosition);
+        }
+    }
+    
     public boolean getIsDrive() {
         return isDrive;
     }
@@ -301,6 +313,8 @@ public class Drive {
     public void runDriveStates() {
         setJoystickBasedPTOShift();
         if (getIsDrive()) {
+            joystickBasedTankDrive();
+        } else if (!getIsClimb()) {
             joystickBasedTankDrive();
         }
     }

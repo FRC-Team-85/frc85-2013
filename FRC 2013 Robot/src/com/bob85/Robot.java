@@ -25,6 +25,7 @@ public class Robot extends IterativeRobot {
     Servo leftDriveServo = new Servo(Drive.kLEFTDRIVE_SERVO);
     Servo rightDriveServo = new Servo (Drive.kRIGHTDRIVE_SERVO);
     Servo dropServo = new Servo(FrisbeeLoader.kDROPSERVO_CHANNEL);
+    Servo lockClimberServo = new Servo(Climber.kCLIMBERLOCK_SERVO);
     
     Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
@@ -43,7 +44,7 @@ public class Robot extends IterativeRobot {
     Climber climber = new Climber(drive, leftStick, rightStick,
             leftDriveMotor, rightDriveMotor,
             leftDriveEncoder, rightDriveEncoder,restClimberLimitSwitch, topClimberLimitSwitch,
-            bottomClimberLimitSwitch, topClimberLimitSwitch);
+            bottomClimberLimitSwitch, topClimberLimitSwitch, lockClimberServo);
   
     
     FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
@@ -66,7 +67,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit() {
-
+        gyro.reset();
     }
     
     public void testInit() {
@@ -86,6 +87,7 @@ public class Robot extends IterativeRobot {
         drive.runDrive();
         climber.runClimber();
         frisbeeLoader.runFrisbeeLoader();
+        SmartDashboard.putNumber("Gyro", gyro.getAngle());
     }
     public void testPeriodic() {
 
