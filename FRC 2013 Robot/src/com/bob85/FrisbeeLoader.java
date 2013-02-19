@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
@@ -9,10 +5,6 @@ import edu.wpi.first.wpilibj.F310Gamepad.AxisType;
 import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class FrisbeeLoader {
     
     public static final int kDROPSERVO_CHANNEL = 8;

@@ -1,15 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bob85.auto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Michael Chau <mchau95@gmail.com>
- */
 public class ShotTimer {
     
     public static final String shotTime1Key = "Shot Time 1";
