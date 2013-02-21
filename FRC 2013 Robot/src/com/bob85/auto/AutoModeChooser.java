@@ -72,8 +72,4 @@ public class AutoModeChooser {
     public void runAutoModeChooser() {
         getDriverStationInputs();
     }
-    
-    public void runAutoModeChooser() {
-        getDriverStationInputs();
-    }
 }

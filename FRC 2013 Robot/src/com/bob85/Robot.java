@@ -16,8 +16,6 @@ public class Robot extends IterativeRobot {
     Joystick rightStick = new Joystick(2);
     F310Gamepad opPad = new F310Gamepad(3);
 
-    AutoModeChooser autoChooser = new AutoModeChooser();
-    ShotTimer shotTimer = new ShotTimer(ShootCommand.frisbee_val);
     Gyro gyro = new Gyro(Drive.kGYRO);
     
     Victor leftDriveMotor = new Victor(Drive.kLEFTDRIVE_VICTORS);

@@ -15,7 +15,6 @@ public class Shooter {
     private double kOnTargetPercentTolerance = 0.1;
     
     private static final double kRPM_TO_PWM = (1/5310);
-    private static final double kRPM_TO_PWM = (1/5310);
     
     private Victor shooterMotor;
     private Victor shooterBeltMotor;
