@@ -11,11 +11,17 @@ public class ShootCommand {
     private Shooter shooter;
     private FrisbeeLoader frisbeeLoader;
     public static final int frisbee_val = 3; //Amount of frisbees to fire
-    private ShotTimer shotTimer;
-    private int shotNumber = 1;
-    private double shotTime = 0.15;
+    private ShotTimer shotTimer; 
+    private int shotNumber = 1; //current shot number
+    private double shotTime = 0.15; //length of time to leave hopper on in shot cycle
     private double currentTime;
     
+    /**
+     * Constructs a ShootCommand
+     * @param shooter Shooter object
+     * @param shotTimer ShotTimer object
+     * @param frisbeeLoader Hopper object
+     */
     public ShootCommand(Shooter shooter, ShotTimer shotTimer, FrisbeeLoader frisbeeLoader) {
         this.shooter = shooter;
         this.frisbeeLoader = frisbeeLoader;
@@ -26,6 +32,11 @@ public class ShootCommand {
     private void runShooter() {
         shooter.setShooterSpeed(1);
         shooter.setShooterBeltSpeed(1);
+    }
+    
+    private void disableShooter() {
+        shooter.setShooterSpeed(0);
+        shooter.setShooterBeltSpeed(0);
     }
     
     public double getTime() {
@@ -67,10 +78,12 @@ public class ShootCommand {
                 }
                 break;
             default:
+                disableShooter();
                 break;
         }
         
         if (shotNumber == 4) {
+            disableShooter();
             return true;
         } else {
             return false;
