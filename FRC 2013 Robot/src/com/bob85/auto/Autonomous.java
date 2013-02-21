@@ -52,6 +52,8 @@ public class Autonomous {
                     if (driveBackOffCommand.driveCommand(drive.getEncodersDistance(), 200)) {
                         autoStage = 2;
                     }
+                } else {
+                    autoStage = 2;
                 }
             case 2:
                 if (autoChooser.turnStage) {

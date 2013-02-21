@@ -36,6 +36,11 @@ public class Drive {
     
     public static final int kGYRO = 1;
     
+    private static final int kSHIFT_DRIVE = 3;
+    private static final int kSHIFT_CLIMB = 2;
+    private static final int kSHIFT_CLIMB_LEFT = 4;
+    private static final int kSHIFT_CLIMB_RIGHT = 5;
+    
     private boolean isEncodersStarted = false;
     
     private double leftMotorsOutput; //left drive motor output setting
@@ -52,11 +57,14 @@ public class Drive {
     private double leftDriveServoClimbPosition = 1;
     private double rightDriveServoClimbPosition = 0;
     
-    private double encoderDistanceRatio = 1.22; //Each encoder pulse = 1.22inches traveled
     private int encoderCPR = 250;
+    private double encoderDistanceRatio = (1.22 / encoderCPR); //Each encoder pulse = 1.22 inches traveled
+    private double climberEncoderDistanceRatio = ((1.9 * Math.PI) / encoderCPR); //Each encoder pulse = 5.969 inches traveled
+    
     
     private boolean isDrive = false;
     private boolean isClimb = false;
+    private int driveState; //0 is drive 1 is left climb 2 is right climb 3 is both climb
     
     /**
      * Constructs a Robot Drive with two PWM channels and joystick input
@@ -91,9 +99,24 @@ public class Drive {
     /**
      * Maps the motor outputs to the joysticks Y axis
      */
-    private void getTankDriveJoystickInput() {
-        leftMotorsOutput = -leftDriveJoystick.getY();
-        rightMotorsOutput = -rightDriveJoystick.getY();
+    private void getTankDriveJoystickInput(double scaleFactor) {
+        if (rightDriveJoystick.getTrigger()) {
+            leftMotorsOutput = -leftDriveJoystick.getY();
+            rightMotorsOutput = -rightDriveJoystick.getY();
+        } else {
+            leftMotorsOutput = -leftDriveJoystick.getY() * scaleFactor;
+            rightMotorsOutput = -rightDriveJoystick.getY() * scaleFactor;
+        }
+    }
+    
+    private void getLeftClimbRightDriveJoystickInput(double scaleFactor) {
+        leftMotorsOutput = scaleFactor * leftDriveJoystick.getY();
+        rightMotorsOutput = scaleFactor * -rightDriveJoystick.getY();
+    }
+    
+    private void getRightClimbLeftDriveJoystickInput(double scaleFactor) {
+        leftMotorsOutput = scaleFactor * -leftDriveJoystick.getY();
+        rightMotorsOutput = scaleFactor * rightDriveJoystick.getY();
     }
     
     /**
@@ -115,7 +138,7 @@ public class Drive {
     public void setLinearizedOutput() {
         leftLinearMotorsOutput = MotorLinearization.calculateLinearOutput(leftMotorsOutput);
         rightLinearMotorsOutput = MotorLinearization.calculateLinearOutput(rightMotorsOutput);
-        leftDriveMotors.set(-leftLinearMotorsOutput);
+        leftDriveMotors.set(leftLinearMotorsOutput);
         rightDriveMotors.set(-rightLinearMotorsOutput);
     }
     
@@ -153,6 +176,7 @@ public class Drive {
         }
     }
     
+
     public void initEncoders() {
         if (!isEncodersStarted && leftDriveEncoder != null && rightDriveEncoder != null) {
             leftDriveEncoder.start();
@@ -219,25 +243,21 @@ public class Drive {
     }
     
     public void setServoDrivePosition() {
-
-        if (!getServoDrivePosition()){
-            leftDriveServo.set(leftDriveServoDrivePosition);
-            rightDriveServo.set(rightDriveServoDrivePosition);
-        } else {
-            isDrive = true;
-        }
-        isClimb = false;
+        leftDriveServo.set(leftDriveServoDrivePosition);
+        rightDriveServo.set(rightDriveServoDrivePosition);
     }
     
     public void setServoClimbPosition() {
-        if (!getServoClimbPosition()) {
-            leftDriveServo.set(leftDriveServoClimbPosition);
-            rightDriveServo.set(rightDriveServoClimbPosition);
-            isClimb = false;
-        } else {
-            isClimb = true;
-        }
-        isDrive = false;
+        leftDriveServo.set(leftDriveServoClimbPosition);
+        rightDriveServo.set(rightDriveServoClimbPosition);
+    }
+    
+    public void setleftServoClimbPosition() {
+        leftDriveServo.set(leftDriveServoClimbPosition);
+    }
+    
+    public void setRightServoClimbPosition() {
+        rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
     public boolean getIsDrive() {
@@ -256,10 +276,14 @@ public class Drive {
 
     
     public void setJoystickBasedPTOShift() {
-        if (leftDriveJoystick.getTrigger()) {
+        if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
             setServoDrivePosition();
-        } else if (rightDriveJoystick.getTrigger()) {
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
             setServoClimbPosition();
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+            setleftServoClimbPosition();
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+            setRightServoClimbPosition();
         }
     }
     
@@ -267,11 +291,24 @@ public class Drive {
      * Uses two joysticks in a tank drive setup to run the motors
      */
     public void joystickBasedTankDrive() {
-        getTankDriveJoystickInput();
+        getTankDriveJoystickInput(0.5);
         setMotorOutputDeadbands();
         limitMotorsOutputChange(true, true);
         setLinearizedOutput();
-        setJoystickBasedPTOShift();
+    }
+    
+    public void joystickBasedLeftClimbDrive() {
+        getLeftClimbRightDriveJoystickInput(1);
+        setMotorOutputDeadbands();
+        limitMotorsOutputChange(true, true);
+        setLinearizedOutput();
+    }
+    
+    public void joystickBasedRightClimbDrive() {
+        getRightClimbLeftDriveJoystickInput(1);
+        setMotorOutputDeadbands();
+        limitMotorsOutputChange(true, true);
+        setLinearizedOutput();
     }
     
     public void encoderTestDrive() {
@@ -292,15 +329,40 @@ public class Drive {
     }
     
     public void switchDriveStates() {
-        isDrive = getServoDrivePosition();
-        isClimb = getServoClimbPosition();
+        if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+            driveState = 0;
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+            driveState = 1;
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+            driveState = 2;
+        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+            driveState = 3;
+        } else if (driveState == 1 && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+            driveState = 3;
+        } else if (driveState == 2 && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+            driveState = 3;
+        }
     }
        
     public void runDriveStates() {
         setJoystickBasedPTOShift();
-        if (getIsDrive()) {
-            joystickBasedTankDrive();
+        switch (driveState) {
+            case 0:
+                joystickBasedTankDrive();
+                break;
+            case 1:
+                joystickBasedLeftClimbDrive();
+                break;
+            case 2:
+                joystickBasedRightClimbDrive();
+                break;
+            case 3:
+                break;
         }
+    }
+    
+    public int getDriveState() {
+        return driveState;
     }
     
     public void driveInit() {
@@ -316,6 +378,6 @@ public class Drive {
     
     public void runDrive() {
         switchDriveStates();
-        runDriveStates();
+        runDriveStates();        
     }
 }

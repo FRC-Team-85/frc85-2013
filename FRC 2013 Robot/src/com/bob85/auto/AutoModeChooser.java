@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bob85.auto;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
@@ -25,7 +21,6 @@ public class AutoModeChooser {
     public boolean driveStage2;
     
     DriverStation driverStation;
-    
     public AutoModeChooser() {
         driverStation = DriverStation.getInstance();
     }
