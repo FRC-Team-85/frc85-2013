@@ -13,7 +13,6 @@ public class TurnCommand {
     }
     
     public boolean turnCommand() {
-            gyro.setSensitivity(0.007);
         
         if (drive.getAngle() < angle) {
             drive.setMotorOutputSetting(0.5, -0.5);
