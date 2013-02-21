@@ -53,6 +53,7 @@ public class ShootCommand {
             frisbeeLoader.setHopperBeltMotor(0);
             return false;
         } else {
+            frisbeeLoader.setHopperBeltMotor(0);
             return true;
         }
     }
