@@ -58,9 +58,8 @@ public class Drive {
     private double rightDriveServoClimbPosition = 0;
     
     private int encoderCPR = 250;
-    private double encoderDistanceRatio = (1.22 / encoderCPR); //Each encoder pulse = 1.22 inches traveled
-    private double climberEncoderDistanceRatio = ((1.9 * Math.PI) / encoderCPR); //Each encoder pulse = 5.969 inches traveled
-    
+    private double encoderDistanceRatio = (((4 * Math.PI) / 10.3) / encoderCPR); //Each encoder pulse = 1.22 inches traveled
+    private double encoderClimberRatio = (2 * Math.PI / encoderCPR);
     
     private boolean isDrive = false;
     private boolean isClimb = false;
