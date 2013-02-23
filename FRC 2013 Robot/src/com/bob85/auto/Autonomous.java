@@ -14,19 +14,19 @@ public class Autonomous {
     Drive drive;
     Shooter shooter;
     FrisbeeLoader frisbeeLoader;
-    ShootCommand shoot3Command;
-    TurnCommand turn180Command;
-    DriveCommand drivetoCenterCommand;
-    DriveCommand driveBackOffCommand;
+    ShootCommand shootCmd;
+    TurnCommand turn180Cmd;
+    DriveCommand driveStage2Cmd;
+    DriveCommand driveStage1Cmd;
     
     /**
      * Instantiates the Commands
      */
     private void initCommands() {
-        shoot3Command = new ShootCommand(shooter, shotTimer, frisbeeLoader);
-        turn180Command = new TurnCommand(drive, 180);
-        drivetoCenterCommand = new DriveCommand(drive);
-        driveBackOffCommand = new DriveCommand(drive);
+        shootCmd = new ShootCommand(shooter, shotTimer, frisbeeLoader);
+        turn180Cmd = new TurnCommand(drive, 180);
+        driveStage2Cmd = new DriveCommand(drive);
+        driveStage1Cmd = new DriveCommand(drive);
     }
 
     /**
@@ -51,7 +51,7 @@ public class Autonomous {
         switch (autoStage) {
             case 0:
                 if (autoChooser.shootStage) {
-                    if (shoot3Command.shootCommand()) {
+                    if (shootCmd.shootCommand()) {
                         autoStage = 1;
                     }
                 } else {
@@ -60,7 +60,7 @@ public class Autonomous {
                 break;
             case 1:
                 if (autoChooser.driveStage1) {
-                    if (driveBackOffCommand.driveCommand(drive.getEncodersDistance(), 200)) {
+                    if (driveStage1Cmd.driveCommand(drive.getEncodersDistance(), 200)) {
                         autoStage = 2;
                     }
                 } else {
@@ -68,7 +68,7 @@ public class Autonomous {
                 }
             case 2:
                 if (autoChooser.turnStage) {
-                    if (turn180Command.turnCommand()) {
+                    if (turn180Cmd.turnCommand()) {
                         autoStage = 3;
                     }
                 } else {
@@ -77,7 +77,7 @@ public class Autonomous {
                 break;
             case 3:
                 if (autoChooser.driveStage2) {
-                    if (drivetoCenterCommand.driveCommand(drive.getEncodersDistance(), 500)) {
+                    if (driveStage2Cmd.driveCommand(drive.getEncodersDistance(), 500)) {
                         autoStage = 4;
                     }
                 } else {
@@ -108,9 +108,9 @@ public class Autonomous {
         autoStage = 0;
         autoChooser.runAutoModeChooser();
         shotTimer.runShotTimer();
-        shoot3Command.initShootCommand();
-        driveBackOffCommand.initDriveCommand();
-        turn180Command.initTurnCommand();
-        drivetoCenterCommand.initDriveCommand();
+        shootCmd.initShootCommand();
+        driveStage1Cmd.initDriveCommand();
+        turn180Cmd.initTurnCommand();
+        driveStage2Cmd.initDriveCommand();
     }
 }
