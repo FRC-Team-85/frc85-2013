@@ -1,20 +1,25 @@
 package com.bob85.auto;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShotTimer {
     
-    public static final String shotTime1Key = "Shot Time 1";
-    public static final String shotTime2Key = "Shot Time 2";
-    public static final String shotTime3Key = "Shot Time 3";
+    public static final String shotTime1Key = "Shot_Time_1";
+    public static final String shotTime2Key = "Shot_Time_2";
+    public static final String shotTime3Key = "Shot_Time_3";
 
+    private static final String shotTimePrefKey = "_Pref";
     
     int frisbees_val;
     double[] shotTimes;
     
+    Preferences shotPref;
+    
     public ShotTimer(int frisbees) {
         frisbees_val = frisbees;
         shotTimes = new double[frisbees];
+        shotPref = Preferences.getInstance();
     }
     
     /**
@@ -25,13 +30,13 @@ public class ShotTimer {
             case 0:
                 break;
             case 1:
-                SmartDashboard.putNumber(shotTime1Key, 0);
+                SmartDashboard.putNumber(shotTime1Key, shotPref.getDouble(shotTime1Key + shotTimePrefKey, 0));
                 break;
             case 2:
-                SmartDashboard.putNumber(shotTime2Key, 0);
+                SmartDashboard.putNumber(shotTime2Key, shotPref.getDouble(shotTime2Key + shotTimePrefKey, 0));
                 break;
             case 3:
-                SmartDashboard.putNumber(shotTime3Key, 0);
+                SmartDashboard.putNumber(shotTime3Key, shotPref.getDouble(shotTime3Key + shotTimePrefKey, 0));
                 break;
             default:
                 break;
