@@ -81,6 +81,7 @@ public class ShotTimer {
      */
     public void initShotTimer() {
         initShotTimerData();
+        shotPref.save();
     }
     
     /**
