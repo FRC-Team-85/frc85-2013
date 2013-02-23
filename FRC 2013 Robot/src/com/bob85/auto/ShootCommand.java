@@ -58,6 +58,11 @@ public class ShootCommand {
         }
     }
     
+    public void initShootCommand() {
+        shotNumber = 1;
+        timer.reset();
+    }
+    
     public boolean shootCommand() {
         runShooter();
         timer.start();

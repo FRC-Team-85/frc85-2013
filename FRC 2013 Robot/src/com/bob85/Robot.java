@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
     
     FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
     
-    Autonomous auto = new Autonomous(autoChooser, shotTimer, gyro, drive, shooter, frisbeeLoader);
+    Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, frisbeeLoader);
     
     public void robotInit() {
         drive.driveInit();

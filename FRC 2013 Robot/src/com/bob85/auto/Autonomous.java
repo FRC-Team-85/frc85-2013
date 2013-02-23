@@ -26,7 +26,7 @@ public class Autonomous {
         driveBackOffCommand = new DriveCommand(drive);
     }
 
-    public Autonomous(AutoModeChooser autoChooser, ShotTimer shotTimer, Gyro gyro, Drive drive,
+    public Autonomous(AutoModeChooser autoChooser, ShotTimer shotTimer, Drive drive,
             Shooter shooter, FrisbeeLoader frisbeeLoader) {
         this.autoChooser = autoChooser;
         this.shotTimer = shotTimer;
@@ -105,6 +105,9 @@ public class Autonomous {
         autoStage = 0;
         autoChooser.runAutoModeChooser();
         shotTimer.runShotTimer();
-        drive.resetGyro();
+        shoot3Command.initShootCommand();
+        driveBackOffCommand.initDriveCommand();
+        turn180Command.initTurnCommand();
+        drivetoCenterCommand.initDriveCommand();
     }
 }

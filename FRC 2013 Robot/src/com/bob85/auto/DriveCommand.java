@@ -19,6 +19,10 @@ public class DriveCommand {
     public static void initSmartDashboardDefaultValues() {
         SmartDashboard.putNumber("Drive Command Offset", 5);
     }
+    
+    public void initDriveCommand() {
+        drive.resetEncoders();
+    }
 
     /**
      * Drives the robot for a desired distance. Currently waiting on a proper

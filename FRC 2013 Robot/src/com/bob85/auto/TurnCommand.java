@@ -12,6 +12,10 @@ public class TurnCommand {
         this.angle = angle;
     }
     
+    public void initTurnCommand() {
+        drive.resetGyro();
+    }
+    
     public boolean turnCommand() {
         
         if (drive.getAngle() < angle) {
