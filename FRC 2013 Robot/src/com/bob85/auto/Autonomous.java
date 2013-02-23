@@ -19,6 +19,9 @@ public class Autonomous {
     DriveCommand drivetoCenterCommand;
     DriveCommand driveBackOffCommand;
     
+    /**
+     * Instantiates the Commands
+     */
     private void initCommands() {
         shoot3Command = new ShootCommand(shooter, shotTimer, frisbeeLoader);
         turn180Command = new TurnCommand(drive, 180);
@@ -26,6 +29,14 @@ public class Autonomous {
         driveBackOffCommand = new DriveCommand(drive);
     }
 
+    /**
+     * Constructs an Autonomous object
+     * @param autoChooser Autonomous Mode Selector
+     * @param shotTimer ShootCommand Shot Time Settings
+     * @param drive Drive
+     * @param shooter Shooter
+     * @param frisbeeLoader Hopper
+     */
     public Autonomous(AutoModeChooser autoChooser, ShotTimer shotTimer, Drive drive,
             Shooter shooter, FrisbeeLoader frisbeeLoader) {
         this.autoChooser = autoChooser;
@@ -84,23 +95,15 @@ public class Autonomous {
     }
     
     /**
-     * Skeleton for a test function
-     */
-    private void testAutoMode() {
-        
-    }
-    
-    private void runCompetitionAutonomous() {
-        runSequentialAutonomous();
-    }
-
-    /**
-     * Only public access to the class
+     * Runs the autonomous program
      */
     public void runAutonomous() {
         runSequentialAutonomous();
     }
 
+    /**
+     * Resets Autonomous & Command variables and gets mode & shot time settings
+     */
     public void initAutonomous() {
         autoStage = 0;
         autoChooser.runAutoModeChooser();

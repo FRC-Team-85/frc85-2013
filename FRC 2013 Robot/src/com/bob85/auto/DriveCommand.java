@@ -12,24 +12,34 @@ public class DriveCommand {
 
     private String endDistanceOffset = "Drive Command Offset";
     
+    /**
+     * Constructs a DriveCommand with a reference to a Drive object
+     * @param drive Drive object
+     */
     public DriveCommand(Drive drive) {
         this.drive = drive;
     }
     
+    /**
+     * Creates NetworkTable key & value for constant sensitivity to stop the robot 
+     * before reaching desired distance
+     */
     public static void initSmartDashboardDefaultValues() {
         SmartDashboard.putNumber("Drive Command Offset", 5);
     }
     
+    /**
+     * Resets the encoders for the DriveCommand
+     */
     public void initDriveCommand() {
         drive.resetEncoders();
     }
 
     /**
-     * Drives the robot for a desired distance. Currently waiting on a proper
-     * closed loop autonomous drive method
+     * Drives the robot for a desired distance. 
      *
-     * @param currentDist current displacement robot is at
-     * @param desiredDist goal displacement of the robot
+     * @param currentDist current displacement robot is at in inches
+     * @param desiredDist goal displacement of the robot in inches
      */
     public boolean driveCommand(double currentDist, double desiredDist) {
             if (!isInitialDistSet) {

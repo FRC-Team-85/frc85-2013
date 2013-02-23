@@ -21,6 +21,10 @@ public class AutoModeChooser {
     public boolean driveStage2;
     
     DriverStation driverStation;
+    
+    /**
+     * Constructs AutoModeChooser with a reference to the Driver Station
+     */
     public AutoModeChooser() {
         driverStation = DriverStation.getInstance();
     }
@@ -51,6 +55,9 @@ public class AutoModeChooser {
         return analogChoice;
     }
     
+    /**
+     * Assign the Driver Station Digital Inputs to variables
+     */
     private void getDriverStationInputs() {
         shootStage = driverStation.getDigitalIn(1);
         driveStage1 = driverStation.getDigitalIn(2);
@@ -58,6 +65,9 @@ public class AutoModeChooser {
         driveStage2 = driverStation.getDigitalIn(4);
     }
     
+    /**
+     * Send SmartDashboard diagnostics for Driver Station Digital Inputs
+     */
     private void sendDriveStationsInputsSDB() {
         SmartDashboard.putBoolean("DI 1", driverStation.getDigitalIn(1));
         SmartDashboard.putBoolean("DI 2", driverStation.getDigitalIn(2));
@@ -69,6 +79,9 @@ public class AutoModeChooser {
         SmartDashboard.putBoolean("DI 8", driverStation.getDigitalIn(8));
     }
   
+    /**
+     * Get selected autonomous modes
+     */
     public void runAutoModeChooser() {
         getDriverStationInputs();
     }

@@ -7,15 +7,27 @@ public class TurnCommand {
     Drive drive;
     private double angle;
     
+    /**
+     * Constructs a TurnCommand with a Drive and desired angle
+     * @param drive
+     * @param angle 
+     */
     public TurnCommand(Drive drive, double angle) {
         this.drive = drive;
         this.angle = angle;
     }
     
+    /**
+     * Resets the gyro angle to 0
+     */
     public void initTurnCommand() {
         drive.resetGyro();
     }
     
+    /**
+     * Turns the robot for a set angle clockwise
+     * @return 
+     */
     public boolean turnCommand() {
         
         if (drive.getAngle() < angle) {

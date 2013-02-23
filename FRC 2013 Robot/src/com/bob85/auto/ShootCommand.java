@@ -29,22 +29,37 @@ public class ShootCommand {
         timer = new Timer();
     }
     
+    /**
+     * Turns the shooter and shooter belt on
+     */
     private void runShooter() {
         shooter.setShooterSpeed(1);
         shooter.setShooterBeltSpeed(1);
     }
     
+    /**
+     * Turns the shooter and shooter belt to zero output
+     */
     private void disableShooter() {
         shooter.setShooterSpeed(0);
         shooter.setShooterBeltSpeed(0);
     }
     
+    /**
+     * Gets time in seconds
+     * @return 
+     */
     public double getTime() {
         timer.start();
         currentTime = timer.get() * MathUtils.pow(10, -6);
         return currentTime;
     }
     
+    /**
+     * Turns the hopper belt on for a set time to shoot a frisbee
+     * @param shotTime shot time setting to turn on the hopper motor
+     * @return 
+     */
     public boolean shootFrisbee(double shotTime) {
         if (getTime() >= shotTime && getTime() <= (shotTime + this.shotTime)) {
             frisbeeLoader.setHopperBeltMotor(1);
@@ -58,11 +73,18 @@ public class ShootCommand {
         }
     }
     
+    /**
+     * Resets the ShootCommand variables
+     */
     public void initShootCommand() {
         shotNumber = 1;
         timer.reset();
     }
     
+    /**
+     * Runs the ShootCommand
+     * @return is shootCommand() complete
+     */
     public boolean shootCommand() {
         runShooter();
         timer.start();
