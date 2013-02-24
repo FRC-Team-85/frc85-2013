@@ -12,7 +12,7 @@ public class ShootCommand {
     private FrisbeeLoader frisbeeLoader;
     public static final int frisbee_val = 3; //Amount of frisbees to fire
     private ShotTimer shotTimer; 
-    private int shotNumber = 1; //current shot number
+    public int shotNumber = 1; //current shot number
     private double shotTime = 0.15; //length of time to leave hopper on in shot cycle
     private double currentTime;
     

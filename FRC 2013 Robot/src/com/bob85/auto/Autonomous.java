@@ -3,6 +3,7 @@ package com.bob85.auto;
 import com.bob85.*;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Autonomous {
 
@@ -45,6 +46,13 @@ public class Autonomous {
         this.shooter = shooter;
         this.frisbeeLoader = frisbeeLoader;
         initCommands();
+    }
+    
+    private void runDiagnostics() {
+        SmartDashboard.putNumber("Auto Stage", autoStage);
+        SmartDashboard.putNumber("Shot Number", shootCmd.shotNumber);
+        SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
+        SmartDashboard.putNumber("Average Drive Dist", drive.getAverageEncodersDistance());
     }
 
     private void runSequentialAutonomous() {
@@ -99,6 +107,7 @@ public class Autonomous {
      */
     public void runAutonomous() {
         runSequentialAutonomous();
+        runDiagnostics();
     }
 
     /**
