@@ -48,7 +48,7 @@ public class Drive {
     private double leftLinearMotorsOutput;
     private double rightLinearMotorsOutput;
             
-    private double deadband = 0.1; //Deadband for drive motor output
+    private double deadband = 0.2; //Deadband for drive motor output
     private double changeLimit_val = 0.25;
     private double changeLimit = changeLimit_val;
     
@@ -105,34 +105,27 @@ public class Drive {
     }
     
     /**
+     * Assigns the Y Axis of the left and right joysticks to MotorsOutput variable
+     * @param reverseLeft Reverse input
+     * @param reverseRight Reverse input
+     * @param scaleFactor multiply input
+     */
+    public void getJoystickYAxisInputs(boolean reverseLeft, boolean reverseRight, double scaleFactor) {
+        leftMotorsOutput = (reverseLeft) ? leftDriveJoystick.getY() : -leftDriveJoystick.getY();
+        rightMotorsOutput = (reverseRight) ? rightDriveJoystick.getY() : -rightDriveJoystick.getY();
+        leftMotorsOutput *= scaleFactor;
+        rightMotorsOutput *= scaleFactor;
+    }
+    
+    /**
      * Maps the motor outputs to the joysticks' Y axis
      */
-    private void getTankDriveJoystickInput(double scaleFactor) {
+    private void getTankDriveJoystickInput() {
         if (rightDriveJoystick.getTrigger()) {
-            leftMotorsOutput = -leftDriveJoystick.getY();
-            rightMotorsOutput = -rightDriveJoystick.getY();
+            getJoystickYAxisInputs(false, false, 1);
         } else {
-            leftMotorsOutput = -leftDriveJoystick.getY() * scaleFactor;
-            rightMotorsOutput = -rightDriveJoystick.getY() * scaleFactor;
+            getJoystickYAxisInputs(false, false, 0.5);
         }
-    }
-    
-    /**
-     * Reverses left motor input to climb with left drive motors
-     * @param scaleFactor 
-     */
-    private void getLeftClimbRightDriveJoystickInput(double scaleFactor) {
-        leftMotorsOutput = scaleFactor * leftDriveJoystick.getY();
-        rightMotorsOutput = scaleFactor * -rightDriveJoystick.getY();
-    }
-    
-    /**
-     * Reverses right motor input to climb with right drive motors
-     * @param scaleFactor 
-     */
-    private void getRightClimbLeftDriveJoystickInput(double scaleFactor) {
-        leftMotorsOutput = scaleFactor * -leftDriveJoystick.getY();
-        rightMotorsOutput = scaleFactor * rightDriveJoystick.getY();
     }
     
     /**
@@ -314,9 +307,7 @@ public class Drive {
         SmartDashboard.putBoolean("isClimb", isClimb);
         SmartDashboard.putNumber("Drive State", driveState);
     }
-    
-
-    
+  
     public void setJoystickBasedPTOShift() {
         if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
             setServoDrivePosition();
@@ -330,34 +321,14 @@ public class Drive {
     }
     
     /**
-     * Uses two joysticks in a tank drive setup to run the motors
+     * Applies deadband and limited output change before setting a linearized
+     * motor output based on current motor output settings
      */
-    public void joystickBasedTankDrive() {
-        getTankDriveJoystickInput(0.5);
+    public void setFilteredMotorOutput() {
         setMotorOutputDeadbands();
         limitMotorsOutputChange(true, true);
         setLinearizedOutput();
-    }
-    
-    public void joystickBasedLeftClimbDrive() {
-        getLeftClimbRightDriveJoystickInput(1);
-        setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true);
-        setLinearizedOutput();
-    }
-    
-    public void joystickBasedRightClimbDrive() {
-        getRightClimbLeftDriveJoystickInput(1);
-        setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true);
-        setLinearizedOutput();
-    }
-    
-    public void encoderTestDrive() {
-        joystickBasedTankDrive();
-        runEncoderDiagnostics();
-        limitMotorsOutputChange(true, true);
-    }       
+    }     
     
     public void runRampUpTrapezoidalMotionProfile(double maxSpeed) {
         setMotorOutputSetting(maxSpeed, maxSpeed);
@@ -402,13 +373,16 @@ public class Drive {
         setJoystickBasedPTOShift();
         switch (driveState) {
             case 0:
-                joystickBasedTankDrive();
+                getTankDriveJoystickInput();
+                setFilteredMotorOutput();
                 break;
             case 1:
-                joystickBasedLeftClimbDrive();
+                getJoystickYAxisInputs(true, false, 1);
+                setFilteredMotorOutput();
                 break;
             case 2:
-                joystickBasedRightClimbDrive();
+                getJoystickYAxisInputs(false, true, 1);
+                setFilteredMotorOutput();
                 break;
             case 3:
                 break;
