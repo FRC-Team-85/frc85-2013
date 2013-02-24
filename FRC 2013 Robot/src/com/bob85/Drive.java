@@ -66,6 +66,14 @@ public class Drive {
     private int driveState; //0 is drive 1 is left climb 2 is right climb 3 is both climb
     
     /**
+     * Initialize sensor settings
+     */
+    private void initDriveSettings() {
+        gyro.setSensitivity(.007);
+        initEncoders();
+    }
+    
+    /**
      * Constructs a Robot Drive with two PWM channels and joystick input
      * 
      * @param leftDriveMotors left drive PWM channel
@@ -93,10 +101,11 @@ public class Drive {
         this.leftDriveEncoder = leftDriveEncoder;
         this.rightDriveEncoder = rightDriveEncoder;
         this.gyro = gyro;
+        initDriveSettings();
     }
     
     /**
-     * Maps the motor outputs to the joysticks Y axis
+     * Maps the motor outputs to the joysticks' Y axis
      */
     private void getTankDriveJoystickInput(double scaleFactor) {
         if (rightDriveJoystick.getTrigger()) {
@@ -108,11 +117,19 @@ public class Drive {
         }
     }
     
+    /**
+     * Reverses left motor input to climb with left drive motors
+     * @param scaleFactor 
+     */
     private void getLeftClimbRightDriveJoystickInput(double scaleFactor) {
         leftMotorsOutput = scaleFactor * leftDriveJoystick.getY();
         rightMotorsOutput = scaleFactor * -rightDriveJoystick.getY();
     }
     
+    /**
+     * Reverses right motor input to climb with right drive motors
+     * @param scaleFactor 
+     */
     private void getRightClimbLeftDriveJoystickInput(double scaleFactor) {
         leftMotorsOutput = scaleFactor * -leftDriveJoystick.getY();
         rightMotorsOutput = scaleFactor * rightDriveJoystick.getY();
@@ -132,7 +149,7 @@ public class Drive {
     }
     
     /**
-     * Sets motor output setting to a linearized desired output
+     * Sets motor input setting to a linearized desired output
      */
     public void setLinearizedOutput() {
         leftLinearMotorsOutput = MotorLinearization.calculateLinearOutput(leftMotorsOutput);
@@ -141,6 +158,11 @@ public class Drive {
         rightDriveMotors.set(-rightLinearMotorsOutput);
     }
     
+    /**
+     * Limits maximum change in motor input
+     * @param isLeft enable limit for left input
+     * @param isRight enable limit for right input
+     */
     public void limitMotorsOutputChange(boolean isLeft, boolean isRight) {       
         if (isLeft) {
             if (leftLinearMotorsOutput - leftDriveMotors.get() > changeLimit) {
@@ -168,6 +190,9 @@ public class Drive {
         this.rightMotorsOutput = rightMotorsOutput;
     }
     
+    /**
+     * Resets encoder counts to 0
+     */
     public void resetEncoders() {
         if (leftDriveEncoder != null && rightDriveEncoder != null) {
             leftDriveEncoder.reset();
@@ -175,6 +200,9 @@ public class Drive {
         }
     }
     
+    /**
+     * Start counting encoder counts
+     */
     public void enableEncoders() {
         if (!isEncodersStarted && leftDriveEncoder != null && rightDriveEncoder != null) {
             leftDriveEncoder.start();
@@ -183,7 +211,9 @@ public class Drive {
         }    
     }
     
-
+    /**
+     * Initialize encoder settings
+     */
     public void initEncoders() {            
             resetEncoders();
             leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -192,6 +222,9 @@ public class Drive {
             rightDriveEncoder.setReverseDirection(true);
     }
     
+    /**
+     * Stop counting encoder counts
+     */
     public void disableEncoders() {
         if (isEncodersStarted) {
             leftDriveEncoder.stop();
@@ -200,11 +233,18 @@ public class Drive {
         }
     }
     
+    /**
+     * Return average distance of the two drive encoders
+     * @return 
+     */
     public double getAverageEncodersDistance() {
         return (leftDriveEncoder.getDistance() + rightDriveEncoder.getDistance()) / 2;
     }
     
-    public void sendEncoderDiagnostics() {
+    /**
+     * Sends diagnostics to SmartDashboard
+     */
+    public void runEncoderDiagnostics() {
         SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
         SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance());
         SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.get());
@@ -315,7 +355,7 @@ public class Drive {
     
     public void encoderTestDrive() {
         joystickBasedTankDrive();
-        sendEncoderDiagnostics();
+        runEncoderDiagnostics();
         limitMotorsOutputChange(true, true);
     }       
     
@@ -325,6 +365,10 @@ public class Drive {
         setLinearizedOutput();
     }
     
+    /**
+     * Linearly 
+     * @param minSpeed 
+     */
     public void runRampDownTrapezoidalMotionProfile(double minSpeed) {
         leftMotorsOutput = minSpeed;
         rightMotorsOutput = minSpeed;
@@ -332,6 +376,9 @@ public class Drive {
         setLinearizedOutput();
     }
     
+    /**
+     * Switches between Drive States based on joystick button toggles
+     */
     public void switchDriveStates() {
         if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
             driveState = 0;
@@ -348,6 +395,9 @@ public class Drive {
         }
     }
        
+    /**
+     * Runs Drive controls based on Drive State
+     */
     public void runDriveStates() {
         setJoystickBasedPTOShift();
         switch (driveState) {
@@ -365,26 +415,40 @@ public class Drive {
         }
     }
     
+    /**
+     * Returns current Drive State
+     * @return 0 = drive, 1 = left climb right drive, 2 = left drive right climb
+     */
     public int getDriveState() {
         return driveState;
     }
     
-    public void driveInit() {
-        gyro.setSensitivity(.007);
-        initEncoders();
+    /**
+     * Reset and set actuators & sensors for Drive
+     */
+    public void initDrive() {
+        resetGyro();
+        resetEncoders();
+        enableEncoders();
         setServoDrivePosition();
     }
     
-    public void driveDisabled() {
+    /**
+     * Reset and disable actuators & sensors for Drive
+     */
+    public void disableDrive() {
         disableEncoders();
         resetEncoders();
         gyro.reset();
     }
     
+    /**
+     * Enables actuators and sensors for Drive in teleop
+     */
     public void runDrive() {
         enableEncoders();
         sendDriveStateDiagnostics();
-        sendEncoderDiagnostics();
+        runEncoderDiagnostics();
         switchDriveStates();
         runDriveStates();        
     }

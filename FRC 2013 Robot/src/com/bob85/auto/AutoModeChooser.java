@@ -68,7 +68,7 @@ public class AutoModeChooser {
     /**
      * Send SmartDashboard diagnostics for Driver Station Digital Inputs
      */
-    private void sendDriveStationsInputsSDB() {
+    public void runDiagnostics() {
         SmartDashboard.putBoolean("DI 1", driverStation.getDigitalIn(1));
         SmartDashboard.putBoolean("DI 2", driverStation.getDigitalIn(2));
         SmartDashboard.putBoolean("DI 3", driverStation.getDigitalIn(3));

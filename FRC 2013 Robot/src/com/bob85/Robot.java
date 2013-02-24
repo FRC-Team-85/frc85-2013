@@ -54,24 +54,23 @@ public class Robot extends IterativeRobot {
     Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, frisbeeLoader);
     
     public void robotInit() {
-        drive.driveInit();
+        drive.initDrive();
         shotTimer.initShotTimer();   
         shooter.initShooter();
         climber.initClimber();
     }
     
     public void disabledInit() {
-        drive.driveDisabled();
+        drive.disableDrive();
     }
     
     public void autonomousInit() {
+        drive.initDrive();
         auto.initAutonomous();
     }
     
     public void teleopInit() {
-        gyro.reset();
-        leftDriveEncoder.start();
-        rightDriveEncoder.start();
+        drive.initDrive();
     }
     
     public void testInit() {
