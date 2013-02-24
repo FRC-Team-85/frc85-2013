@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Gyro;
 public class TurnCommand {
     Drive drive;
     private double angle;
+    private boolean isClockwise;
     
     /**
      * Constructs a TurnCommand with a Drive and desired angle
@@ -15,8 +16,9 @@ public class TurnCommand {
     public TurnCommand(Drive drive, double angle) {
         this.drive = drive;
         this.angle = angle;
+        
+        isClockwise = (angle >= 0) ? this.isClockwise = true : false;
     }
-    
     /**
      * Resets the gyro angle to 0
      */
@@ -30,16 +32,30 @@ public class TurnCommand {
      */
     public boolean turnCommand() {
         
-        if (drive.getAngle() < angle) {
-            drive.setMotorOutputSetting(0.5, -0.5);
-            drive.setLinearizedOutput();
-            return false;
-        } else if (drive.getAngle() > angle) {
-            drive.setMotorOutputSetting(0, 0);
-            drive.setLinearizedOutput();
-            return true;
+        if (isClockwise) {
+            if (drive.getAngle() < angle) {
+                drive.setMotorOutputSetting(0.5, -0.5);
+                drive.setLinearizedOutput();
+                return false;
+            } else if (drive.getAngle() > angle) {
+                drive.setMotorOutputSetting(0, 0);
+                drive.setLinearizedOutput();
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            if (drive.getAngle() > angle) {
+                drive.setMotorOutputSetting(-0.5, 0.5);
+                drive.setLinearizedOutput();
+                return false;
+            } else if (drive.getAngle() < angle) {
+                drive.setMotorOutputSetting(0, 0);
+                drive.setLinearizedOutput();
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
