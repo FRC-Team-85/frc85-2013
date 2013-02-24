@@ -21,32 +21,23 @@ public class Shooter {
     
     private double shooterBeltMotorSpeed;
     
-    private HallEffect shooterSensor;
+    private HallEffect shooterHalleffect;
     
     private F310Gamepad gamepad;
     
-    public Shooter(Victor shooterMotor, HallEffect shooterSensor) {
-        this.shooterMotor = shooterMotor;
-        this.shooterSensor = shooterSensor;
-    }
-    
-    public Shooter(Victor shooterMotor, HallEffect shooterSensor, 
-            F310Gamepad joystick) {
-        this.shooterMotor = shooterMotor;
-        this.shooterSensor = shooterSensor;
-        this.gamepad = joystick;
+    private void initShooterSettings() {
+        shooterHalleffect.setMaxPeriod(0.2);
     }
     
     public Shooter(Victor shooterMotor, Victor shooterBeltMotor, 
-            HallEffect shooterSensor, 
+            HallEffect shooterHalleffect, 
             F310Gamepad joystick) {
         this.shooterMotor = shooterMotor;
         this.shooterBeltMotor = shooterBeltMotor;
-        this.shooterSensor = shooterSensor;
+        this.shooterHalleffect = shooterHalleffect;
         this.gamepad = joystick;
+        initShooterSettings();
     }
-    
-
     
     /**
      * Returns an RPM's equivalence in a 0 to 1 PWM scale
@@ -57,6 +48,7 @@ public class Shooter {
     public static double convertRPMtoPWM(int RPM) {
         double pwmValue ;
         pwmValue = RPM / kRPM_TO_PWM;
+        pwmValue = (pwmValue > 1) ? 1 : pwmValue;
         return pwmValue;
     }
     
@@ -76,15 +68,11 @@ public class Shooter {
     }
     
     public boolean onTarget() {
-        boolean onTarget;
-
-        if (Math.abs(convertRPMtoPWM(shooterSensor.getRPM()) -  shooterMotor.get()) <  kOnTargetPercentTolerance) {
-            onTarget = true;
+        if (Math.abs(convertRPMtoPWM(shooterHalleffect.getRPM()) -  shooterMotor.get()) <  kOnTargetPercentTolerance) {
+            return true;
         } else {
-            onTarget = false;
+            return false;
         }
-
-        return onTarget;
     }
     
     public void setShooterBeltSpeed(double speed) {
@@ -96,13 +84,33 @@ public class Shooter {
         return shooterBeltMotorSpeed;
     }
     
+    /**
+     * set shooter and belt with 0 output
+     */
+    public void setShooterToRest() {
+        setShooterBeltSpeed(0);
+        setShooterSpeed(0);
+    }
+    
+    /**
+     * sets shooter and belt with 100% output
+     */
+    public void setShooterMaxSpeed() {
+        setShooterBeltSpeed(1);
+        setShooterSpeed(1);
+    }
+    
+    /**
+     * Returns shooter state
+     * @return 0 = 0 output, 1 = shooter not at correct RPM, 2 = shooter at correct RPM
+     */
     public static int getShooterState() {
         return shooterState;
     }
     
     public void runDiagnostics() {
         SmartDashboard.putNumber("Shooter PWM Setting", shooterMotor.get());
-        SmartDashboard.putNumber("Shooter RPM", shooterSensor.getRPM());
+        SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
         SmartDashboard.putNumber("Shooter Belt PWM Setting", shooterBeltMotor.get());
         SmartDashboard.putBoolean("Shooter On Target", onTarget());
         SmartDashboard.putNumber("Shooter State", getShooterState());
@@ -111,13 +119,15 @@ public class Shooter {
     private void switchShooterStates() {
         switch (shooterState) {
             case 0:
-                if (gamepad.getButton(ButtonType.kRB)) {
-                    shooterState = 1;
-                }
+                shooterState = (gamepad.getButton(ButtonType.kRB)) ? 1 : 0;
                 break;
             case 1:
                 if (gamepad.getButton(ButtonType.kRB) && onTarget()) {
                     shooterState = 2;
+                } else if (!gamepad.getButton(ButtonType.kRB)) {
+                    shooterState = 0;
+                } else if (gamepad.getButton(ButtonType.kRB) && !onTarget()) {
+                    shooterState = 1;
                 }
                 break;
             case 2:
@@ -125,6 +135,8 @@ public class Shooter {
                     shooterState = 0;
                 } else if (gamepad.getButton(ButtonType.kRB) && !onTarget()) {
                     shooterState = 1;
+                } else if (gamepad.getButton(ButtonType.kRB) && onTarget()) {
+                    shooterState = 2;
                 }
         }
     }
@@ -132,41 +144,39 @@ public class Shooter {
     public void runShooterStates() {
         switch (shooterState) {
             case 0:
-                setShooterBeltSpeed(0);                
-                setShooterSpeed(0);
+                setShooterToRest();
                 break;
             case 1:
-                setShooterSpeed(1);
-                setShooterBeltSpeed(1);
+                setShooterMaxSpeed();
                 break;
             case 2:
-                setShooterSpeed(1);
-                setShooterBeltSpeed(1);
-                break;
-            default:
-                setShooterBeltSpeed(0);                
-                setShooterSpeed(0);
+                setShooterMaxSpeed();
                 break;
         }
     }
-    
-    public void runAlexShooterSetup() {
-        if (gamepad.getButton(ButtonType.kRB)) {
-            setShooterSpeed(1);
-            setShooterBeltSpeed(1);
-        } else {
-            setShooterSpeed(0);
-            setShooterBeltSpeed(0);
-        }
+     
+    /**
+     * disables and reset shooter sensors
+     */
+    public void disableShooter() {
+        shooterHalleffect.stop();
+        shooterHalleffect.reset();
     }
     
+    /**
+     * runs control and diagnostics of the shooter
+     */
     public void runShooter() {
-        runAlexShooterSetup();
+        switchShooterStates();
+        runShooterStates();
         runDiagnostics();
     }
     
+    /**
+     * resets and enables shooter sensors
+     */
     public void initShooter() {
-        shooterSensor.start();
-        shooterSensor.setMaxPeriod(0.2);
+        shooterHalleffect.reset();
+        shooterHalleffect.start();
     }
 }

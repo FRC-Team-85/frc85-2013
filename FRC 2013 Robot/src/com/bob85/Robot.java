@@ -37,12 +37,12 @@ public class Robot extends IterativeRobot {
     DigitalInput restClimberLimitSwitch = new DigitalInput(Climber.kREST_LIMITSWITCH);
     DigitalInput extendClimberLimitSwitch = new DigitalInput(Climber.kEXTEND_LIMITSWITCH);
     
-    HallEffect shooterSensor = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
+    HallEffect shooterHalleffect = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
     
     
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, gyro, leftStick, rightStick);
-    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterSensor, opPad);
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterHalleffect, opPad);
     Climber climber = new Climber(drive, leftStick, rightStick,
             leftDriveMotor, rightDriveMotor,
             leftDriveEncoder, rightDriveEncoder,restClimberLimitSwitch, topClimberLimitSwitch,
