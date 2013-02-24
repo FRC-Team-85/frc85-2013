@@ -61,7 +61,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledInit() {
-        drive.disabledInit();
+        drive.driveDisabled();
     }
     
     public void autonomousInit() {

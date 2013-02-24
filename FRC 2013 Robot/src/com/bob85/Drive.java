@@ -175,19 +175,21 @@ public class Drive {
         }
     }
     
-
-    public void initEncoders() {
+    public void enableEncoders() {
         if (!isEncodersStarted && leftDriveEncoder != null && rightDriveEncoder != null) {
             leftDriveEncoder.start();
             rightDriveEncoder.start();
-            
-            resetEncoders();
+            isEncodersStarted = true;
+        }    
+    }
+    
 
+    public void initEncoders() {            
+            resetEncoders();
             leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             
-            isEncodersStarted = true;
-        }
+            rightDriveEncoder.setReverseDirection(true);
     }
     
     public void disableEncoders() {
@@ -198,11 +200,11 @@ public class Drive {
         }
     }
     
-    public double getEncodersDistance() {
+    public double getAverageEncodersDistance() {
         return (leftDriveEncoder.getDistance() + rightDriveEncoder.getDistance()) / 2;
     }
     
-    public void sendEncoderDriveDiagnosticsSDB() {
+    public void sendEncoderDiagnostics() {
         SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
         SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance());
         SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.get());
@@ -270,6 +272,7 @@ public class Drive {
     private void sendDriveStateDiagnostics() {
         SmartDashboard.putBoolean("isDrive", isDrive);
         SmartDashboard.putBoolean("isClimb", isClimb);
+        SmartDashboard.putNumber("Drive State", driveState);
     }
     
 
@@ -312,19 +315,21 @@ public class Drive {
     
     public void encoderTestDrive() {
         joystickBasedTankDrive();
-        sendEncoderDriveDiagnosticsSDB();
+        sendEncoderDiagnostics();
         limitMotorsOutputChange(true, true);
     }       
     
     public void runRampUpTrapezoidalMotionProfile(double maxSpeed) {
         setMotorOutputSetting(maxSpeed, maxSpeed);
         limitMotorsOutputChange(true, true);
+        setLinearizedOutput();
     }
     
     public void runRampDownTrapezoidalMotionProfile(double minSpeed) {
         leftMotorsOutput = minSpeed;
         rightMotorsOutput = minSpeed;
         limitMotorsOutputChange(true, true);
+        setLinearizedOutput();
     }
     
     public void switchDriveStates() {
@@ -370,12 +375,16 @@ public class Drive {
         setServoDrivePosition();
     }
     
-    public void disabledInit() {
+    public void driveDisabled() {
         disableEncoders();
+        resetEncoders();
         gyro.reset();
     }
     
     public void runDrive() {
+        enableEncoders();
+        sendDriveStateDiagnostics();
+        sendEncoderDiagnostics();
         switchDriveStates();
         runDriveStates();        
     }
