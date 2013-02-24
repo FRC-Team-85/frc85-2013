@@ -60,7 +60,7 @@ public class Autonomous {
                 break;
             case 1:
                 if (autoChooser.driveStage1) {
-                    if (driveStage1Cmd.driveCommand(drive.getAverageEncodersDistance(), 200)) {
+                    if (driveStage1Cmd.driveCommand(drive.getAverageEncodersDistance(), -10)) {
                         autoStage = 2;
                     }
                 } else {
@@ -77,7 +77,7 @@ public class Autonomous {
                 break;
             case 3:
                 if (autoChooser.driveStage2) {
-                    if (driveStage2Cmd.driveCommand(drive.getAverageEncodersDistance(), 500)) {
+                    if (driveStage2Cmd.driveCommand(drive.getAverageEncodersDistance(), 12)) {
                         autoStage = 4;
                     }
                 } else {
