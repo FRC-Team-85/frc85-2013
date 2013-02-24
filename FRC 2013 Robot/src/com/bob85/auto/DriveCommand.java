@@ -8,15 +8,22 @@ public class DriveCommand {
 
     private Drive drive;
     private boolean isResetEncoders;
+    boolean isForward;
 
     private String endDistanceOffset = "Drive Command Offset";
+    
+    private double dist;
+    private double maxOutput = 0.75;
     
     /**
      * Constructs a DriveCommand with a reference to a Drive object
      * @param drive Drive object
+     * @param dist Desired distance in inches
      */
-    public DriveCommand(Drive drive) {
+    public DriveCommand(Drive drive, double dist) {
         this.drive = drive;
+        this.dist = dist;
+        isForward = (dist >= 0) ? true : false;
     }
     
     /**
@@ -39,14 +46,8 @@ public class DriveCommand {
      * Drives the robot for a desired distance. 
      *
      * @param currentDist current displacement robot is at in inches
-     * @param desiredDist goal displacement of the robot in inches
      */
-    public boolean driveCommand(double currentDist, double desiredDist) {
-            boolean isForward = false;
-            
-            if (desiredDist >= 0) {
-                isForward = true;
-            }
+    public boolean driveCommand(double currentDist) {
         
             if (!isResetEncoders) {
                 drive.resetEncoders();
@@ -54,16 +55,16 @@ public class DriveCommand {
             }
             
             if (isForward) {
-                if ((currentDist) < (desiredDist - SmartDashboard.getNumber(endDistanceOffset))) {
-                    drive.runRampUpTrapezoidalMotionProfile(0.75);
+                if ((currentDist) < (dist - SmartDashboard.getNumber(endDistanceOffset))) {
+                    drive.runRampUpTrapezoidalMotionProfile(maxOutput);
                     return false;
                 } else {
                     drive.runRampDownTrapezoidalMotionProfile(0);
                     return true;
                 }
             } else {
-                if (currentDist > (desiredDist + SmartDashboard.getNumber(endDistanceOffset))) {
-                    drive.runRampUpTrapezoidalMotionProfile(-0.75);
+                if (currentDist > (dist + SmartDashboard.getNumber(endDistanceOffset))) {
+                    drive.runRampUpTrapezoidalMotionProfile(-maxOutput);
                     return false;
                 } else {
                     drive.runRampDownTrapezoidalMotionProfile(0);

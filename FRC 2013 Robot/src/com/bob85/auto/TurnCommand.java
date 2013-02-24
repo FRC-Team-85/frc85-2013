@@ -7,6 +7,7 @@ public class TurnCommand {
     Drive drive;
     private double angle;
     private boolean isClockwise;
+    private double maxOutput = 0.5;
     
     /**
      * Constructs a TurnCommand with a Drive and desired angle
@@ -34,7 +35,7 @@ public class TurnCommand {
         
         if (isClockwise) {
             if (drive.getAngle() < angle) {
-                drive.setMotorOutputSetting(0.5, -0.5);
+                drive.setMotorOutputSetting(maxOutput, -maxOutput);
                 drive.setLinearizedOutput();
                 return false;
             } else if (drive.getAngle() > angle) {
@@ -46,7 +47,7 @@ public class TurnCommand {
             }
         } else {
             if (drive.getAngle() > angle) {
-                drive.setMotorOutputSetting(-0.5, 0.5);
+                drive.setMotorOutputSetting(-maxOutput, maxOutput);
                 drive.setLinearizedOutput();
                 return false;
             } else if (drive.getAngle() < angle) {
