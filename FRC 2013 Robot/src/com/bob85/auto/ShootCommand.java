@@ -62,13 +62,16 @@ public class ShootCommand {
      */
     public boolean shootFrisbee(double shotTime) {
         if (getTime() >= shotTime && getTime() <= (shotTime + this.shotTime)) {
-            frisbeeLoader.setHopperBeltMotor(1);
+            frisbeeLoader.setMotorOutputSetting(-1);
+            frisbeeLoader.setLinearizedOutput();
             return false;
         } else if (getTime() < shotTime) {
-            frisbeeLoader.setHopperBeltMotor(0);
+            frisbeeLoader.setMotorOutputSetting(0);
+            frisbeeLoader.setLinearizedOutput();
             return false;
         } else {
-            frisbeeLoader.setHopperBeltMotor(0);
+            frisbeeLoader.setMotorOutputSetting(0);
+            frisbeeLoader.setLinearizedOutput();
             return true;
         }
     }

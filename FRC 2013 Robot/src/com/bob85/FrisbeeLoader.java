@@ -15,7 +15,7 @@ public class FrisbeeLoader {
     
     private Victor hopperBeltMotor;
     
-    private F310Gamepad opPad;
+    private F310Gamepad gamepad;
     
     private double hopperBeltSpeed;
     
@@ -36,11 +36,24 @@ public class FrisbeeLoader {
             F310Gamepad opPad) {
         this.dropServo = dropServo;
         this.hopperBeltMotor = hopperBeltMotor;
-        this.opPad = opPad;
+        this.gamepad = opPad;
         this.timer = new Timer();
         timer.reset();
     }
     
+    /**
+     * Sets motor output setting to D Pad Y Axis value
+     * @param scaleFactor multiplication factor on output
+     */
+    public void getGamepadDPadYAxis(double scaleFactor) {
+        hopperBeltSpeed = -gamepad.getAxis(AxisType.kDPadY);
+        hopperBeltSpeed *= scaleFactor;
+    }
+    
+    /**
+     * Get is servo pin unlocked
+     * @return 
+     */
     public boolean getUnlockServo() {
         if (dropServo.get() == unlockedPosition) {
             return true;
@@ -49,6 +62,10 @@ public class FrisbeeLoader {
         }
     }
     
+    /**
+     * Get is servo pin locked
+     * @return 
+     */
     public boolean getLockServo() {
         if (dropServo.get() == lockedPosition) {
             return true;
@@ -59,7 +76,6 @@ public class FrisbeeLoader {
       
     /**
      * Tell servo to pull pin out of hopper area
-     * @param servo 
      */
     public void unlockServo() {
         if (!(dropServo.get() == unlockedPosition)) {
@@ -69,20 +85,23 @@ public class FrisbeeLoader {
     
     /**
      * Tell servo to push pin into hopper area
-     * @param servo 
      */
     public void lockServo() {
         if (!(dropServo.get() == lockedPosition)) {
             dropServo.set(lockedPosition);
         }
     }
+    
     /**
-     * Sets the Hopper Belt Motor TODO: add motor linearization
-     * @param speed desired input
+     * Sets the Hopper Belt Motor Input Settings
+     * @param speed negative is down and positive is up
      */
-    public void setHopperBeltMotor(double speed) {
+    public void setMotorOutputSetting(double speed) {
         hopperBeltSpeed = speed;
-        hopperBeltMotor.set(-MotorLinearization.calculateLinearOutput(hopperBeltSpeed));
+    }
+    
+    public void setLinearizedOutput() {
+        hopperBeltMotor.set(MotorLinearization.calculateLinearOutput(hopperBeltSpeed));
     }
     
     /**
@@ -90,7 +109,7 @@ public class FrisbeeLoader {
      * Meant to show original input after motor output is linearized
      * @return Original Hopper Belt Motor Input
      */
-    private double getHopperBeltMotor() {
+    private double getHopperBeltSpeed() {
         return hopperBeltSpeed;
     }
     
@@ -146,87 +165,36 @@ public class FrisbeeLoader {
         }
     }
     
-    /**
-     * dropServo is the servo used to drop the frisbees into the shooter
-     * 
-     * @param dropServo lower servo on the loader
-     * @param auxStick operator controls
-     * @param dropServoButton joystick button used for command
-     */
-    public void dropFrisbee(Servo dropServo, Joystick auxStick, int dropServoButton) {
-        if(auxStick.getRawButton(dropServoButton)){
-            dropServo.set(1);
-        }
-        else{
-            dropServo.set(0);
-        }
-    }
-    
     public void runAlexHopperSetup() {
-        setHopperBeltMotor(opPad.getAxis(AxisType.kDPadY));
-        if (opPad.getButton(ButtonType.kRB)) {
+        getGamepadDPadYAxis(1);
+        setLinearizedOutput();
+        if (gamepad.getButton(ButtonType.kRB)) {
             unlockServo();
         } else {
             lockServo();
         }
     }
     
-    public void runFrisbeeLoader() {
-        runAlexHopperSetup();
-    }
-    
     public void runHopperStates() {
         switch (hopperState) {
             case 0:
                 lockServo();
-                if (opPad.getAxis(AxisType.kDPadY) == -1){
-                    setHopperBeltMotor(beltIntakeSpeed);
-                } else if (opPad.getAxis(AxisType.kDPadY) == 1) {
-                    setHopperBeltMotor(-beltIntakeSpeed);
-                }
-                break;
-                
+                getGamepadDPadYAxis(1);
+                break;                
             case 1:
                 unlockServo();
+                getGamepadDPadYAxis(1);
                 break;
-                
-            case 2:
-                unlockServo();
-                
-                if (opPad.getAxis(AxisType.kDPadY) == -1){
-                    setHopperBeltMotor(beltIntakeSpeed);
-                } else if (opPad.getAxis(AxisType.kDPadY) == 1) {
-                    setHopperBeltMotor(-beltIntakeSpeed);
-                }
-                break;
-                
         }
     }
     
     public void switchHopperStates(){
         switch(hopperState){
-            case 0: 
-                
-                if (opPad.getButton(ButtonType.kRB)){
-                    hopperState = 1;
-                }    
+            case 0:                
+                hopperState = (gamepad.getButton(ButtonType.kRB)) ? 1 : 0;
                 break;
             case 1:
-                if (Shooter.getShooterState() == 1){
-                    hopperState = 2;
-                }    
-                break;
-            case 2:
-                if (!opPad.getButton(ButtonType.kRB) && Shooter.getShooterState() == 0) {
-                    hopperState = 0;
-                } else if (opPad.getButton(ButtonType.kRB) && !(Shooter.getShooterState() == 0)) {
-                    hopperState = 1;
-                
-                }  
-                break;
-            default:
-                lockServo();
-                setHopperBeltMotor(0);
+                hopperState = (!gamepad.getButton(ButtonType.kRB)) ? 0 : 1;
         }
     }
     
@@ -234,10 +202,16 @@ public class FrisbeeLoader {
         return hopperState;
     }
     
-    public void sendDiagnosticsSDB() {
-        SmartDashboard.putNumber("Hopper Belt", -hopperBeltMotor.get());
+    public void runDiagnostics() {
         SmartDashboard.putNumber("Hopper State", getHopperState());
         SmartDashboard.putBoolean("Servo Lock", getLockServo());
         SmartDashboard.putBoolean("Servo Unlock", getUnlockServo());
+        SmartDashboard.putNumber("servo Position", dropServo.get());
+    }
+    
+    public void runFrisbeeLoader() {
+        switchHopperStates();
+        runHopperStates();
+        runDiagnostics();
     }
 }
