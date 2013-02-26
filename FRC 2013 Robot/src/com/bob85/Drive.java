@@ -294,6 +294,11 @@ public class Drive {
         rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
+    private void sendServoPositionsDiagnostics() {
+        SmartDashboard.putNumber("leftDriveServo", leftDriveServo.get());
+        SmartDashboard.putNumber("rightDriveServo", rightDriveServo.get());
+    }
+    
     public boolean getIsDrive() {
         return isDrive;
     }
