@@ -144,7 +144,7 @@ public class Climber {
         getEncoderDistance();
         drive.setMotorOutputDeadbands();
                 
-        if (drive.getIsClimb()) {
+        
             if (topClimberLimitSwitch.get() && -joyStick.getY() > 0) {
                 stopClimb();
             } else if (bottomClimberLimitSwitch.get() && -joyStick.getY() < 0) {
@@ -153,7 +153,7 @@ public class Climber {
                 getJoystickInput(joyStick);
                 setLinearClimbOutput();
             }
-        }
+        
     }
     
     private void scaleStage1LinearClimberMotorOutputUp() {
