@@ -17,7 +17,7 @@ public class FrisbeeLoader {
     
     private F310Gamepad gamepad;
     
-    private double hopperBeltSpeed;
+    private double hopperBeltMotorOutput;
     
     private Timer timer;
     private boolean timerReset;
@@ -46,8 +46,8 @@ public class FrisbeeLoader {
      * @param scaleFactor multiplication factor on output
      */
     public void getGamepadDPadYAxis(double scaleFactor) {
-        hopperBeltSpeed = -gamepad.getAxis(AxisType.kDPadY);
-        hopperBeltSpeed *= scaleFactor;
+        hopperBeltMotorOutput = -gamepad.getAxis(AxisType.kDPadY);
+        hopperBeltMotorOutput *= scaleFactor;
     }
     
     /**
@@ -97,11 +97,11 @@ public class FrisbeeLoader {
      * @param speed negative is down and positive is up
      */
     public void setMotorOutputSetting(double speed) {
-        hopperBeltSpeed = speed;
+        hopperBeltMotorOutput = speed;
     }
     
     public void setLinearizedOutput() {
-        hopperBeltMotor.set(MotorLinearization.calculateLinearOutput(hopperBeltSpeed));
+        hopperBeltMotor.set(MotorLinearization.calculateLinearOutput(hopperBeltMotorOutput));
     }
     
     /**
@@ -110,7 +110,7 @@ public class FrisbeeLoader {
      * @return Original Hopper Belt Motor Input
      */
     private double getHopperBeltSpeed() {
-        return hopperBeltSpeed;
+        return hopperBeltMotorOutput;
     }
     
     /**

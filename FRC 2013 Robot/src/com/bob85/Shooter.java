@@ -19,7 +19,7 @@ public class Shooter {
     private Victor shooterMotor;
     private Victor shooterBeltMotor;
     
-    private double shooterBeltMotorSpeed;
+    private double shooterBeltMotorOutput;
     
     private HallEffect shooterHalleffect;
     
@@ -76,12 +76,12 @@ public class Shooter {
     }
     
     public void setShooterBeltSpeed(double speed) {
-        shooterBeltMotorSpeed = speed;
-        shooterBeltMotor.set(-shooterBeltMotorSpeed);
+        shooterBeltMotorOutput = speed;
+        shooterBeltMotor.set(-shooterBeltMotorOutput);
     }
     
     public double getShooterBeltSpeed() {
-        return shooterBeltMotorSpeed;
+        return shooterBeltMotorOutput;
     }
     
     /**
