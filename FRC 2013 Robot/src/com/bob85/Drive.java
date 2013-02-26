@@ -59,10 +59,7 @@ public class Drive {
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = (((4 * Math.PI) / 10.3) / encoderCPR); //Each encoder pulse = 1.22 inches traveled
-    private double encoderClimberRatio = (2 * Math.PI / encoderCPR);
     
-    private boolean isDrive = false;
-    private boolean isClimb = false;
     private int driveState; //0 is drive 1 is left climb 2 is right climb 3 is both climb
     
     /**
@@ -256,13 +253,10 @@ public class Drive {
     public boolean getServoDrivePosition() {
         if (leftDriveServo.get() == leftDriveServoDrivePosition && 
                 rightDriveServo.get() == rightDriveServoDrivePosition) {
-            isDrive = true;
-            isClimb = false;
-            return isDrive;
+            return true;
         }
         else {
-            isDrive = false;
-            return isDrive;
+            return false;
         }
     }
 
@@ -294,17 +288,7 @@ public class Drive {
         rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
-    public boolean getIsDrive() {
-        return isDrive;
-    }
-    
-    public boolean getIsClimb() {
-        return isClimb;
-    }
-    
     private void sendDriveStateDiagnostics() {
-        SmartDashboard.putBoolean("isDrive", isDrive);
-        SmartDashboard.putBoolean("isClimb", isClimb);
         SmartDashboard.putNumber("Drive State", driveState);
     }
   

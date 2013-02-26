@@ -6,10 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
     
-    boolean isClimbMode;
-    
-    boolean isDrive;
-    
     AutoModeChooser autoChooser = new AutoModeChooser();
     ShotTimer shotTimer = new ShotTimer(ShootCommand.frisbee_val);
     Joystick leftStick = new Joystick(1);
@@ -62,6 +58,7 @@ public class Robot extends IterativeRobot {
     
     public void disabledInit() {
         drive.disableDrive();
+        shooter.disableShooter();
     }
     
     public void autonomousInit() {
@@ -90,9 +87,6 @@ public class Robot extends IterativeRobot {
         drive.runDrive();
         climber.runClimber();
         frisbeeLoader.runFrisbeeLoader();
-        SmartDashboard.putNumber("Gyro", gyro.getAngle());
-        SmartDashboard.putNumber("Left Drive Encoder",  leftDriveEncoder.get());
-        SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.get());
     }
     public void testPeriodic() {
 
