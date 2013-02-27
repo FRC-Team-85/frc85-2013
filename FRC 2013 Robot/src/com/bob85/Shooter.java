@@ -16,6 +16,8 @@ public class Shooter {
     
     private static final double kRPM_TO_PWM = (1/5310);
     
+    public static final int kSHOOTER_RPM_PYRAMID_BACK_SETPOINT = 4000;
+    
     private Victor shooterMotor;
     private Victor shooterBeltMotor;
     
@@ -25,8 +27,14 @@ public class Shooter {
     
     private F310Gamepad gamepad;
     
+    private PIDController shooterPID;
+    
     private void initShooterSettings() {
+        
         shooterHalleffect.setMaxPeriod(0.2);
+        if (shooterPID != null) {
+            shooterPID.setSetpoint(kSHOOTER_RPM_PYRAMID_BACK_SETPOINT);
+        }
     }
     
     public Shooter(Victor shooterMotor, Victor shooterBeltMotor, 
@@ -36,6 +44,7 @@ public class Shooter {
         this.shooterBeltMotor = shooterBeltMotor;
         this.shooterHalleffect = shooterHalleffect;
         this.gamepad = joystick;
+        shooterPID = new PIDController(0, 0, 0, 0, shooterHalleffect, shooterMotor);
         initShooterSettings();
     }
     
@@ -111,6 +120,20 @@ public class Shooter {
         setShooterBeltSpeed(1);
     }
     
+    public void disablePIDShooter() {
+       if (shooterPID.isEnable()) {
+           shooterPID.disable();
+       }
+       setShooterBeltSpeed(0);
+    }
+    
+    public void runPIDShooter() {
+        if (!shooterPID.isEnable()) {
+            shooterPID.enable();
+        }
+        setShooterBeltSpeed(1);
+    }
+    
     /**
      * Returns shooter state
      * @return 0 = 0 output, 1 = shooter not at correct RPM, 2 = shooter at correct RPM
@@ -172,10 +195,24 @@ public class Shooter {
                 setShooterToRest();
                 break;
             case 1:
-                runBangBangSpeedControl(4000);
+                runBangBangSpeedControl(kSHOOTER_RPM_PYRAMID_BACK_SETPOINT);
                 break;
             case 2:
-                runBangBangSpeedControl(4000);
+                runBangBangSpeedControl(kSHOOTER_RPM_PYRAMID_BACK_SETPOINT);
+                break;
+        }
+    }
+    
+    public void runPIDShooterStates() {
+        switch (shooterState) {
+            case 0:
+                disablePIDShooter();
+                break;
+            case 1:
+                runPIDShooter();
+                break;
+            case 2:
+                runPIDShooter();
                 break;
         }
     }
