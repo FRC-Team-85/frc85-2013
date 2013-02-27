@@ -10,7 +10,7 @@ public class Shooter {
     public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
     public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
     
-    private static int shooterState; // 0 is standby, 1 is readying, 2 is shoot
+    private static int shooterState = 0; // 0 is standby, 1 is readying, 2 is shoot
     
     private double kOnTargetPercentTolerance = 0.1;
     
@@ -101,6 +101,17 @@ public class Shooter {
     }
     
     /**
+     * Runs a rudimentary closed feedback loop shooter control
+     * @param setpointRPM target RPM
+     */
+    public void runBangBangSpeedControl(int setpointRPM) {
+        double output;
+        output = (shooterHalleffect.getRPM() > setpointRPM) ? 0 : 1;
+        setShooterSpeed(output);
+        setShooterBeltSpeed(1);
+    }
+    
+    /**
      * Returns shooter state
      * @return 0 = 0 output, 1 = shooter not at correct RPM, 2 = shooter at correct RPM
      */
@@ -155,6 +166,20 @@ public class Shooter {
         }
     }
      
+    public void runBangBangShooterStates() {
+        switch (shooterState) {
+            case 0:
+                setShooterToRest();
+                break;
+            case 1:
+                runBangBangSpeedControl(4000);
+                break;
+            case 2:
+                runBangBangSpeedControl(4000);
+                break;
+        }
+    }
+    
     /**
      * disables and reset shooter sensors
      */
