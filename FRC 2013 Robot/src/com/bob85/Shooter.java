@@ -5,17 +5,20 @@ import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
+    public static int shooterSetpoint;
     
     public static final int SHOOTER_MOTOR_CHANNEL = 5;
     public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
     public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
     
     private static int shooterState = 0; // 0 is standby, 1 is readying, 2 is shoot
+    private static int shooterSetpointState = 1;
     
     private double kOnTargetPercentTolerance = 0.1;
     
     private static final double kRPM_TO_PWM = (1/5310);
     
+    public static final int kSHOOTER_RPM_MAX_SPEED_SETPOINT = 5310;
     public static final int kSHOOTER_RPM_PYRAMID_BACK_SETPOINT = 4000;
     
     private Victor shooterMotor;
@@ -120,6 +123,16 @@ public class Shooter {
         setShooterBeltSpeed(1);
     }
     
+    /**
+     * Change the Shooter PID Setpoint 
+     * @param setpoint desired RPM
+     */
+    public void setPIDShooterSetpoint(int setpoint) {
+        if (shooterPID.getSetpoint() != setpoint) {
+            shooterPID.setSetpoint(setpoint);
+        }
+    }
+    
     public void disablePIDShooter() {
        if (shooterPID.isEnable()) {
            shooterPID.disable();
@@ -148,6 +161,30 @@ public class Shooter {
         SmartDashboard.putNumber("Shooter Belt PWM Setting", shooterBeltMotor.get());
         SmartDashboard.putBoolean("Shooter On Target", onTarget());
         SmartDashboard.putNumber("Shooter State", getShooterState());
+    }
+    
+    private void switchShooterSetpointStates() {
+        switch (shooterSetpointState) {
+            case 0:
+                shooterSetpointState = (gamepad.getButton(ButtonType.kRB)) ? 1 : 0;
+            case 1:
+                shooterSetpointState = (gamepad.getButton(ButtonType.kLB)) ? 0 : 1;
+        }
+    }
+    
+    /**
+     * Changes Shooter Setpoint based on current Setpoint State
+     */
+    private void runShooterSetpointStates() {
+        switch (shooterSetpointState) {
+            case 0:
+                shooterSetpoint = kSHOOTER_RPM_MAX_SPEED_SETPOINT;
+                break;
+            case 1:
+                shooterSetpoint = kSHOOTER_RPM_PYRAMID_BACK_SETPOINT;
+                break;
+        }
+        setPIDShooterSetpoint(shooterSetpoint);
     }
     
     private void switchShooterStates() {
@@ -195,10 +232,10 @@ public class Shooter {
                 setShooterToRest();
                 break;
             case 1:
-                runBangBangSpeedControl(kSHOOTER_RPM_PYRAMID_BACK_SETPOINT);
+                runBangBangSpeedControl(shooterSetpoint);
                 break;
             case 2:
-                runBangBangSpeedControl(kSHOOTER_RPM_PYRAMID_BACK_SETPOINT);
+                runBangBangSpeedControl(shooterSetpoint);
                 break;
         }
     }
@@ -230,6 +267,8 @@ public class Shooter {
      */
     public void runShooter() {
         switchShooterStates();
+        switchShooterSetpointStates();
+        runShooterSetpointStates();
         runShooterStates();
         runDiagnostics();
     }
