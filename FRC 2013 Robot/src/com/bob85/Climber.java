@@ -245,6 +245,7 @@ public class Climber {
             case 0:
                 break;
             case 1:
+                initEncoderSetting();
                 getJoystickInput(rightStick);
                 setLinearClimbOutput();
                 break;

@@ -209,7 +209,6 @@ public class Drive {
      * Initialize encoder settings
      */
     public void initEncoders() {            
-            resetEncoders();
             leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
             
@@ -371,6 +370,7 @@ public class Drive {
     public void runDriveStates() {
         switch (driveState) {
             case kDriveState:
+                initEncoders();
                 setServoDrivePosition();
                 getTankDriveJoystickInput();
                 setFilteredMotorOutput();
