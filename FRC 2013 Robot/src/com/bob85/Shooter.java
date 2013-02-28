@@ -16,6 +16,7 @@ public class Shooter {
     
     private double kOnTargetPercentTolerance = 0.1;
     
+    private static final double kPWM_TO_RPM = 5310;
     private static final double kRPM_TO_PWM = (1/5310);
     
     public static final int kSHOOTER_RPM_MAX_SPEED_SETPOINT = 5310;
@@ -59,7 +60,7 @@ public class Shooter {
      */
     public static double convertRPMtoPWM(int RPM) {
         double pwmValue ;
-        pwmValue = RPM / kRPM_TO_PWM;
+        pwmValue = RPM * kRPM_TO_PWM;
         pwmValue = (pwmValue > 1) ? 1 : pwmValue;
         return pwmValue;
     }
@@ -71,7 +72,7 @@ public class Shooter {
      */
     public static int convertPWMtoRPM(double PWM) {
         int rpmValue;
-        rpmValue = (int) (PWM * (1/kRPM_TO_PWM));
+        rpmValue = (int) (PWM * kPWM_TO_RPM);
         return rpmValue;
     }
     
