@@ -339,18 +339,39 @@ public class Drive {
      * Switches between Drive States based on joystick button toggles
      */
     public void switchDriveStates() {
-        if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
-            driveState = kDriveState;
-        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
-            driveState = kLeftClimbRightDriveState;
-        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
-            driveState = kRightClimbLeftDriveState;
-        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
-            driveState = kClimbState;
-        } else if (driveState == kLeftClimbRightDriveState && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
-            driveState = kClimbState;
-        } else if (driveState == kRightClimbLeftDriveState && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
-            driveState = kClimbState;
+        switch (driveState) {
+            case kDriveState:
+                if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+                    driveState = kRightClimbLeftDriveState;
+                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+                    driveState = kLeftClimbRightDriveState;
+                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+                    driveState = kClimbState;
+                }
+                break;
+            case kLeftClimbRightDriveState:
+                if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+                    driveState = kDriveState;
+                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+                    driveState = kClimbState;
+                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+                    driveState = kClimbState;
+                }
+                break;
+            case kRightClimbLeftDriveState:
+                if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+                    driveState = kDriveState;
+                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+                    driveState = kClimbState;
+                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+                    driveState = kClimbState;
+                }
+                break;
+            case kClimbState:
+                if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+                    driveState = kDriveState;
+                }
+                break;
         }
     }
        
