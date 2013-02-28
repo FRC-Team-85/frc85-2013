@@ -28,6 +28,8 @@ public class FrisbeeLoader {
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
     
+    private final int kLockedServoState = 0;
+    private final int kUnlockedServoState = 1;
     private static int hopperState;
     private double beltIntakeSpeed = 1;
     private double dropSpeed = 1;
@@ -177,24 +179,26 @@ public class FrisbeeLoader {
     
     public void runHopperStates() {
         switch (hopperState) {
-            case 0:
+            case kLockedServoState:
                 lockServo();
                 getGamepadDPadYAxis(1);
+                setLinearizedOutput();
                 break;                
-            case 1:
+            case kUnlockedServoState:
                 unlockServo();
                 getGamepadDPadYAxis(1);
+                setLinearizedOutput();
                 break;
         }
     }
     
     public void switchHopperStates(){
         switch(hopperState){
-            case 0:                
-                hopperState = (gamepad.getButton(ButtonType.kRB)) ? 1 : 0;
+            case kLockedServoState:                
+                hopperState = (gamepad.getButton(ButtonType.kRB)) ? kUnlockedServoState : kLockedServoState;
                 break;
-            case 1:
-                hopperState = (!gamepad.getButton(ButtonType.kRB)) ? 0 : 1;
+            case kUnlockedServoState:
+                hopperState = (!gamepad.getButton(ButtonType.kRB)) ? kLockedServoState : kUnlockedServoState;
         }
     }
     

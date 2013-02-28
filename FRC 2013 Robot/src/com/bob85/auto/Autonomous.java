@@ -74,6 +74,7 @@ public class Autonomous {
                 } else {
                     autoStage = 2;
                 }
+                break;
             case 2:
                 if (autoChooser.turnStage) {
                     if (turn180Cmd.turnCommand()) {

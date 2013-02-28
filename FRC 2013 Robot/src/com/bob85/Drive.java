@@ -60,6 +60,10 @@ public class Drive {
     private int encoderCPR = 250;
     private double encoderDistanceRatio = (((4 * Math.PI) / 10.3) / encoderCPR); //Each encoder pulse = 1.22 inches traveled
     
+    private final int kDriveState = 0;
+    private final int kLeftClimbRightDriveState = 1;
+    private final int kRightClimbLeftDriveState = 2;
+    private final int kClimbState = 3;
     private int driveState; //0 is drive 1 is left climb 2 is right climb 3 is both climb
     
     /**
@@ -336,17 +340,17 @@ public class Drive {
      */
     public void switchDriveStates() {
         if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
-            driveState = 0;
+            driveState = kDriveState;
         } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
-            driveState = 1;
+            driveState = kLeftClimbRightDriveState;
         } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
-            driveState = 2;
+            driveState = kRightClimbLeftDriveState;
         } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
-            driveState = 3;
-        } else if (driveState == 1 && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
-            driveState = 3;
-        } else if (driveState == 2 && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
-            driveState = 3;
+            driveState = kClimbState;
+        } else if (driveState == kLeftClimbRightDriveState && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+            driveState = kClimbState;
+        } else if (driveState == kRightClimbLeftDriveState && leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+            driveState = kClimbState;
         }
     }
        
@@ -356,19 +360,19 @@ public class Drive {
     public void runDriveStates() {
         setJoystickBasedPTOShift();
         switch (driveState) {
-            case 0:
+            case kDriveState:
                 getTankDriveJoystickInput();
                 setFilteredMotorOutput();
                 break;
-            case 1:
+            case kLeftClimbRightDriveState:
                 getJoystickYAxisInputs(true, false, 1);
                 setFilteredMotorOutput();
                 break;
-            case 2:
+            case kRightClimbLeftDriveState:
                 getJoystickYAxisInputs(false, true, 1);
                 setFilteredMotorOutput();
                 break;
-            case 3:
+            case kClimbState:
                 break;
         }
     }
