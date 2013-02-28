@@ -295,18 +295,6 @@ public class Drive {
     private void sendDriveStateDiagnostics() {
         SmartDashboard.putNumber("Drive State", driveState);
     }
-  
-    public void setJoystickBasedPTOShift() {
-        if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
-            setServoDrivePosition();
-        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
-            setServoClimbPosition();
-        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
-            setleftServoClimbPosition();
-        } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
-            setRightServoClimbPosition();
-        }
-    }
     
     /**
      * Applies deadband and limited output change before setting a linearized
@@ -379,21 +367,24 @@ public class Drive {
      * Runs Drive controls based on Drive State
      */
     public void runDriveStates() {
-        setJoystickBasedPTOShift();
         switch (driveState) {
             case kDriveState:
+                setServoDrivePosition();
                 getTankDriveJoystickInput();
                 setFilteredMotorOutput();
                 break;
             case kLeftClimbRightDriveState:
+                setleftServoClimbPosition();
                 getJoystickYAxisInputs(true, false, 1);
                 setFilteredMotorOutput();
                 break;
             case kRightClimbLeftDriveState:
+                setRightServoClimbPosition();
                 getJoystickYAxisInputs(false, true, 1);
                 setFilteredMotorOutput();
                 break;
             case kClimbState:
+                setServoClimbPosition();
                 break;
         }
     }
