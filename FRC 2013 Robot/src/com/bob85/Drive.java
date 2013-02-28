@@ -286,9 +286,11 @@ public class Drive {
     
     public void setleftServoClimbPosition() {
         leftDriveServo.set(leftDriveServoClimbPosition);
+        rightDriveServo.set(rightDriveServoDrivePosition);
     }
     
     public void setRightServoClimbPosition() {
+        leftDriveServo.set(leftDriveServoDrivePosition);
         rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
