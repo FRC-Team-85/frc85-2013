@@ -7,23 +7,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FrisbeeLoader {
     
-    public static final int kDROPSERVO_CHANNEL = 8;
+    public static final int kDROPSERVO_CHANNEL = 8; //Hopper Locking Pin Servo PWM Channel
     
-    public static final int kHOPPERBELTMOTOR_CHANNEL = 7;
+    public static final int kHOPPERBELTMOTOR_CHANNEL = 7; //Hopper Belt Motor PWM Channel
     
-    private Servo dropServo;
+    private Servo dropServo; //reference to hopper locking pin servo
     
-    private Victor hopperBeltMotor;
+    private Victor hopperBeltMotor; //reference to hopper belt motor
     
-    private F310Gamepad gamepad;
+    private F310Gamepad gamepad; //reference to F310 Gamepad 
     
-    private double hopperBeltMotorOutput;
+    private double hopperBeltMotorOutput; //hopper belt motor desired output setting
     
-    private Timer timer;
-    private boolean timerReset;
-    private double time;
-    private double shiftTime = 0.3;
-    private boolean isShiftDone;
+    private Timer timer; //hopper deploy frisbee timer
+    private boolean timerReset; //hopper deploy frisbee reset
+    private double time; //hopper deploy frisbee current time
+    private double shiftTime = 0.3; //time to leave servo unlocked
+    private boolean isShiftDone; //is servo shift for shot done
     
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
@@ -34,6 +34,12 @@ public class FrisbeeLoader {
     private double beltIntakeSpeed = 1;
     private double dropSpeed = 1;
     
+    /**
+     * Constructs Hopper subsystem object
+     * @param dropServo Hopper Frisbee Lock Pin Servo
+     * @param hopperBeltMotor Hopper Belt Motor
+     * @param opPad F310 Gamepad
+     */
     public FrisbeeLoader(Servo dropServo, Victor hopperBeltMotor, 
             F310Gamepad opPad) {
         this.dropServo = dropServo;
@@ -102,6 +108,9 @@ public class FrisbeeLoader {
         hopperBeltMotorOutput = speed;
     }
     
+    /**
+     * Sets linearized hopper belt motor output
+     */
     public void setLinearizedOutput() {
         hopperBeltMotor.set(MotorLinearization.calculateLinearOutput(hopperBeltMotorOutput));
     }
@@ -166,14 +175,14 @@ public class FrisbeeLoader {
             resetGetShiftDoneTimer();
         }
     }
-    
-    public void runAlexHopperSetup() {
-        getGamepadDPadYAxis(1);
-        setLinearizedOutput();
-        if (gamepad.getButton(ButtonType.kRB)) {
-            unlockServo();
-        } else {
-            lockServo();
+         
+    public void switchHopperStates(){
+        switch(hopperState){
+            case kLockedServoState:                
+                hopperState = (gamepad.getButton(ButtonType.kRB)) ? kUnlockedServoState : kLockedServoState;
+                break;
+            case kUnlockedServoState:
+                hopperState = (!gamepad.getButton(ButtonType.kRB)) ? kLockedServoState : kUnlockedServoState;
         }
     }
     
@@ -192,20 +201,17 @@ public class FrisbeeLoader {
         }
     }
     
-    public void switchHopperStates(){
-        switch(hopperState){
-            case kLockedServoState:                
-                hopperState = (gamepad.getButton(ButtonType.kRB)) ? kUnlockedServoState : kLockedServoState;
-                break;
-            case kUnlockedServoState:
-                hopperState = (!gamepad.getButton(ButtonType.kRB)) ? kLockedServoState : kUnlockedServoState;
-        }
-    }
-    
+    /**
+     * Return hopper state
+     * @return hopper state 0 for locked servo 1 for unlocked
+     */
     public static int getHopperState(){
         return hopperState;
     }
     
+    /**
+     * Sends diagnostics of hopper to SmartDashboard
+     */
     public void runDiagnostics() {
         SmartDashboard.putNumber("Hopper State", getHopperState());
         SmartDashboard.putBoolean("Servo Lock", getLockServo());
@@ -213,6 +219,9 @@ public class FrisbeeLoader {
         SmartDashboard.putNumber("servo Position", dropServo.get());
     }
     
+    /**
+     * Runs operator control of the Hopper
+     */
     public void runFrisbeeLoader() {
         switchHopperStates();
         runHopperStates();
