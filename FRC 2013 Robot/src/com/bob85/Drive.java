@@ -12,59 +12,59 @@ public class Drive {
     private SpeedController leftDriveMotors; //class reference to left drive
     private SpeedController rightDriveMotors; //class reference to right drive
     
-    private Servo leftDriveServo;
-    private Servo rightDriveServo;
+    private Servo leftDriveServo; //reference to left PTO servo
+    private Servo rightDriveServo; //reference to right PTO servo
     
-    private Encoder leftDriveEncoder;
-    private Encoder rightDriveEncoder;
+    private Encoder leftDriveEncoder; //reference to left PTO encoder
+    private Encoder rightDriveEncoder; //reference to right PTO encoder
     
-    private Gyro gyro;
+    private Gyro gyro; //reference to drive gyro
     
     Joystick leftDriveJoystick; //reference to left drive joystick
     Joystick rightDriveJoystick; //reference to right drive joystick
     
-    public static final int kLEFTDRIVE_VICTORS = 1;
-    public static final int kRIGHTDRIVE_VICTORS = 2;
+    public static final int kLEFTDRIVE_VICTORS = 1; //left drive PWM channel
+    public static final int kRIGHTDRIVE_VICTORS = 2; //right drive PWM channel
     
-    public static final int kLEFTDRIVE_SERVO = 3;
-    public static final int kRIGHTDRIVE_SERVO = 4;
+    public static final int kLEFTDRIVE_SERVO = 3; //left drive PTO PWM channel
+    public static final int kRIGHTDRIVE_SERVO = 4; //right drive PTO PWM channel
     
-    public static final int kLEFTDRIVE_ENCODER_A = 1;
-    public static final int kLEFTDRIVE_ENCODER_B = 2;
-    public static final int kRIGHTDRIVE_ENCODER_A = 3;
-    public static final int kRIGHTDRIVE_ENCODER_B = 4;
+    public static final int kLEFTDRIVE_ENCODER_A = 1; //left drive encoder A Digital I/O Channel
+    public static final int kLEFTDRIVE_ENCODER_B = 2; //left drive encoder B Digital I/O Channel
+    public static final int kRIGHTDRIVE_ENCODER_A = 3; //right drive encoder A Digital I/O Channel
+    public static final int kRIGHTDRIVE_ENCODER_B = 4; //right drive encoder B Digital I/O Channel
     
-    public static final int kGYRO = 1;
+    public static final int kGYRO = 1; //drive gyro analog I/O channel
     
-    private static final int kSHIFT_DRIVE = 3;
-    private static final int kSHIFT_CLIMB = 2;
-    private static final int kSHIFT_CLIMB_LEFT = 4;
-    private static final int kSHIFT_CLIMB_RIGHT = 5;
+    private static final int kSHIFT_DRIVE = 3; //shift PTOs to drive joystick button
+    private static final int kSHIFT_CLIMB = 2; //shift PTOs to climb joystick button
+    private static final int kSHIFT_CLIMB_LEFT = 4; //shift left PTO to climb joystick button
+    private static final int kSHIFT_CLIMB_RIGHT = 5; //shift right PTO to climb joystick button
     
-    private boolean isEncodersStarted = false;
+    private boolean isEncodersStarted = false; //holds encoder enable state
     
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
-    private double leftLinearMotorsOutput;
-    private double rightLinearMotorsOutput;
+    private double leftLinearMotorsOutput; //left drive linearized actual motor output setting
+    private double rightLinearMotorsOutput; //right drive linearized actual motor output setting
             
     private double deadband = 0.2; //Deadband for drive motor output
-    private double changeLimit_val = 0.25;
-    private double changeLimit = changeLimit_val;
+    private final double changeLimit_val = 0.25; //maxmimum change limit value for motor output
+    private double changeLimit = changeLimit_val; //change limit variable
     
-    private double leftDriveServoDrivePosition = 0;
-    private double rightDriveServoDrivePosition = 1;
-    private double leftDriveServoClimbPosition = 1;
-    private double rightDriveServoClimbPosition = 0;
+    private double leftDriveServoDrivePosition = 0; //left PTO drive servo position
+    private double rightDriveServoDrivePosition = 1; //right PTO drive servo position
+    private double leftDriveServoClimbPosition = 1; //left PTO climb servo position
+    private double rightDriveServoClimbPosition = 0; //right PTO climb servo position
     
-    private int encoderCPR = 250;
+    private int encoderCPR = 250; //Encoder counts per revolution value
     private double encoderDistanceRatio = (((4 * Math.PI) / 10.3) / encoderCPR); //Each encoder pulse = 1.22 inches traveled
     
-    private final int kDriveState = 0;
-    private final int kLeftClimbRightDriveState = 1;
-    private final int kRightClimbLeftDriveState = 2;
-    private final int kClimbState = 3;
-    private int driveState; //0 is drive 1 is left climb 2 is right climb 3 is both climb
+    private final int kDriveState = 0; //drive finite state
+    private final int kLeftClimbRightDriveState = 1; //left climb right drive finite state
+    private final int kRightClimbLeftDriveState = 2; //right climb left drive finite state
+    private final int kClimbState = 3; //climb finite state
+    private int driveState; //current drive state
     
     /**
      * Initialize sensor settings
@@ -75,21 +75,17 @@ public class Drive {
     }
     
     /**
-     * Constructs a Robot Drive with two PWM channels and joystick input
-     * 
-     * @param leftDriveMotors left drive PWM channel
-     * @param rightDriveMotors right drive PWM channel
-     * @param leftDriveJoystick left drive joystick
-     * @param rightDriveJoystick right drive joystick
+     * Constructs Drive object with drive motors, servos, encoders, gyro, and joysticks
+     * @param leftDriveMotors Left Drive Speed Controllers & Motors
+     * @param rightDriveMotors Right Drive Speed Controllers & Motors
+     * @param leftDriveServo Left Drive PTO Servo Shifter
+     * @param rightDriveServo Right Drive PTO Servo Shifter
+     * @param leftDriveEncoder Left Drive PTO Encoder
+     * @param rightDriveEncoder Right Drive PTO Encoder
+     * @param gyro Drive Gyro
+     * @param leftDriveJoystick //Joystick 1
+     * @param rightDriveJoystick  //Joystick 2
      */
-    public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors,
-            Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
-        this.leftDriveMotors = leftDriveMotors;
-        this.rightDriveMotors = rightDriveMotors;
-        this.leftDriveJoystick = leftDriveJoystick;
-        this.rightDriveJoystick = rightDriveJoystick;
-    }
-    
     public Drive(SpeedController leftDriveMotors, SpeedController rightDriveMotors, Servo leftDriveServo, Servo rightDriveServo,
             Encoder leftDriveEncoder, Encoder rightDriveEncoder, Gyro gyro,
             Joystick leftDriveJoystick, Joystick rightDriveJoystick) {
@@ -185,7 +181,7 @@ public class Drive {
     }
     
     /**
-     * Resets encoder counts to 0
+     * Resets PTO encoders counts to 0
      */
     public void resetEncoders() {
         if (leftDriveEncoder != null && rightDriveEncoder != null) {
@@ -195,7 +191,7 @@ public class Drive {
     }
     
     /**
-     * Start counting encoder counts
+     * Start counting on PTO encoders
      */
     public void enableEncoders() {
         if (!isEncodersStarted && leftDriveEncoder != null && rightDriveEncoder != null) {
@@ -206,7 +202,7 @@ public class Drive {
     }
     
     /**
-     * Initialize encoder settings
+     * Initialize encoder distance per pulse and direction settings
      */
     public void initEncoders() {            
             leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -216,7 +212,7 @@ public class Drive {
     }
     
     /**
-     * Stop counting encoder counts
+     * Stop counting on PTO encoders
      */
     public void disableEncoders() {
         if (isEncodersStarted) {
@@ -227,7 +223,7 @@ public class Drive {
     }
     
     /**
-     * Return average distance of the two drive encoders
+     * Return average distance of the two drive PTO encoders
      * @return 
      */
     public double getAverageEncodersDistance() {
@@ -245,14 +241,25 @@ public class Drive {
  
     }
     
+    /**
+     * Gets current robot angle
+     * @return robot angle in degrees (right is positive motion, left is negative)
+     */
     public double getAngle() {
         return gyro.getAngle();
     }
     
+    /**
+     * Resets gyro angle to 0
+     */
     public void resetGyro() {
         gyro.reset();
     }
     
+    /**
+     * Returns if servos are in drive position
+     * @return are servos in drive position
+     */
     public boolean getServoDrivePosition() {
         if (leftDriveServo.get() == leftDriveServoDrivePosition && 
                 rightDriveServo.get() == rightDriveServoDrivePosition) {
@@ -263,6 +270,10 @@ public class Drive {
         }
     }
 
+    /**
+     * Returns if servos are in climb position
+     * @return are servos in climb position
+     */
     public boolean getServoClimbPosition() {
        if (leftDriveServo.get() == leftDriveServoClimbPosition && 
                 rightDriveServo.get() == rightDriveServoClimbPosition) {
@@ -273,26 +284,41 @@ public class Drive {
         }
     }
     
+    /**
+     * Sets servo positions to shift PTO to drive
+     */
     public void setServoDrivePosition() {
         leftDriveServo.set(leftDriveServoDrivePosition);
         rightDriveServo.set(rightDriveServoDrivePosition);
     }
     
+    /**
+     * Sets servo positions to shift PTO to climb
+     */
     public void setServoClimbPosition() {
         leftDriveServo.set(leftDriveServoClimbPosition);
         rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
+    /**
+     * Sets servo positions to shift Left PTO to climb and right to drive
+     */
     public void setleftServoClimbPosition() {
         leftDriveServo.set(leftDriveServoClimbPosition);
         rightDriveServo.set(rightDriveServoDrivePosition);
     }
     
+    /**
+     * Sets servo positions to shift left pto to drive and right to climb
+     */
     public void setRightServoClimbPosition() {
         leftDriveServo.set(leftDriveServoDrivePosition);
         rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
+    /**
+     * Sends SmartDashboard diagnostics of Drive State
+     */
     private void sendDriveStateDiagnostics() {
         SmartDashboard.putNumber("Drive State", driveState);
     }
@@ -307,6 +333,10 @@ public class Drive {
         setLinearizedOutput();
     }     
     
+    /**
+     * Increase motor output at a constant rate until max speed is reached
+     * @param maxSpeed  max speed set point
+     */
     public void runRampUpTrapezoidalMotionProfile(double maxSpeed) {
         setMotorOutputSetting(maxSpeed, maxSpeed);
         limitMotorsOutputChange(true, true);
@@ -314,8 +344,8 @@ public class Drive {
     }
     
     /**
-     * Linearly 
-     * @param minSpeed 
+     * Decrease motor output at a constant rate until minimum speed is reached
+     * @param minSpeed min speed set point
      */
     public void runRampDownTrapezoidalMotionProfile(double minSpeed) {
         leftMotorsOutput = minSpeed;
