@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.F310Gamepad.AxisType;
 import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class FrisbeeLoader {
+public class Hopper {
     
     public static final int kDROPSERVO_CHANNEL = 8; //Hopper Locking Pin Servo PWM Channel
     
@@ -40,7 +40,7 @@ public class FrisbeeLoader {
      * @param hopperBeltMotor Hopper Belt Motor
      * @param opPad F310 Gamepad
      */
-    public FrisbeeLoader(Servo dropServo, Victor hopperBeltMotor, 
+    public Hopper(Servo dropServo, Victor hopperBeltMotor, 
             F310Gamepad opPad) {
         this.dropServo = dropServo;
         this.hopperBeltMotor = hopperBeltMotor;

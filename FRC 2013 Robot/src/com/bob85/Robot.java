@@ -18,11 +18,11 @@ public class Robot extends IterativeRobot {
     Victor rightDriveMotor = new Victor(Drive.kRIGHTDRIVE_VICTORS);
     Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
     Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
-    Victor hopperBelt = new Victor(FrisbeeLoader.kHOPPERBELTMOTOR_CHANNEL);
+    Victor hopperBelt = new Victor(Hopper.kHOPPERBELTMOTOR_CHANNEL);
     
     Servo leftDriveServo = new Servo(Drive.kLEFTDRIVE_SERVO);
     Servo rightDriveServo = new Servo (Drive.kRIGHTDRIVE_SERVO);
-    Servo dropServo = new Servo(FrisbeeLoader.kDROPSERVO_CHANNEL);
+    Servo dropServo = new Servo(Hopper.kDROPSERVO_CHANNEL);
     Servo lockClimberServo = new Servo(Climber.kCLIMBERLOCK_SERVO);
     
     Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
@@ -45,7 +45,7 @@ public class Robot extends IterativeRobot {
             bottomClimberLimitSwitch, topClimberLimitSwitch, lockClimberServo);
   
     
-    FrisbeeLoader frisbeeLoader = new FrisbeeLoader(dropServo, hopperBelt, opPad);
+    Hopper frisbeeLoader = new Hopper(dropServo, hopperBelt, opPad);
     
     Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, frisbeeLoader);
     

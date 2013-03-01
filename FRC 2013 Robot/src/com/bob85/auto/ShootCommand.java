@@ -1,6 +1,6 @@
 package com.bob85.auto;
 
-import com.bob85.FrisbeeLoader;
+import com.bob85.Hopper;
 import com.bob85.Shooter;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Timer;
@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ShootCommand {
     private Timer timer;
     private Shooter shooter;
-    private FrisbeeLoader frisbeeLoader;
+    private Hopper frisbeeLoader;
     public static final int frisbee_val = 3; //Amount of frisbees to fire
     private ShotTimer shotTimer; 
     public int shotNumber = 1; //current shot number
@@ -22,7 +22,7 @@ public class ShootCommand {
      * @param shotTimer ShotTimer object
      * @param frisbeeLoader Hopper object
      */
-    public ShootCommand(Shooter shooter, ShotTimer shotTimer, FrisbeeLoader frisbeeLoader) {
+    public ShootCommand(Shooter shooter, ShotTimer shotTimer, Hopper frisbeeLoader) {
         this.shooter = shooter;
         this.frisbeeLoader = frisbeeLoader;
         this.shotTimer = shotTimer;

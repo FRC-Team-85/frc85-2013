@@ -14,7 +14,7 @@ public class Autonomous {
     ShotTimer shotTimer;
     Drive drive;
     Shooter shooter;
-    FrisbeeLoader frisbeeLoader;
+    Hopper frisbeeLoader;
     ShootCommand shootCmd;
     TurnCommand turn180Cmd;
     DriveCommand driveStage2Cmd;
@@ -39,7 +39,7 @@ public class Autonomous {
      * @param frisbeeLoader Hopper
      */
     public Autonomous(AutoModeChooser autoChooser, ShotTimer shotTimer, Drive drive,
-            Shooter shooter, FrisbeeLoader frisbeeLoader) {
+            Shooter shooter, Hopper frisbeeLoader) {
         this.autoChooser = autoChooser;
         this.shotTimer = shotTimer;
         this.drive = drive;
