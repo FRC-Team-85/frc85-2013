@@ -9,22 +9,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ShootCommand {
     private Timer timer;
     private Shooter shooter;
-    private Hopper frisbeeLoader;
+    private Hopper hopper;
     public static final int frisbee_val = 3; //Amount of frisbees to fire
     private ShotTimer shotTimer; 
     public int shotNumber = 1; //current shot number
-    private double shotTime = 0.15; //length of time to leave hopper on in shot cycle
+    private double shotTime = 0.25; //length of time to leave hopper on in shot cycle
     private double currentTime;
     
     /**
      * Constructs a ShootCommand
      * @param shooter Shooter object
      * @param shotTimer ShotTimer object
-     * @param frisbeeLoader Hopper object
+     * @param hopper Hopper object
      */
-    public ShootCommand(Shooter shooter, ShotTimer shotTimer, Hopper frisbeeLoader) {
+    public ShootCommand(Shooter shooter, ShotTimer shotTimer, Hopper hopper) {
         this.shooter = shooter;
-        this.frisbeeLoader = frisbeeLoader;
+        this.hopper = hopper;
         this.shotTimer = shotTimer;
         timer = new Timer();
     }
@@ -51,7 +51,7 @@ public class ShootCommand {
      */
     public double getTime() {
         timer.start();
-        currentTime = timer.get() * MathUtils.pow(10, -6);
+        currentTime = timer.get() * 10e-6;
         return currentTime;
     }
     
@@ -62,16 +62,16 @@ public class ShootCommand {
      */
     public boolean shootFrisbee(double shotTime) {
         if (getTime() >= shotTime && getTime() <= (shotTime + this.shotTime)) {
-            frisbeeLoader.setMotorOutputSetting(-1);
-            frisbeeLoader.setLinearizedOutput();
+            hopper.setMotorOutputSetting(-1);
+            hopper.setLinearizedOutput();
             return false;
         } else if (getTime() < shotTime) {
-            frisbeeLoader.setMotorOutputSetting(0);
-            frisbeeLoader.setLinearizedOutput();
+            hopper.setMotorOutputSetting(0);
+            hopper.setLinearizedOutput();
             return false;
         } else {
-            frisbeeLoader.setMotorOutputSetting(0);
-            frisbeeLoader.setLinearizedOutput();
+            hopper.setMotorOutputSetting(0);
+            hopper.setLinearizedOutput();
             return true;
         }
     }
@@ -82,6 +82,8 @@ public class ShootCommand {
     public void initShootCommand() {
         shotNumber = 1;
         timer.reset();
+        hopper.unlockServo();
+        
     }
     
     /**
