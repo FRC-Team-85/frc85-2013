@@ -36,10 +36,10 @@ public class Drive {
     
     public static final int kGYRO = 1; //drive gyro analog I/O channel
     
-    private static final int kSHIFT_DRIVE = 3; //shift PTOs to drive joystick button
-    private static final int kSHIFT_CLIMB = 2; //shift PTOs to climb joystick button
-    private static final int kSHIFT_CLIMB_LEFT = 4; //shift left PTO to climb joystick button
-    private static final int kSHIFT_CLIMB_RIGHT = 5; //shift right PTO to climb joystick button
+    private static final int kBUTTON_SHIFT_DRIVE = 3; //shift PTOs to drive joystick button
+    private static final int kBUTTON_SHIFT_CLIMB = 2; //shift PTOs to climb joystick button
+    private static final int kBUTTON_SHIFT_CLIMB_LEFT = 4; //shift left PTO to climb joystick button
+    private static final int kBUTTON_SHIFT_CLIMB_RIGHT = 5; //shift right PTO to climb joystick button
     
     private boolean isEncodersStarted = false; //holds encoder enable state
     
@@ -149,7 +149,7 @@ public class Drive {
     }
     
     /**
-     * Limits maximum change in motor input
+     * Limits maximum change in motor input limited to linear output until I inverse equation
      * @param isLeft enable limit for left input
      * @param isRight enable limit for right input
      */
@@ -360,34 +360,34 @@ public class Drive {
     public void switchDriveStates() {
         switch (driveState) {
             case kDriveState:
-                if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_RIGHT)) {
                     driveState = kRightClimbLeftDriveState;
-                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_LEFT)) {
                     driveState = kLeftClimbRightDriveState;
-                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
                 }
                 break;
             case kLeftClimbRightDriveState:
-                if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
                     driveState = kDriveState;
-                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_RIGHT)) {
+                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_RIGHT)) {
                     driveState = kClimbState;
-                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
                 }
                 break;
             case kRightClimbLeftDriveState:
-                if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
                     driveState = kDriveState;
-                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB_LEFT)) {
+                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_LEFT)) {
                     driveState = kClimbState;
-                } else if (leftDriveJoystick.getRawButton(kSHIFT_CLIMB)) {
+                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
                 }
                 break;
             case kClimbState:
-                if (leftDriveJoystick.getRawButton(kSHIFT_DRIVE)) {
+                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
                     driveState = kDriveState;
                 }
                 break;
