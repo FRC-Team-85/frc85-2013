@@ -319,6 +319,11 @@ public class Drive {
     /**
      * Sends SmartDashboard diagnostics of Drive State
      */
+    private void sendServoPositionsDiagnostics() {
+        SmartDashboard.putNumber("leftDriveServo", leftDriveServo.get());
+        SmartDashboard.putNumber("rightDriveServo", rightDriveServo.get());
+    }
+    
     private void sendDriveStateDiagnostics() {
         SmartDashboard.putNumber("Drive State", driveState);
     }
