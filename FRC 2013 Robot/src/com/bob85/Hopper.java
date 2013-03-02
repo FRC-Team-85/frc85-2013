@@ -219,6 +219,11 @@ public class Hopper {
         SmartDashboard.putNumber("servo Position", dropServo.get());
     }
     
+    public void disableHopper() {
+        setMotorOutputSetting(0);
+        setLinearizedOutput();
+    }
+    
     /**
      * Runs operator control of the Hopper
      */

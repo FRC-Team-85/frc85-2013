@@ -94,20 +94,25 @@ public class Autonomous {
             case kDrive2Stage:
                 if (autoChooser.driveStage2) {
                     if (driveStage2Cmd.driveCommand(drive.getAverageEncodersDistance())) {
-                        autoStage = 4;
+                        autoStage = kDrive2Stage + 1;
                     }
                 } else {
-                    autoStage = 4;
-                }
-                break;
-            case 4:
-                if (true) {
-                    autoStage = 5;
+                    autoStage = kDrive2Stage + 1;
                 }
                 break;
             default:
+                finishAutonomous();
                 break;
         }
+    }
+    
+    /**
+     *Disables actuators when autonomous is done 
+     */
+    public void finishAutonomous() {
+        drive.disableDrive();
+        shooter.disableShooter();
+        frisbeeLoader.disableHopper();
     }
     
     /**
