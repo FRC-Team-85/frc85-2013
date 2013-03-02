@@ -7,7 +7,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Autonomous {
 
-    private int autoStage = 0;
+    private final int kShootStage = 0;
+    private final int kDrive1Stage = kShootStage + 1;
+    private final int kTurnStage = kDrive1Stage + 1;
+    private final int kDrive2Stage = kTurnStage + 1;
+    private int autoStage = kShootStage;
     
     Timer autoTimer;
     AutoModeChooser autoChooser;
@@ -48,6 +52,9 @@ public class Autonomous {
         initCommands();
     }
     
+    /**
+     * Sends autonomous diagnostics to SmartDashboard
+     */
     private void runDiagnostics() {
         SmartDashboard.putNumber("Auto Stage", autoStage);
         SmartDashboard.putNumber("Shot Number", shootCmd.shotNumber);
@@ -57,34 +64,34 @@ public class Autonomous {
 
     private void runSequentialAutonomous() {
         switch (autoStage) {
-            case 0:
+            case kShootStage:
                 if (autoChooser.shootStage) {
                     if (shootCmd.shootCommand()) {
-                        autoStage = 1;
+                        autoStage = kDrive1Stage;
                     }
                 } else {
-                    autoStage = 1;
+                    autoStage = kDrive1Stage;
                 }
                 break;
-            case 1:
+            case kDrive1Stage:
                 if (autoChooser.driveStage1) {
                     if (driveStage1Cmd.driveCommand(drive.getAverageEncodersDistance())) {
-                        autoStage = 2;
+                        autoStage = kTurnStage;
                     }
                 } else {
-                    autoStage = 2;
+                    autoStage = kTurnStage;
                 }
                 break;
-            case 2:
+            case kTurnStage:
                 if (autoChooser.turnStage) {
                     if (turn180Cmd.turnCommand()) {
-                        autoStage = 3;
+                        autoStage = kDrive2Stage;
                     }
                 } else {
-                    autoStage = 3;
+                    autoStage = kDrive2Stage;
                 }
                 break;
-            case 3:
+            case kDrive2Stage:
                 if (autoChooser.driveStage2) {
                     if (driveStage2Cmd.driveCommand(drive.getAverageEncodersDistance())) {
                         autoStage = 4;
