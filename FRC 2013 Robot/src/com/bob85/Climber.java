@@ -20,7 +20,7 @@ public class Climber {
     Servo lockClimberServo;
     
     private int encoderCPR = 250;
-    private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 5.969 linear inches moved on the climber
+    private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
     
     private double linearClimberMotorOutputCoefficient = -0.058;
     private double linearClimberMotorOutputOffset = 1.5;
@@ -86,6 +86,29 @@ public class Climber {
         this.rightStick = rightStick;
         this.drive = drive;
         initEncoderSetting();
+    }
+    
+    /**
+     * Resets the ClimberEncoders
+     */
+    private void resetClimberEncoders(){
+        leftClimberEncoder.reset();
+        rightClimberEncoder.reset();
+    }
+    
+    /**
+     * reverses the encoder reads when in Climber Mode
+     * 
+     * @param inClimb boolean to show if the robot is in Climber Mode
+     */
+    private void reverseClimberEncoderReads(boolean inClimb){
+        if (inClimb == true){
+            leftClimberEncoder.setReverseDirection(true);
+            rightClimberEncoder.setReverseDirection(false);
+        } else if (inClimb == false){
+            leftClimberEncoder.setReverseDirection(false);
+            rightClimberEncoder.setReverseDirection(true);
+        }
     }
     
     /**
@@ -215,14 +238,13 @@ public class Climber {
     public void manualJoystickElevDrive(Joystick joyStick){
         getEncoderDistance();
         drive.setMotorOutputDeadbands();
-                
+        getJoystickInput(joyStick);        
         
-            if (topClimberLimitSwitch.get() && -joyStick.getY() > 0) {
+            if (topClimberLimitSwitch.get() && -joyStick.getY() < 0) {
                 stopClimb();
-            } else if (bottomClimberLimitSwitch.get() && -joyStick.getY() < 0) {
+            } else if (bottomClimberLimitSwitch.get() && -joyStick.getY() > 0) {
                 stopClimb();
             } else {
-                getJoystickInput(joyStick);
                 setLinearClimbOutput();
             }
         
@@ -331,11 +353,21 @@ public class Climber {
      * Sets the parameters for switching into Manual Climb
      */
     public void switchClimbStates() {
-        if (drive.getDriveState() == 3) {
-            climberState = 1;
-        } else if (drive.getDriveState() != 3) {
-            climberState = 0;
+        switch (climberState) {
+            case 0:
+                if (drive.getDriveState() == Drive.kClimbState) {
+                    climberState = 1;
+                } else if (drive.getDriveState() != Drive.kClimbState) {
+                    climberState = 0;
+                }
+            case 1:
+                if (drive.getDriveState() != Drive.kClimbState){
+                    climberState = 0;
+                } else if (drive.getDriveState() == Drive.kClimbState){
+                    climberState = 1;
+                }
         }
+
     }
     
     /**
@@ -346,9 +378,13 @@ public class Climber {
     public void runClimbStates() {
         switch (climberState) {
             case 0:
+                resetClimberEncoders();
+                reverseClimberEncoderReads(false);
                 break;
             case 1:
+                resetClimberEncoders();
                 initEncoderSetting();
+                reverseClimberEncoderReads(true);
                 getJoystickInput(rightStick);
                 setLinearClimbOutput();
                 break;

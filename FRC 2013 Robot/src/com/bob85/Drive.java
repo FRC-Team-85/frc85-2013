@@ -63,7 +63,7 @@ public class Drive {
     private final int kDriveState = 0; //drive finite state
     private final int kLeftClimbRightDriveState = 1; //left climb right drive finite state
     private final int kRightClimbLeftDriveState = 2; //right climb left drive finite state
-    private final int kClimbState = 3; //climb finite state
+    public static final int kClimbState = 3; //climb finite state
     private int driveState; //current drive state
     
     /**
