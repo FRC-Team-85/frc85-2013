@@ -59,10 +59,10 @@ public class AutoModeChooser {
      * Assign the Driver Station Digital Inputs to variables
      */
     private void getDriverStationInputs() {
-        shootStage = driverStation.getDigitalIn(1);
-        driveStage1 = driverStation.getDigitalIn(2);
-        turnStage = driverStation.getDigitalIn(3);
-        driveStage2 = driverStation.getDigitalIn(4);
+        shootStage = driverStation.getDigitalIn(Autonomous.kShootStage);
+        driveStage1 = driverStation.getDigitalIn(Autonomous.kDrive1Stage);
+        turnStage = driverStation.getDigitalIn(Autonomous.kTurnStage);
+        driveStage2 = driverStation.getDigitalIn(Autonomous.kDrive2Stage);
     }
     
     /**

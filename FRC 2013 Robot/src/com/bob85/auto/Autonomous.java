@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Autonomous {
 
-    private final int kShootStage = 0;
-    private final int kDrive1Stage = kShootStage + 1;
-    private final int kTurnStage = kDrive1Stage + 1;
-    private final int kDrive2Stage = kTurnStage + 1;
+    public static final int kShootStage = 1;
+    public static final int kDrive1Stage = kShootStage + 1;
+    public static final int kTurnStage = kDrive1Stage + 1;
+    public static final int kDrive2Stage = kTurnStage + 1;
     private int autoStage = kShootStage;
     
     Timer autoTimer;
@@ -100,7 +100,7 @@ public class Autonomous {
                     autoStage = kDrive2Stage + 1;
                 }
                 break;
-            default:
+            default: //should only run when autonomous finishes
                 finishAutonomous();
                 break;
         }
