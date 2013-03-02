@@ -64,7 +64,7 @@ public class Drive {
     private final int kLeftClimbRightDriveState = 1; //left climb right drive finite state
     private final int kRightClimbLeftDriveState = 2; //right climb left drive finite state
     public static final int kClimbState = 3; //climb finite state
-    private int driveState; //current drive state
+    private int driveState = kDriveState; //current drive state
     
     /**
      * Initialize sensor settings
