@@ -14,36 +14,35 @@ public class MotorLinearization {
      * Function is based off of FRC 1114's 2012 Robot Code
      * 
      * @param victorMotor Motor output to linearize
-     * @param x Desired Motor Output
+     * @param output Desired Motor Output
      */
-    public static void linearizeVictor884Output(Victor victorMotor, double x) {
-        double output = x;
+    public static void linearizeVictor884Output(Victor victorMotor, double output) {
+        double x = output;
         
-        if (output < 0) {
-            output *= -1;
-            output = (-3.1199*MathUtils.pow(output, 4) + 4.4664*MathUtils.pow(output, 3) - 
-                2.2378*MathUtils.pow(output, 2) - 0.122*output);
+        if (x < 0) {
+            x *= -1;
+            x = (-3.1199*MathUtils.pow(x, 4) + 4.4664*MathUtils.pow(x, 3) - 
+                2.2378*MathUtils.pow(x, 2) - 0.122*x);
         } else {
-            output = (3.1199*MathUtils.pow(output, 4) - 4.4664*MathUtils.pow(output, 3) + 
-                    2.2378*MathUtils.pow(output, 2) + 0.122*output);
+            x = (3.1199*MathUtils.pow(x, 4) - 4.4664*MathUtils.pow(x, 3) + 
+                    2.2378*MathUtils.pow(x, 2) + 0.122*x);
         }
         
-        victorMotor.set(output);
+        victorMotor.set(x);
     }
     
-    public static double calculateLinearOutput(double x) {
-        double output = x;
+    public static double calculateLinearOutput(double output) {
+        double x = output;
         
-        if (output < 0) {
-            output *= -1;
-            output = (-3.1199*MathUtils.pow(output, 4) + 4.4664*MathUtils.pow(output, 3) - 
-                2.2378*MathUtils.pow(output, 2) - 0.122*output);
+        if (x < 0) {
+            x *= -1;
+            x = (-3.1199*MathUtils.pow(x, 4) + 4.4664*MathUtils.pow(x, 3) - 
+                2.2378*MathUtils.pow(x, 2) - 0.122*x);
         } else {
-            output = (3.1199*MathUtils.pow(output, 4) - 4.4664*MathUtils.pow(output, 3) + 
-                    2.2378*MathUtils.pow(output, 2) + 0.122*output);
+            x = (3.1199*MathUtils.pow(x, 4) - 4.4664*MathUtils.pow(x, 3) + 
+                    2.2378*MathUtils.pow(x, 2) + 0.122*x);
         }
         
-        return output;
+        return x;
     }
-    
 }
