@@ -116,10 +116,10 @@ public class Climber {
      * 
      * @param joystick Joystick Input 
      */
-    private void joystickBasedShiftClimberLock(Joystick joystick) {
-        if (joystick.getRawButton(3)) {
+    private void joystickBasedShiftClimberLock() {
+        if (rightStick.getRawButton(3)) {
             lockClimberServo.set(1);
-        } else if (joystick.getRawButton(2)) {
+        } else if (rightStick.getRawButton(2)) {
             lockClimberServo.set(0);
         }
     }
@@ -378,11 +378,12 @@ public class Climber {
     public void runClimbStates() {
         switch (climberState) {
             case 0:
-                resetClimberEncoders();
+                //resetClimberEncoders();
                 reverseClimberEncoderReads(false);
                 break;
             case 1:
-                resetClimberEncoders();
+                joystickBasedShiftClimberLock();
+                //resetClimberEncoders();
                 initEncoderSetting();
                 reverseClimberEncoderReads(true);
                 getJoystickInput(rightStick);

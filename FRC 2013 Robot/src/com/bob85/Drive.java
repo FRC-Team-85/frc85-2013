@@ -121,7 +121,7 @@ public class Drive {
         if (rightDriveJoystick.getTrigger()) {
             getJoystickYAxisInputs(false, false, 1);
         } else {
-            getJoystickYAxisInputs(false, false, 0.5);
+            getJoystickYAxisInputs(false, false, 0.75);
         }
     }
     
@@ -412,12 +412,12 @@ public class Drive {
                 break;
             case kLeftClimbRightDriveState:
                 setleftServoClimbPosition();
-                getJoystickYAxisInputs(true, false, 1);
+                getJoystickYAxisInputs(true, false, .75);
                 setFilteredMotorOutput();
                 break;
             case kRightClimbLeftDriveState:
                 setRightServoClimbPosition();
-                getJoystickYAxisInputs(false, true, 1);
+                getJoystickYAxisInputs(false, true, .75);
                 setFilteredMotorOutput();
                 break;
             case kClimbState:
