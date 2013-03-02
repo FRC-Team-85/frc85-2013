@@ -162,6 +162,7 @@ public class Shooter {
     public void runDiagnostics() {
         SmartDashboard.putNumber("Shooter PWM Setting", shooterMotor.get());
         SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
+        SmartDashboard.putNumber("Shooter IIR Filter RPM", shooterHalleffect.getIIRFilterRPM());
         SmartDashboard.putNumber("Shooter Belt PWM Setting", shooterBeltMotor.get());
         SmartDashboard.putBoolean("Shooter On Target", onTarget());
         SmartDashboard.putNumber("Shooter State", getShooterState());

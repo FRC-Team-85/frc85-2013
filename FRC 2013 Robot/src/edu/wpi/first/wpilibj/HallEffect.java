@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 public class HallEffect extends Counter implements CounterBase, PIDSource, LiveWindowSendable{
 
     private int IIRFilterCount;
-    private final double kIIRFilter = 1;
+    private final double kIIRFilter = 0.5;
     
     public HallEffect(int channel) {
         super(channel);

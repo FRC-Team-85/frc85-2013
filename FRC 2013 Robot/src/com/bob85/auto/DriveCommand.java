@@ -10,10 +10,10 @@ public class DriveCommand {
     private boolean isResetEncoders;
     boolean isForward;
 
-    private String endDistanceOffset = "Drive Command Offset";
+    private double endDistanceOffset = 4;
     
     private double dist;
-    private double maxOutput = 0.75;
+    private double maxOutput = 0.5;
     
     /**
      * Constructs a DriveCommand with a reference to a Drive object
@@ -24,14 +24,6 @@ public class DriveCommand {
         this.drive = drive;
         this.dist = dist;
         isForward = (dist >= 0) ? true : false;
-    }
-    
-    /**
-     * Creates NetworkTable key & value for constant sensitivity to stop the robot 
-     * before reaching desired distance
-     */
-    public static void initSmartDashboardDefaultValues() {
-        SmartDashboard.putNumber("Drive Command Offset", 5);
     }
     
     /**
@@ -55,7 +47,7 @@ public class DriveCommand {
             }
             
             if (isForward) {
-                if ((currentDist) < (dist - SmartDashboard.getNumber(endDistanceOffset))) {
+                if ((currentDist) < (dist - endDistanceOffset)) {
                     drive.runRampUpTrapezoidalMotionProfile(maxOutput);
                     return false;
                 } else {
@@ -63,7 +55,7 @@ public class DriveCommand {
                     return true;
                 }
             } else {
-                if (currentDist > (dist + SmartDashboard.getNumber(endDistanceOffset))) {
+                if (currentDist > (dist + endDistanceOffset)) {
                     drive.runRampUpTrapezoidalMotionProfile(-maxOutput);
                     return false;
                 } else {
