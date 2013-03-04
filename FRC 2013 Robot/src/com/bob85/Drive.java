@@ -119,6 +119,13 @@ public class Drive {
         rightMotorsOutput *= scaleFactor;
     }
     
+    public void setJoystickYAxisInvertedBackwardDrive(double scaleFactor){
+        leftMotorsOutput = -rightDriveJoystick.getY();
+        rightMotorsOutput = -leftDriveJoystick.getY();
+        leftMotorsOutput *= scaleFactor;
+        rightMotorsOutput *= scaleFactor;
+    }
+    
     /**
      * Maps the motor outputs to the joysticks' Y axis
      */
@@ -157,7 +164,7 @@ public class Drive {
                             setLinearizedOutput();
                             break;
                     case kDriveReverseDriveState:
-                           getJoystickYAxisInputs(true, true, 0.675);
+                           setJoystickYAxisInvertedBackwardDrive(0.675);
                            setLinearizedOutput();
                             break;
             }
