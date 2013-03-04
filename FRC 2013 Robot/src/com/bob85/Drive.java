@@ -66,6 +66,11 @@ public class Drive {
     public static final int kClimbState = 3; //climb finite state
     private int driveState = kDriveState; //current drive state
     
+    private final int kDriveLimitedDriveState = 0;
+    private final int kDriveFullDriveState = 1;
+    private final int kDriveReverseDriveState = 2;
+    private int driveDriveState = kDriveLimitedDriveState; //Drive states in the kDriveState
+    
     /**
      * Initialize sensor settings
      */
@@ -118,11 +123,41 @@ public class Drive {
      * Maps the motor outputs to the joysticks' Y axis
      */
     private void getTankDriveJoystickInput() {
-        if (rightDriveJoystick.getTrigger()) {
-            getJoystickYAxisInputs(false, false, 1);
-        } else {
-            getJoystickYAxisInputs(false, false, 0.75);
-        }
+            switch(driveDriveState) {
+                    case kDriveLimitedDriveState:
+                           if (leftDriveJoystick.getTrigger()) {
+                                    driveDriveState = kDriveReverseDriveState;
+                            } else if (rightDriveJoystick.getTrigger()) {
+                                    driveDriveState = kDriveFullDriveState;
+                            }
+                            break;
+                    case kDriveFullDriveState:
+                              if (leftDriveJoystick.getTrigger()) {
+                                    driveDriveState = kDriveReverseDriveState;
+                            }
+                              else  if (!rightDriveJoystick.getTrigger()) {
+                                    driveDriveState = kDriveLimitedDriveState;
+                            } 
+                            break;
+                    case kDriveReverseDriveState:
+                            if (!leftDriveJoystick.getTrigger() && !rightDriveJoystick.getTrigger()) {
+                                    driveDriveState = kDriveLimitedDriveState;
+                            } else if (!leftDriveJoystick.getTrigger() && rightDriveJoystick.getTrigger()) {
+                                    driveDriveState = kDriveFullDriveState;
+                            }
+                            break;
+            }
+            switch (driveDriveState) {
+                    case kDriveLimitedDriveState:
+                            getJoystickYAxisInputs(false, false, 0.675);
+                            break;
+                    case kDriveFullDriveState:
+                            getJoystickYAxisInputs(false, false, 1);
+                            break;
+                    case kDriveReverseDriveState:
+                        getJoystickYAxisInputs(true, true, 0.675);
+                            break;
+            }
     }
     
     /**
