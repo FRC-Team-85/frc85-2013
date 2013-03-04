@@ -219,6 +219,14 @@ public class Hopper {
         SmartDashboard.putNumber("servo Position", dropServo.get());
     }
     
+    /**
+     * Locks the servo setting the initial hopperState
+     */
+    public void initHopper() {
+            lockServo();
+            hopperState = kLockedServoState;
+    }
+    
     public void disableHopper() {
         setMotorOutputSetting(0);
         setLinearizedOutput();
@@ -227,7 +235,7 @@ public class Hopper {
     /**
      * Runs operator control of the Hopper
      */
-    public void runFrisbeeLoader() {
+    public void runHopper() {
         switchHopperStates();
         runHopperStates();
         runDiagnostics();

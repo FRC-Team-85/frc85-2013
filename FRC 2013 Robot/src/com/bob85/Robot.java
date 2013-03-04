@@ -45,15 +45,16 @@ public class Robot extends IterativeRobot {
             bottomClimberLimitSwitch, topClimberLimitSwitch, lockClimberServo);
   
     
-    Hopper frisbeeLoader = new Hopper(dropServo, hopperBelt, opPad);
+    Hopper hopper = new Hopper(dropServo, hopperBelt, opPad);
     
-    Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, frisbeeLoader);
+    Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, hopper);
     
     public void robotInit() {
         drive.initDrive();
         shotTimer.initShotTimer();   
         shooter.initShooter();
         climber.initClimber();
+        hopper.initHopper();
     }
     
     public void disabledInit() {
@@ -64,12 +65,14 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         drive.initDrive();
         shooter.initShooter();
+        hopper.initHopper();
         auto.initAutonomous();
     }
     
     public void teleopInit() {
         drive.initDrive();
         shooter.initShooter();
+        hopper.initHopper();
     }
     
     public void testInit() {
@@ -88,7 +91,7 @@ public class Robot extends IterativeRobot {
         shooter.runShooter();
         drive.runDrive();
         climber.runClimber();
-        frisbeeLoader.runFrisbeeLoader();
+        hopper.runHopper();
     }
     public void testPeriodic() {
 
