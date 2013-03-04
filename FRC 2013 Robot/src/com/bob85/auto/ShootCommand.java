@@ -56,22 +56,32 @@ public class ShootCommand {
     }
     
     /**
+     * Runs the hopper motor
+     */
+    public void runHopper() {
+            hopper.setMotorOutputSetting(-1);
+            hopper.setLinearizedOutput();
+    }
+    
+    public void disableHopper() {
+            hopper.setMotorOutputSetting(0);
+            hopper.setLinearizedOutput();
+    }
+    
+    /**
      * Turns the hopper belt on for a set time to shoot a frisbee
      * @param shotTime shot time setting to turn on the hopper motor
      * @return 
      */
     public boolean shootFrisbee(double shotTime) {
         if (getTime() >= shotTime && getTime() <= (shotTime + this.shotTime)) {
-            hopper.setMotorOutputSetting(-1);
-            hopper.setLinearizedOutput();
+           runHopper();
             return false;
         } else if (getTime() < shotTime) {
-            hopper.setMotorOutputSetting(0);
-            hopper.setLinearizedOutput();
+            disableHopper();
             return false;
         } else {
-            hopper.setMotorOutputSetting(0);
-            hopper.setLinearizedOutput();
+            disableHopper();
             return true;
         }
     }
@@ -82,7 +92,6 @@ public class ShootCommand {
     public void initShootCommand() {
         shotNumber = 1;
         timer.reset();
-        hopper.unlockServo();
         
     }
     
@@ -92,6 +101,7 @@ public class ShootCommand {
      */
     public boolean shootCommand() {
         runShooter();
+        hopper.unlockServo();
         timer.start();
         SmartDashboard.putNumber("ShotCommand Timer", getTime());
         switch (shotNumber) {
