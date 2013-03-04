@@ -150,12 +150,15 @@ public class Drive {
             switch (driveDriveState) {
                     case kDriveLimitedDriveState:
                             getJoystickYAxisInputs(false, false, 0.675);
+                            setLinearizedOutput();
                             break;
                     case kDriveFullDriveState:
                             getJoystickYAxisInputs(false, false, 1);
+                            setLinearizedOutput();
                             break;
                     case kDriveReverseDriveState:
-                        getJoystickYAxisInputs(true, true, 0.675);
+                           getJoystickYAxisInputs(true, true, 0.675);
+                           setLinearizedOutput();
                             break;
             }
     }
