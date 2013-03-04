@@ -293,5 +293,6 @@ public class Shooter {
     public void initShooter() {
         shooterHalleffect.reset();
         shooterHalleffect.start();
+        shooterState = kStopShooterState;
     }
 }

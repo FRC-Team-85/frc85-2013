@@ -435,13 +435,14 @@ public class Drive {
     }
     
     /**
-     * Reset and set actuators & sensors for Drive
+     * Reset and set actuators, sensors, drive state for Drive
      */
     public void initDrive() {
         resetGyro();
         resetEncoders();
         enableEncoders();
         setServoDrivePosition();
+        driveState = kDriveState;
     }
     
     /**
