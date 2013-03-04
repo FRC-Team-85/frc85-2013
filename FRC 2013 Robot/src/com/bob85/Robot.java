@@ -63,11 +63,13 @@ public class Robot extends IterativeRobot {
     
     public void autonomousInit() {
         drive.initDrive();
+        shooter.initShooter();
         auto.initAutonomous();
     }
     
     public void teleopInit() {
         drive.initDrive();
+        shooter.initShooter();
     }
     
     public void testInit() {
