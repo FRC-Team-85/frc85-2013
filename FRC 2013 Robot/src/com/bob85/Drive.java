@@ -108,8 +108,8 @@ public class Drive {
     
     /**
      * Assigns the Y Axis of the left and right joysticks to MotorsOutput variable
-     * @param reverseLeft Reverse input
-     * @param reverseRight Reverse input
+     * @param reverseLeft Reverse left drive input
+     * @param reverseRight Reverse right drive input
      * @param scaleFactor multiply input
      */
     public void getJoystickYAxisInputs(boolean reverseLeft, boolean reverseRight, double scaleFactor) {
@@ -119,9 +119,15 @@ public class Drive {
         rightMotorsOutput *= scaleFactor;
     }
     
-    public void setJoystickYAxisInvertedBackwardDrive(double scaleFactor){
-        leftMotorsOutput = -rightDriveJoystick.getY();
-        rightMotorsOutput = -leftDriveJoystick.getY();
+    /**
+     * Assigns the Y Axis of the left joystick to the rightMotorsOutput and right joystick to leftMotorsOutput
+     * @param reverseLeft  reverse left drive input
+     * @param reverseRight  reverse right drive input
+     * @param scaleFactor  multiply inputs
+     */
+    public void getSwappedJoystickYAxisInputs(boolean reverseLeft, boolean reverseRight, double scaleFactor){
+         leftMotorsOutput = (reverseLeft) ? rightDriveJoystick.getY() : -rightDriveJoystick.getY();
+        rightMotorsOutput = (reverseRight) ? leftDriveJoystick.getY() : -leftDriveJoystick.getY();
         leftMotorsOutput *= scaleFactor;
         rightMotorsOutput *= scaleFactor;
     }
@@ -157,15 +163,12 @@ public class Drive {
             switch (driveDriveState) {
                     case kDriveLimitedDriveState:
                             getJoystickYAxisInputs(false, false, 0.675);
-                            setLinearizedOutput();
                             break;
                     case kDriveFullDriveState:
                             getJoystickYAxisInputs(false, false, 1);
-                            setLinearizedOutput();
                             break;
                     case kDriveReverseDriveState:
-                           setJoystickYAxisInvertedBackwardDrive(0.675);
-                           setLinearizedOutput();
+                           getSwappedJoystickYAxisInputs(false, false, 0.675);
                             break;
             }
     }
