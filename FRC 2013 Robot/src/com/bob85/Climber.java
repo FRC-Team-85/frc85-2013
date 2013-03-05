@@ -175,6 +175,19 @@ public class Climber {
     }
     
     /**
+     * Assigns motorOutput to joystick Y axis and prevents climber from continuing past the limit switches
+     */
+    private void getClimbJoystickInputWithHardLimit() {
+        getJoystickInput(rightStick);
+        
+        if (climberMotorOutput > 0 && getIsTop()  && getIsExtend()) {
+            climberMotorOutput = 0;
+        } else if (climberMotorOutput < 0 && getIsBot() && getIsExtend()) {
+            climberMotorOutput = 0;
+        }
+    }
+    
+    /**
      * Changes the Motor output into a linear value correlating to the Joysticks
      */
     private void setLinearClimbOutput() {
@@ -385,7 +398,7 @@ public class Climber {
      * Set values when starting the Robot
      */
     public void initClimber() {
-        
+            climberState = kDriveState;
     } 
     
     /**
