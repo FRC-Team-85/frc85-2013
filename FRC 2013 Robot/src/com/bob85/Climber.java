@@ -186,9 +186,9 @@ public class Climber {
             climberMotorOutput = 0;
         }
     }
-    
+
     /**
-     * Changes the Motor output into a linear value correlating to the Joysticks
+     * Changes the Motor output into a linear value correlating to the output setting
      */
     private void setLinearClimbOutput() {
         leftClimberMotors.set(-MotorLinearization.calculateLinearOutput(climberMotorOutput));

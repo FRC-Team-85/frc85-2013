@@ -283,10 +283,7 @@ public class Drive {
      */
     public void runEncoderDiagnostics() {
         SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
-        SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance());
-        SmartDashboard.putNumber("Left Drive Encoder", leftDriveEncoder.get());
-        SmartDashboard.putNumber("Right Drive Encoder", rightDriveEncoder.get());
- 
+        SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance()); 
     }
     
     /**
@@ -302,34 +299,6 @@ public class Drive {
      */
     public void resetGyro() {
         gyro.reset();
-    }
-    
-    /**
-     * Returns if servos are in drive position
-     * @return are servos in drive position
-     */
-    public boolean getServoDrivePosition() {
-        if (leftDriveServo.get() == leftDriveServoDrivePosition && 
-                rightDriveServo.get() == rightDriveServoDrivePosition) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    /**
-     * Returns if servos are in climb position
-     * @return are servos in climb position
-     */
-    public boolean getServoClimbPosition() {
-       if (leftDriveServo.get() == leftDriveServoClimbPosition && 
-                rightDriveServo.get() == rightDriveServoClimbPosition) {
-            return true;
-        }
-        else {
-            return false;
-        }
     }
     
     /**
@@ -367,12 +336,12 @@ public class Drive {
     /**
      * Sends SmartDashboard diagnostics of Drive State
      */
-    private void sendServoPositionsDiagnostics() {
+    private void runServoPositionsDiagnostics() {
         SmartDashboard.putNumber("leftDriveServo", leftDriveServo.get());
         SmartDashboard.putNumber("rightDriveServo", rightDriveServo.get());
     }
     
-    private void sendDriveStateDiagnostics() {
+    private void runDriveStateDiagnostics() {
         SmartDashboard.putNumber("Drive State", driveState);
     }
     
@@ -405,6 +374,10 @@ public class Drive {
         rightMotorsOutput = minSpeed;
         limitMotorsOutputChange(true, true);
         setLinearizedOutput();
+    }
+    
+    public void runDiagnostics() {
+        runEncoderDiagnostics();
     }
     
     /**
@@ -442,6 +415,7 @@ public class Drive {
             case kClimbState:
                 if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
                     driveState = kDriveState;
+                    initEncoders();
                 }
                 break;
         }
@@ -453,19 +427,18 @@ public class Drive {
     public void runDriveStates() {
         switch (driveState) {
             case kDriveState:
-                initEncoders();
                 setServoDrivePosition();
                 getTankDriveJoystickInput();
                 setFilteredMotorOutput();
                 break;
             case kLeftClimbRightDriveState:
                 setleftServoClimbPosition();
-                getJoystickYAxisInputs(true, false, .75);
+                getJoystickYAxisInputs(true, false, .675);
                 setFilteredMotorOutput();
                 break;
             case kRightClimbLeftDriveState:
                 setRightServoClimbPosition();
-                getJoystickYAxisInputs(false, true, .75);
+                getJoystickYAxisInputs(false, true, .675);
                 setFilteredMotorOutput();
                 break;
             case kClimbState:
@@ -487,6 +460,7 @@ public class Drive {
      */
     public void initDrive() {
         resetGyro();
+        initEncoders();
         resetEncoders();
         enableEncoders();
         setServoDrivePosition();
@@ -507,8 +481,7 @@ public class Drive {
      */
     public void runDrive() {
         enableEncoders();
-        sendDriveStateDiagnostics();
-        runEncoderDiagnostics();
+        runDiagnostics();
         switchDriveStates();
         runDriveStates();        
     }
