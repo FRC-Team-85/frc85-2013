@@ -41,8 +41,6 @@ public class Drive {
     private static final int kBUTTON_SHIFT_CLIMB_LEFT = 4; //shift left PTO to climb joystick button
     private static final int kBUTTON_SHIFT_CLIMB_RIGHT = 5; //shift right PTO to climb joystick button
     
-    private boolean isEncodersStarted = false; //holds encoder enable state
-    
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
     private double leftLinearMotorsOutput; //left drive linearized actual motor output setting
@@ -242,32 +240,26 @@ public class Drive {
      * Start counting on PTO encoders
      */
     public void enableEncoders() {
-        if (!isEncodersStarted && leftDriveEncoder != null && rightDriveEncoder != null) {
-            leftDriveEncoder.start();
-            rightDriveEncoder.start();
-            isEncodersStarted = true;
-        }    
+        leftDriveEncoder.start();
+        rightDriveEncoder.start();
     }
     
     /**
      * Initialize encoder distance per pulse and direction settings
      */
     public void initEncoders() {            
-            leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
-            rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
-            
-            rightDriveEncoder.setReverseDirection(true);
+        leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
+        rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
+        leftDriveEncoder.setReverseDirection(false);
+        rightDriveEncoder.setReverseDirection(true);
     }
     
     /**
      * Stop counting on PTO encoders
      */
     public void disableEncoders() {
-        if (isEncodersStarted) {
-            leftDriveEncoder.stop();
-            rightDriveEncoder.stop();
-            isEncodersStarted = false;
-        }
+        leftDriveEncoder.stop();
+        rightDriveEncoder.stop();
     }
     
     /**
