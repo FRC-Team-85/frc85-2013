@@ -208,7 +208,7 @@ public class Shooter {
                     shooterState = kRunShooterNotAtTargetRPMState;
                 }
                 break;
-            case 2:
+            case kRunShooterAtTargetRPMState:
                 if (!gamepad.getButton(ButtonType.kRB)) {
                     shooterState = kStopShooterState;
                 } else if (gamepad.getButton(ButtonType.kRB) && !onTarget()) {

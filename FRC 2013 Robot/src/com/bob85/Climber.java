@@ -233,9 +233,9 @@ public class Climber {
         drive.setMotorOutputDeadbands();
         getJoystickInput(joyStick);        
         
-            if (topClimberLimitSwitch.get() && -joyStick.getY() < 0) {
+            if (getIsTop() && -joyStick.getY() < 0) {
                 stopClimb();
-            } else if (bottomClimberLimitSwitch.get() && -joyStick.getY() > 0) {
+            } else if (getIsBot() && -joyStick.getY() > 0) {
                 stopClimb();
             } else {
                 setLinearClimbOutput();
