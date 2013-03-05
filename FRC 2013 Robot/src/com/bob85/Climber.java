@@ -44,7 +44,9 @@ public class Climber {
     
     Drive drive;
     
-    private int climberState;
+    private static final int kDriveState = 0; //at least one side of the drive is in drive
+    private static final int kClimbState = 1; //both PTOs are in climb
+    private int climberState = kDriveState;
     
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -101,11 +103,11 @@ public class Climber {
      * 
      * @param inClimb boolean to show if the robot is in Climber Mode
      */
-    private void reverseClimberEncoderReads(boolean inClimb){
-        if (inClimb == true){
+    private void reverseClimberEncodersDirection(boolean inClimb){
+        if (inClimb){
             leftClimberEncoder.setReverseDirection(true);
             rightClimberEncoder.setReverseDirection(false);
-        } else if (inClimb == false){
+        } else if (!inClimb){
             leftClimberEncoder.setReverseDirection(false);
             rightClimberEncoder.setReverseDirection(true);
         }
@@ -113,7 +115,6 @@ public class Climber {
     
     /**
      * Method used to Shift PTO servos using Buttons 2 & 3 on a Joystick
-     * 
      * @param joystick Joystick Input 
      */
     private void joystickBasedShiftClimberLock() {
@@ -125,25 +126,7 @@ public class Climber {
     }
     
     /**
-     * Method used to Shift One Side of the PTO
-     * Button 4 shifts leftSide into Climber
-     * Button 5 shifts rightSide into Climber
-     * 
-     * @param joystick 
-     */
-    private void joystickBasedShiftOneSide(Joystick joystick) {
-        if (joystick.getRawButton(4)) {
-            drive.setleftServoClimbPosition();
-        }
-        
-        if (joystick.getRawButton(5)) {
-            drive.setRightServoClimbPosition();
-        }
-    }
-    
-    /**
      * Get the Boolean from the restingArmSwitch on the climberMount
-     * 
      * @return 
      */
     private boolean getIsRest() {
@@ -152,7 +135,6 @@ public class Climber {
     
     /**
      * Get the Boolean from the extendedArmSwitch on the climberMount
-     * 
      * @return 
      */
     private boolean getIsExtend() {
@@ -170,7 +152,6 @@ public class Climber {
     
     /**
      * Get the Boolean value from the topHook limitSwitch
-     * 
      * @return 
      */
     private boolean getIsTop() {
@@ -179,7 +160,6 @@ public class Climber {
     
     /**
      * Get the Joystick outputs in the climberMode
-     * 
      * @param joystick 
      */
     private void getJoystickInput(Joystick joystick) {
@@ -354,17 +334,18 @@ public class Climber {
      */
     public void switchClimbStates() {
         switch (climberState) {
-            case 0:
+            case kDriveState:
                 if (drive.getDriveState() == Drive.kClimbState) {
-                    climberState = 1;
+                    climberState = kClimbState;
+                    resetClimberEncoders(); //reset encoders when robot swaps to climb
                 } else if (drive.getDriveState() != Drive.kClimbState) {
-                    climberState = 0;
+                    climberState = kDriveState;
                 }
-            case 1:
+            case kClimbState:
                 if (drive.getDriveState() != Drive.kClimbState){
-                    climberState = 0;
+                    climberState = kDriveState;
                 } else if (drive.getDriveState() == Drive.kClimbState){
-                    climberState = 1;
+                    climberState = kClimbState;
                 }
         }
 
@@ -377,15 +358,13 @@ public class Climber {
      */
     public void runClimbStates() {
         switch (climberState) {
-            case 0:
-                //resetClimberEncoders();
-                reverseClimberEncoderReads(false);
+            case kDriveState:
+                reverseClimberEncodersDirection(false);
                 break;
-            case 1:
+            case kClimbState:
                 joystickBasedShiftClimberLock();
-                //resetClimberEncoders();
                 initEncoderSetting();
-                reverseClimberEncoderReads(true);
+                reverseClimberEncodersDirection(true);
                 getJoystickInput(rightStick);
                 setLinearClimbOutput();
                 break;
