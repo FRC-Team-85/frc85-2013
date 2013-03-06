@@ -134,7 +134,7 @@ public class Climber {
      * @return 
      */
     private boolean getIsTop() {
-        return topClimberLimitSwitch.get();
+        return !topClimberLimitSwitch.get();
     }
     
     /**
@@ -159,9 +159,9 @@ public class Climber {
     private void getClimbJoystickInputWithHardLimit() {
         getJoystickInput(rightStick);
         
-        if (climberMotorOutput > 0 && getIsTop()  && getIsExtend()) {
+        if (climberMotorOutput > 0 && getIsTop()) {
             climberMotorOutput = 0;
-        } else if (climberMotorOutput < 0 && getIsBot() && getIsExtend()) {
+        } else if (climberMotorOutput < 0 && getIsBot()) {
             climberMotorOutput = 0;
         }
     }
@@ -357,7 +357,8 @@ public class Climber {
                 joystickBasedShiftClimberLock();
                 initEncoderSetting();
                 reverseClimberEncodersDirection(true);
-                getJoystickInput(rightStick);
+                //getJoystickInput(rightStick);
+                getClimbJoystickInputWithHardLimit();
                 setLinearClimbOutput();
                 break;
         }

@@ -134,43 +134,13 @@ public class Drive {
      * Maps the motor outputs to the joysticks' Y axis
      */
     private void getTankDriveJoystickInput() {
-            switch(driveDriveState) {
-                    case kDriveLimitedDriveState:
-                           if (leftDriveJoystick.getTrigger()) {
-                                    driveDriveState = kDriveReverseDriveState;
-                            } else if (rightDriveJoystick.getTrigger()) {
-                                    driveDriveState = kDriveFullDriveState;
-                            }
-                            break;
-                    case kDriveFullDriveState:
-                              if (leftDriveJoystick.getTrigger()) {
-                                    driveDriveState = kDriveReverseDriveState;
-                            }
-                              else  if (!rightDriveJoystick.getTrigger()) {
-                                    driveDriveState = kDriveLimitedDriveState;
-                            } 
-                            break;
-                    case kDriveReverseDriveState:
-                            if (!leftDriveJoystick.getTrigger() && !rightDriveJoystick.getTrigger()) {
-                                    driveDriveState = kDriveLimitedDriveState;
-                            } else if (!leftDriveJoystick.getTrigger() && rightDriveJoystick.getTrigger()) {
-                                    driveDriveState = kDriveFullDriveState;
-                            }
-                            break;
+            if (rightDriveJoystick.getTrigger()) {
+                getJoystickYAxisInputs(false, false, 1);
             }
-            switch (driveDriveState) {
-                    case kDriveLimitedDriveState:
-                            getJoystickYAxisInputs(false, false, 0.675);
-                            break;
-                    case kDriveFullDriveState:
-                            getJoystickYAxisInputs(false, false, 1);
-                            break;
-                    case kDriveReverseDriveState:
-                           getSwappedJoystickYAxisInputs(false, false, 0.675);
-                            break;
+            else {
+                getJoystickYAxisInputs(false, false, 0.675);
             }
     }
-    
     /**
      * Sets motor output setting to zero if it falls under the deadband
      */    
