@@ -8,9 +8,10 @@ public class DriveCommand {
     private boolean isResetEncoders;
     boolean isForward;
 
-    private double endDistanceOffset = 4;
+    private double endDistanceOffset = 1;
     
     private double dist;
+    private double currentDist;
     private double maxOutput = 0.5;
     
     /**
@@ -38,12 +39,14 @@ public class DriveCommand {
      *
      * @param currentDist current displacement robot is at in inches
      */
-    public boolean driveCommand(double currentDist) {
-        
+    public boolean driveCommand() {
+            
             if (!isResetEncoders) {
                 drive.resetEncoders();
                 isResetEncoders = true;
             }
+            
+            currentDist = drive.getAverageEncodersDistance();
             
             if (isForward) {
                 if ((currentDist) < (dist - endDistanceOffset)) {

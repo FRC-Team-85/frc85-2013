@@ -2,7 +2,6 @@ package com.bob85.auto;
 
 import com.bob85.Hopper;
 import com.bob85.Shooter;
-import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -50,7 +49,6 @@ public class ShootCommand {
      * @return 
      */
     public double getTime() {
-        timer.start();
         currentTime = timer.get() * 10e-6;
         return currentTime;
     }
@@ -92,6 +90,7 @@ public class ShootCommand {
     public void initShootCommand() {
         shotNumber = 1;
         timer.reset();
+        timer.stop();
         
     }
     

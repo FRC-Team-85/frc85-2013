@@ -76,7 +76,7 @@ public class Autonomous {
                 break;
             case kDrive1Stage:
                 if (autoChooser.driveStage1) {
-                    if (driveStage1Cmd.driveCommand(drive.getAverageEncodersDistance())) {
+                    if (driveStage1Cmd.driveCommand()) {
                         autoStage = kTurnStage;
                     }
                 } else {
@@ -94,7 +94,7 @@ public class Autonomous {
                 break;
             case kDrive2Stage:
                 if (autoChooser.driveStage2) {
-                    if (driveStage2Cmd.driveCommand(drive.getAverageEncodersDistance())) {
+                    if (driveStage2Cmd.driveCommand()) {
                         autoStage = kDrive2Stage + 1;
                     }
                 } else {

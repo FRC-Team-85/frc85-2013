@@ -1,13 +1,12 @@
 package com.bob85.auto;
 
 import com.bob85.Drive;
-import edu.wpi.first.wpilibj.Gyro;
 
 public class TurnCommand {
     Drive drive;
     private double angle;
     private boolean isClockwise;
-    private double maxOutput = 0.5;
+    private double maxOutput = 0.675;
     
     /**
      * Constructs a TurnCommand with a Drive and desired angle
