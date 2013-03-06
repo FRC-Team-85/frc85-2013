@@ -30,13 +30,9 @@ public class Climber {
     
     private int climberStage;
     
-    public boolean inDriveMode;
-    
     private double speedSwitchPoint = -0.8;
     private double topEncoderLimitValue;
 
-    DigitalInput restClimberLimitSwitch;
-    DigitalInput extendClimberLimitSwitch;
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
     
@@ -66,7 +62,6 @@ public class Climber {
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         this.drive = drive;
-        initEncoderSetting();
     }
     
     /**
@@ -79,61 +74,45 @@ public class Climber {
     
     /**
      * reverses the encoder reads when in Climber Mode
-     * 
-     * @param inClimb boolean to show if the robot is in Climber Mode
      */
-    private void reverseClimberEncodersDirection(boolean inClimb){
-        if (inClimb){
+    private void setClimberEncodersDirection(){
             leftClimberEncoder.setReverseDirection(true);
             rightClimberEncoder.setReverseDirection(false);
-        } else if (!inClimb){
-            leftClimberEncoder.setReverseDirection(false);
-            rightClimberEncoder.setReverseDirection(true);
-        }
+    }
+    
+    private void lockClimberGearServo() {
+        lockClimberServo.set(1);
+    }
+    
+    private void unlockClimberGearServo() {
+        lockClimberServo.set(0);
     }
     
     /**
-     * Method used to Shift PTO servos using Buttons 2 & 3 on a Joystick
-     * @param joystick Joystick Input 
+     * Shifts climber gear locking pin
      */
-    private void joystickBasedShiftClimberLock() {
+    private void shiftClimberGearLockJoystickInput() {
         if (leftStick.getRawButton(3)) {
-            lockClimberServo.set(1);
+            lockClimberGearServo();
         } else if (leftStick.getRawButton(2)) {
-            lockClimberServo.set(0);
+            unlockClimberGearServo();
         }
     }
     
     /**
-     * Get the Boolean from the restingArmSwitch on the climberMount
-     * @return 
-     */
-    private boolean getIsRest() {
-        return restClimberLimitSwitch.get();
-    }
-    
-    /**
-     * Get the Boolean from the extendedArmSwitch on the climberMount
-     * @return 
-     */
-    private boolean getIsExtend() {
-        return extendClimberLimitSwitch.get();
-    }
-    
-    /**
-     * Get the Boolean value from the bottomHook limitSwitch
+     * Returns if bottom climber limit switch is reached
      * 
-     * @return 
+     * @return is climber elevator at bottom
      */
-    private boolean getIsBot() {
+    private boolean getIsClimberBot() {
         return bottomClimberLimitSwitch.get();
     }
     
     /**
-     * Get the Boolean value from the topHook limitSwitch
-     * @return 
+     * Returns if top climber limit switch is reached
+     * @return is climber elevator at top
      */
-    private boolean getIsTop() {
+    private boolean getIsClimberTop() {
         return !topClimberLimitSwitch.get();
     }
     
@@ -159,9 +138,9 @@ public class Climber {
     private void getClimbJoystickInputWithHardLimit() {
         getJoystickInput(rightStick);
         
-        if (climberMotorOutput > 0 && getIsTop()) {
+        if (climberMotorOutput > 0 && getIsClimberTop()) {
             climberMotorOutput = 0;
-        } else if (climberMotorOutput < 0 && getIsBot()) {
+        } else if (climberMotorOutput < 0 && getIsClimberBot()) {
             climberMotorOutput = 0;
         }
     }
@@ -185,7 +164,7 @@ public class Climber {
     /**
      * Finds the average encoder count value of both Drive Encoders
      */
-    private void calcAvgEncDistance() {
+    private void getAvgEncDistance() {
         encoderClimberDistance = ((rightClimberEncoder.getDistance() + leftClimberEncoder.getDistance()) / 2 );
     }
     
@@ -193,9 +172,9 @@ public class Climber {
      * Computes the average EncoderCounts and resets the values when the bottomLimitSwitch is hit 
      */
     private void getEncoderDistance() {
-        calcAvgEncDistance();
+        getAvgEncDistance();
         
-        if (bottomClimberLimitSwitch.get() == true) {
+        if (getIsClimberBot()) {
             encoderClimberDistance = 0;
             rightClimberEncoder.reset();
             leftClimberEncoder.reset();
@@ -212,9 +191,9 @@ public class Climber {
         drive.setMotorOutputDeadbands();
         getJoystickInput(joyStick);        
         
-            if (getIsTop() && -joyStick.getY() < 0) {
+            if (getIsClimberTop() && -joyStick.getY() < 0) {
                 stopClimb();
-            } else if (getIsBot() && -joyStick.getY() > 0) {
+            } else if (getIsClimberBot() && -joyStick.getY() > 0) {
                 stopClimb();
             } else {
                 setLinearClimbOutput();
@@ -231,7 +210,7 @@ public class Climber {
     private void scaleStage1LinearClimberMotorOutputUp() {
         getEncoderDistance();
         
-        if (topClimberLimitSwitch.get() != true || encoderClimberDistance < topEncoderLimitValue){
+        if (!getIsClimberTop() && encoderClimberDistance < topEncoderLimitValue){
         climberMotorOutput = (linearClimberMotorOutputCoefficient * encoderClimberDistance + linearClimberMotorOutputOffset);
         } else {
             stopClimb();
@@ -245,7 +224,7 @@ public class Climber {
      */
     private void scaleStage2LinearClimberMotorOutputDown() {
 
-        if (!bottomClimberLimitSwitch.get()) {
+        if (!getIsClimberBot()) {
             if (climberMotorOutput > speedSwitchPoint && speedLimitReached != true) {//Speed increases
                 climberMotorOutput = (-linearClimberMotorOutputCoefficient * encoderClimberDistance - linearClimberMotorOutputOffset);
             } else if (climberMotorOutput <= speedSwitchPoint) {//Speed decreases 
@@ -266,7 +245,7 @@ public class Climber {
      */
     public void setClimberToPresetHeight(Joystick joystick, int topButton, double presetHeight){
         if (joystick.getRawButton(topButton) == true){
-            if (presetHeight > encoderClimberDistance && topClimberLimitSwitch.get() != true){
+            if (presetHeight > encoderClimberDistance && !getIsClimberTop()){
                 climberMotorOutput = -0.5;
                 setClimberMotors();
             } else {
@@ -302,17 +281,17 @@ public class Climber {
      public void switchAutoClimb(Joystick joystick, int startAutoClimbButton){
          switch(climberStage){
              case 0:
-                 if (bottomClimberLimitSwitch.get() && joystick.getRawButton(startAutoClimbButton)){
+                 if (getIsClimberBot() && joystick.getRawButton(startAutoClimbButton)){
                      climberStage = 1;
                  }
                  break;
              case 1:
-                 if (encoderClimberDistance >= topEncoderLimitValue || topClimberLimitSwitch.get() == true){
+                 if (encoderClimberDistance >= topEncoderLimitValue || getIsClimberTop()){
                      climberStage = 2;
                  }
                  break;
              case 2:
-                 if (bottomClimberLimitSwitch.get()){
+                 if (getIsClimberBot()){
                      climberStage = 3;
                  }
                  break;
@@ -351,12 +330,11 @@ public class Climber {
     public void runClimbStates() {
         switch (climberState) {
             case kDriveState:
-                reverseClimberEncodersDirection(false);
                 break;
             case kClimbState:
-                joystickBasedShiftClimberLock();
+                shiftClimberGearLockJoystickInput();
                 initEncoderSetting();
-                reverseClimberEncodersDirection(true);
+                setClimberEncodersDirection();
                 //getJoystickInput(rightStick);
                 getClimbJoystickInputWithHardLimit();
                 setLinearClimbOutput();
@@ -368,10 +346,9 @@ public class Climber {
      * Puts values for LimitSwitches on the SmartDashboard
      */
     public void runDiagnostics() {
-        SmartDashboard.putBoolean("Rest LimitSwitch", getIsRest());
-        SmartDashboard.putBoolean("Extend LimitSwitch", getIsExtend());
-        SmartDashboard.putBoolean("Bot LimitSwitch", getIsBot());
-        SmartDashboard.putBoolean("Top LimitSwitch", getIsTop());
+        SmartDashboard.putBoolean("Bot LimitSwitch", getIsClimberBot());
+        SmartDashboard.putBoolean("Top LimitSwitch", getIsClimberTop());
+        SmartDashboard.putNumber("Climber Avg Dist", encoderClimberDistance);
     } 
     
     /**
@@ -387,8 +364,7 @@ public class Climber {
     public void runClimber() {
         runDiagnostics();
         switchClimbStates();
-        runClimbStates();
-        
+        runClimbStates();        
     }
 }
 
