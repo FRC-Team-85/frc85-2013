@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climber {
-    public static final int kREST_LIMITSWITCH = 6;
-    public static final int kEXTEND_LIMITSWITCH = 7;
     public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;  
     public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
     
@@ -53,34 +51,15 @@ public class Climber {
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
     }
     
-    /**
-     * Constructs a Climber using: 2 joysticks, 2 encoders, and 4 limitSwitches.
-     * 
-     * @param drive
-     * @param leftStick left Joystick
-     * @param rightStick right Joystick
-     * @param leftClimberMotors inverted driveMotors
-     * @param rightClimberMotors inverted driveMotors
-     * @param leftClimberEncoder left DriveEncoder
-     * @param rightClimberEncoder right DriveEncoder
-     * @param restClimberLimitSwitch switch to show ClimberArm is ready for Shooting
-     * @param extendClimberLimitSwitch switch to show ClimberArm is ready for Climb
-     * @param bottomClimberLimitSwitch bottom HookLimitSwitches
-     * @param topClimberLimitSwitch top HookLimitSwitches
-     * @param lockClimberServo pinLockGear Servo 
-     */
     public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
             Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder,
-            DigitalInput restClimberLimitSwitch, DigitalInput extendClimberLimitSwitch,
             DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch,
             Servo lockClimberServo) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
         this.rightClimberEncoder = rightClimberEncoder;
-        this.restClimberLimitSwitch = restClimberLimitSwitch;
-        this.extendClimberLimitSwitch = extendClimberLimitSwitch;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         this.lockClimberServo = lockClimberServo;
