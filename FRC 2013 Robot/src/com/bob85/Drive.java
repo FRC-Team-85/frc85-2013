@@ -36,10 +36,8 @@ public class Drive {
     
     public static final int kGYRO = 1; //drive gyro analog I/O channel
     
-    private static final int kBUTTON_SHIFT_DRIVE = 3; //shift PTOs to drive joystick button
-    private static final int kBUTTON_SHIFT_CLIMB = 2; //shift PTOs to climb joystick button
-    private static final int kBUTTON_SHIFT_CLIMB_LEFT = 4; //shift left PTO to climb joystick button
-    private static final int kBUTTON_SHIFT_CLIMB_RIGHT = 5; //shift right PTO to climb joystick button
+    private static final int kBUTTON_SHIFT_DRIVE = 2; //shift PTOs to drive joystick button
+    private static final int kBUTTON_SHIFT_CLIMB = 3; //shift PTOs to climb joystick button
     
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
@@ -47,7 +45,7 @@ public class Drive {
     private double rightLinearMotorsOutput; //right drive linearized actual motor output setting
             
     private double deadband = 0.2; //Deadband for drive motor output
-    private final double changeLimit_val = 0.25; //maxmimum change limit value for motor output
+    private final double changeLimit_val = 0.5; //maxmimum change limit value for motor output
     private double changeLimit = changeLimit_val; //change limit variable
     
     private double leftDriveServoDrivePosition = 0; //left PTO drive servo position
@@ -59,15 +57,8 @@ public class Drive {
     private double encoderDistanceRatio = (((4 * Math.PI) / 10.3) / encoderCPR); //Each encoder pulse = 1.22 inches traveled
     
     private final int kDriveState = 0; //drive finite state
-    private final int kLeftClimbRightDriveState = 1; //left climb right drive finite state
-    private final int kRightClimbLeftDriveState = 2; //right climb left drive finite state
-    public static final int kClimbState = 3; //climb finite state
+    public static final int kClimbState = 1; //climb finite state
     private int driveState = kDriveState; //current drive state
-    
-    private final int kDriveLimitedDriveState = 0;
-    private final int kDriveFullDriveState = 1;
-    private final int kDriveReverseDriveState = 2;
-    private int driveDriveState = kDriveLimitedDriveState; //Drive states in the kDriveState
     
     /**
      * Initialize sensor settings
@@ -136,6 +127,8 @@ public class Drive {
     private void getTankDriveJoystickInput() {
             if (rightDriveJoystick.getTrigger()) {
                 getJoystickYAxisInputs(false, false, 1);
+            } else if (leftDriveJoystick.getTrigger()) {
+                getJoystickYAxisInputs(true, true, 0.675);
             }
             else {
                 getJoystickYAxisInputs(false, false, 0.675);
@@ -280,22 +273,6 @@ public class Drive {
     }
     
     /**
-     * Sets servo positions to shift Left PTO to climb and right to drive
-     */
-    public void setleftServoClimbPosition() {
-        leftDriveServo.set(leftDriveServoClimbPosition);
-        rightDriveServo.set(rightDriveServoDrivePosition);
-    }
-    
-    /**
-     * Sets servo positions to shift left pto to drive and right to climb
-     */
-    public void setRightServoClimbPosition() {
-        leftDriveServo.set(leftDriveServoDrivePosition);
-        rightDriveServo.set(rightDriveServoClimbPosition);
-    }
-    
-    /**
      * Sends SmartDashboard diagnostics of Drive State
      */
     private void runServoPositionsDiagnostics() {
@@ -313,7 +290,7 @@ public class Drive {
      */
     public void setFilteredMotorOutput() {
         setMotorOutputDeadbands();
-        limitMotorsOutputChange(true, true);
+        //limitMotorsOutputChange(true, true);
         setLinearizedOutput();
     }     
     
@@ -348,34 +325,12 @@ public class Drive {
     public void switchDriveStates() {
         switch (driveState) {
             case kDriveState:
-                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_RIGHT)) {
-                    driveState = kRightClimbLeftDriveState;
-                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_LEFT)) {
-                    driveState = kLeftClimbRightDriveState;
-                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
-                    driveState = kClimbState;
-                }
-                break;
-            case kLeftClimbRightDriveState:
-                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
-                    driveState = kDriveState;
-                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_RIGHT)) {
-                    driveState = kClimbState;
-                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
-                    driveState = kClimbState;
-                }
-                break;
-            case kRightClimbLeftDriveState:
-                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
-                    driveState = kDriveState;
-                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB_LEFT)) {
-                    driveState = kClimbState;
-                } else if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
+                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
                 }
                 break;
             case kClimbState:
-                if (leftDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
+                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
                     driveState = kDriveState;
                     initEncoders();
                 }
@@ -391,16 +346,6 @@ public class Drive {
             case kDriveState:
                 setServoDrivePosition();
                 getTankDriveJoystickInput();
-                setFilteredMotorOutput();
-                break;
-            case kLeftClimbRightDriveState:
-                setleftServoClimbPosition();
-                getJoystickYAxisInputs(true, false, .675);
-                setFilteredMotorOutput();
-                break;
-            case kRightClimbLeftDriveState:
-                setRightServoClimbPosition();
-                getJoystickYAxisInputs(false, true, .675);
                 setFilteredMotorOutput();
                 break;
             case kClimbState:

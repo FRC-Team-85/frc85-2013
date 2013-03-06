@@ -97,9 +97,9 @@ public class Climber {
      * @param joystick Joystick Input 
      */
     private void joystickBasedShiftClimberLock() {
-        if (rightStick.getRawButton(3)) {
+        if (leftStick.getRawButton(3)) {
             lockClimberServo.set(1);
-        } else if (rightStick.getRawButton(2)) {
+        } else if (leftStick.getRawButton(2)) {
             lockClimberServo.set(0);
         }
     }
