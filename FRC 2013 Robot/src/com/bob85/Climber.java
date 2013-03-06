@@ -9,6 +9,9 @@ public class Climber {
     
     public static final int kCLIMBERLOCK_SERVO = 9;
     
+    public static final int kBUTTON_CLIMBER_LOCK = 3; //joystick button to lock pin in climber gear
+    public static final int kBUTTON_CLIMBER_UNLOCK = 2; //joystick button to unlock pin in climber gear
+    
     Victor leftClimberMotors;
     Victor rightClimberMotors;
     Encoder leftClimberEncoder;
@@ -16,6 +19,9 @@ public class Climber {
     Joystick leftStick;
     Joystick rightStick;
     Servo lockClimberServo;
+    
+    private static final int kCLIMBER_LOCK_SERVO_POSITION = 1; //lock pin in gear servo position
+    private static final int kCLIMBER_UNLOCK_SERVO_POSITION = 0; //unlock pin in gear servo position
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
@@ -80,22 +86,22 @@ public class Climber {
             rightClimberEncoder.setReverseDirection(false);
     }
     
-    private void lockClimberGearServo() {
-        lockClimberServo.set(1);
+    private void lockClimberServo() {
+        lockClimberServo.set(kCLIMBER_LOCK_SERVO_POSITION);
     }
     
-    private void unlockClimberGearServo() {
-        lockClimberServo.set(0);
+    private void unlockClimberServo() {
+        lockClimberServo.set(kCLIMBER_UNLOCK_SERVO_POSITION);
     }
     
     /**
      * Shifts climber gear locking pin
      */
-    private void shiftClimberGearLockJoystickInput() {
-        if (leftStick.getRawButton(3)) {
-            lockClimberGearServo();
-        } else if (leftStick.getRawButton(2)) {
-            unlockClimberGearServo();
+    private void shiftClimberLockJoystickInput() {
+        if (leftStick.getRawButton(kBUTTON_CLIMBER_LOCK)) {
+            lockClimberServo();
+        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_UNLOCK)) {
+            unlockClimberServo();
         }
     }
     
@@ -162,23 +168,15 @@ public class Climber {
     }
     
     /**
-     * Finds the average encoder count value of both Drive Encoders
+     * Computes the average climber distance and resets the values when the bottomLimitSwitch is hit 
      */
-    private void getAvgEncDistance() {
-        encoderClimberDistance = ((rightClimberEncoder.getDistance() + leftClimberEncoder.getDistance()) / 2 );
-    }
-    
-    /**
-     * Computes the average EncoderCounts and resets the values when the bottomLimitSwitch is hit 
-     */
-    private void getEncoderDistance() {
-        getAvgEncDistance();
-        
+    private double getEncoderDistance() {        
         if (getIsClimberBot()) {
-            encoderClimberDistance = 0;
             rightClimberEncoder.reset();
             leftClimberEncoder.reset();
         }
+        encoderClimberDistance = ((rightClimberEncoder.getDistance() + leftClimberEncoder.getDistance()) / 2 );
+        return encoderClimberDistance;
     }
     
     /**
@@ -332,7 +330,7 @@ public class Climber {
             case kDriveState:
                 break;
             case kClimbState:
-                shiftClimberGearLockJoystickInput();
+                shiftClimberLockJoystickInput();
                 initEncoderSetting();
                 setClimberEncodersDirection();
                 //getJoystickInput(rightStick);

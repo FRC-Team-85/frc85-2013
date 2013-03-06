@@ -1,7 +1,6 @@
 package com.bob85.auto;
 
 import com.bob85.*;
-import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
