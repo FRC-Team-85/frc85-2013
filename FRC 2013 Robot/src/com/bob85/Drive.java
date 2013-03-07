@@ -97,26 +97,22 @@ public class Drive {
     
     /**
      * Assigns the Y Axis of the left and right joysticks to MotorsOutput variable
-     * @param reverseLeft Reverse left drive input
-     * @param reverseRight Reverse right drive input
-     * @param scaleFactor multiply input
+     * @param scaleFactor multiply input by scaleFactor, negative value is reverse direction
      */
-    public void getJoystickYAxisInputs(boolean reverseLeft, boolean reverseRight, double scaleFactor) {
-        leftMotorsOutput = (reverseLeft) ? leftDriveJoystick.getY() : -leftDriveJoystick.getY();
-        rightMotorsOutput = (reverseRight) ? rightDriveJoystick.getY() : -rightDriveJoystick.getY();
+    public void getJoystickYAxisInputs(double scaleFactor) {
+        leftMotorsOutput = -leftDriveJoystick.getY();
+        rightMotorsOutput = -rightDriveJoystick.getY();
         leftMotorsOutput *= scaleFactor;
         rightMotorsOutput *= scaleFactor;
     }
     
     /**
      * Assigns the Y Axis of the left joystick to the rightMotorsOutput and right joystick to leftMotorsOutput
-     * @param reverseLeft  reverse left drive input
-     * @param reverseRight  reverse right drive input
-     * @param scaleFactor  multiply inputs
+     * @param scaleFactor  multiply inputs, negative value is reverse direction
      */
-    public void getSwappedJoystickYAxisInputs(boolean reverseLeft, boolean reverseRight, double scaleFactor){
-         leftMotorsOutput = (reverseLeft) ? rightDriveJoystick.getY() : -rightDriveJoystick.getY();
-        rightMotorsOutput = (reverseRight) ? leftDriveJoystick.getY() : -leftDriveJoystick.getY();
+    public void getSwappedJoystickYAxisInputs(double scaleFactor){
+         leftMotorsOutput = -rightDriveJoystick.getY();
+        rightMotorsOutput = -leftDriveJoystick.getY();
         leftMotorsOutput *= scaleFactor;
         rightMotorsOutput *= scaleFactor;
     }
@@ -126,12 +122,12 @@ public class Drive {
      */
     private void getTankDriveJoystickInput() {
             if (rightDriveJoystick.getTrigger()) {
-                getJoystickYAxisInputs(false, false, 1);
+                getJoystickYAxisInputs(1);
             } else if (leftDriveJoystick.getTrigger()) {
-                getJoystickYAxisInputs(true, true, 0.675);
+                getJoystickYAxisInputs(-0.675);
             }
             else {
-                getJoystickYAxisInputs(false, false, 0.675);
+                getJoystickYAxisInputs(0.675);
             }
     }
     /**
@@ -193,10 +189,8 @@ public class Drive {
      * Resets PTO encoders counts to 0
      */
     public void resetEncoders() {
-        if (leftDriveEncoder != null && rightDriveEncoder != null) {
-            leftDriveEncoder.reset();
-            rightDriveEncoder.reset();
-        }
+        leftDriveEncoder.reset();
+        rightDriveEncoder.reset();
     }
     
     /**
@@ -380,7 +374,7 @@ public class Drive {
     public void disableDrive() {
         disableEncoders();
         resetEncoders();
-        gyro.reset();
+        resetGyro();
     }
     
     /**

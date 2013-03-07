@@ -73,7 +73,7 @@ public class ShootCommand {
      */
     public boolean shootFrisbee(double shotTime) {
         if (getTime() >= shotTime && getTime() <= (shotTime + this.shotTime)) {
-           runHopper();
+            runHopper();
             return false;
         } else if (getTime() < shotTime) {
             disableHopper();
