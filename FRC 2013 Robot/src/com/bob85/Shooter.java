@@ -24,7 +24,7 @@ public class Shooter {
     
     public static final int kSHOOTER_RPM_MAX_SPEED_SETPOINT = 5310;
     public static final int kSHOOTER_RPM_PYRAMID_BACK_SETPOINT = 4000;
-    
+ 
     private Victor shooterMotor;
     private Victor shooterBeltMotor;
     
@@ -33,6 +33,9 @@ public class Shooter {
     private HallEffect shooterHalleffect;
     
     private F310Gamepad gamepad;
+    
+    private ButtonType kBUTTON_SHOOT_FULL_SPEED = ButtonType.kRB;
+    private ButtonType kBUTTON_SHOOT_PYRAMID_SPEED = ButtonType.kLB;
     
     private PIDController shooterPID;
     
@@ -174,10 +177,10 @@ public class Shooter {
     private void switchShooterSetpointStates() {
         switch (shooterSetpointState) {
             case 0:
-                shooterSetpointState = (gamepad.getButton(ButtonType.kRB)) ? 1 : 0;
+                shooterSetpointState = (gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED)) ? 1 : 0;
                 break;
             case 1:
-                shooterSetpointState = (gamepad.getButton(ButtonType.kLB)) ? 0 : 1;
+                shooterSetpointState = (gamepad.getButton(kBUTTON_SHOOT_PYRAMID_SPEED)) ? 0 : 1;
                 break;
         }
     }
@@ -200,23 +203,23 @@ public class Shooter {
     private void switchShooterStates() {
         switch (shooterState) {
             case kStopShooterState:
-                shooterState = (gamepad.getButton(ButtonType.kRB)) ? kRunShooterNotAtTargetRPMState : kStopShooterState;
+                shooterState = (gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED)) ? kRunShooterNotAtTargetRPMState : kStopShooterState;
                 break;
             case kRunShooterNotAtTargetRPMState:
-                if (gamepad.getButton(ButtonType.kRB) && onTarget()) {
+                if (gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED) && onTarget()) {
                     shooterState = kRunShooterAtTargetRPMState;
-                } else if (!gamepad.getButton(ButtonType.kRB)) {
+                } else if (!gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED)) {
                     shooterState = kStopShooterState;
-                } else if (gamepad.getButton(ButtonType.kRB) && !onTarget()) {
+                } else if (gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED) && !onTarget()) {
                     shooterState = kRunShooterNotAtTargetRPMState;
                 }
                 break;
             case kRunShooterAtTargetRPMState:
-                if (!gamepad.getButton(ButtonType.kRB)) {
+                if (!gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED)) {
                     shooterState = kStopShooterState;
-                } else if (gamepad.getButton(ButtonType.kRB) && !onTarget()) {
+                } else if (gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED) && !onTarget()) {
                     shooterState = kRunShooterNotAtTargetRPMState;
-                } else if (gamepad.getButton(ButtonType.kRB) && onTarget()) {
+                } else if (gamepad.getButton(kBUTTON_SHOOT_FULL_SPEED) && onTarget()) {
                     shooterState = kRunShooterAtTargetRPMState;
                 }
                 break;
