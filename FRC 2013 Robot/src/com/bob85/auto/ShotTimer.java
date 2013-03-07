@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShotTimer {
     
-    public static final String shotTime1Key = "Shot_Time_1";
-    public static final String shotTime2Key = "Shot_Time_2";
-    public static final String shotTime3Key = "Shot_Time_3";
+    public static final String shotTime1Key = "ST1";
+    public static final String shotTime2Key = "ST2";
+    public static final String shotTime3Key = "ST3";
 
-    private static final String shotTimePrefKey = "_Pref";
+    private static final String shotTimePrefKey = "P";
     
     int frisbees_val;
     double[] shotTimes;
