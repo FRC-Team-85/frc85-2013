@@ -17,7 +17,7 @@ public class Shooter {
     private static int shooterState = 0; // 0 is standby, 1 is readying, 2 is shoot
     private static int shooterSetpointState = 1;
     
-    private double kOnTargetPercentTolerance = 0.1;
+    private double kOnTargetRPMTolerance = 25;
     
     private static final double kPWM_TO_RPM = 5310;
     private static final double kRPM_TO_PWM = (1/5310);
@@ -41,6 +41,9 @@ public class Shooter {
         shooterHalleffect.setMaxPeriod(0.2);
         if (shooterPID != null) {
             shooterPID.setSetpoint(kSHOOTER_RPM_PYRAMID_BACK_SETPOINT);
+            shooterPID.setPercentTolerance(2);
+            shooterPID.setInputRange(0, kPWM_TO_RPM);
+            shooterPID.setOutputRange(0, 1);
         }
     }
     
@@ -51,7 +54,7 @@ public class Shooter {
         this.shooterBeltMotor = shooterBeltMotor;
         this.shooterHalleffect = shooterHalleffect;
         this.gamepad = joystick;
-        shooterPID = new PIDController(0, 0, 0, 0, shooterHalleffect, shooterMotor);
+        shooterPID = new PIDController(0.000232, 0, 0, 0.5, shooterHalleffect, shooterMotor, 0.02);
         initShooterSettings();
     }
     
@@ -84,7 +87,7 @@ public class Shooter {
     }
     
     public boolean onTarget() {
-        if (Math.abs(convertRPMtoPWM(shooterHalleffect.getRPM()) -  shooterMotor.get()) <  kOnTargetPercentTolerance) {
+        if (Math.abs(shooterHalleffect.getRPM() -  shooterSetpoint) <  kOnTargetRPMTolerance) {
             return true;
         } else {
             return false;

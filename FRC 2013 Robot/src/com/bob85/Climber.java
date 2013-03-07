@@ -25,6 +25,7 @@ public class Climber {
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
+    private int kClimberEncoderTopDist = 50; //maximum climber height in encoder distance in inches
     
     private double linearClimberMotorOutputCoefficient = -0.058;
     private double linearClimberMotorOutputOffset = 1.5;
