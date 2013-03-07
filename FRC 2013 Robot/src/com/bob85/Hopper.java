@@ -17,6 +17,8 @@ public class Hopper {
     
     private F310Gamepad gamepad; //reference to F310 Gamepad 
     
+    public static final ButtonType kBUTTON_MANUAL_UNLOCK_HOPPER = ButtonType.kRF;
+    
     private double hopperBeltMotorOutput; //hopper belt motor desired output setting
     
     private Timer timer; //hopper deploy frisbee timer
@@ -179,10 +181,12 @@ public class Hopper {
     public void switchHopperStates(){
         switch(hopperState){
             case kLockedServoState:                
-                hopperState = (gamepad.getButton(ButtonType.kRB)) ? kUnlockedServoState : kLockedServoState;
+                hopperState = (gamepad.getButton(Shooter.kBUTTON_SHOOT_FULL_SPEED) ||
+                    gamepad.getButton(kBUTTON_MANUAL_UNLOCK_HOPPER)) ? kUnlockedServoState : kLockedServoState;
                 break;
             case kUnlockedServoState:
-                hopperState = (!gamepad.getButton(ButtonType.kRB)) ? kLockedServoState : kUnlockedServoState;
+                hopperState = (!gamepad.getButton(Shooter.kBUTTON_SHOOT_FULL_SPEED) && 
+                    !gamepad.getButton(kBUTTON_MANUAL_UNLOCK_HOPPER)) ? kLockedServoState : kUnlockedServoState;
         }
     }
     

@@ -34,8 +34,8 @@ public class Shooter {
     
     private F310Gamepad gamepad;
     
-    private ButtonType kBUTTON_SHOOT_FULL_SPEED = ButtonType.kRB;
-    private ButtonType kBUTTON_SHOOT_PYRAMID_SPEED = ButtonType.kLB;
+    public static final ButtonType kBUTTON_SHOOT_FULL_SPEED = ButtonType.kRB;
+    public static final ButtonType kBUTTON_SHOOT_PYRAMID_SPEED = ButtonType.kLB;
     
     private PIDController shooterPID;
     
