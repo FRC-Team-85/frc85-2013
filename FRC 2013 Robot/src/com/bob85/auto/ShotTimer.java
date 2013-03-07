@@ -46,7 +46,7 @@ public class ShotTimer {
     /**
      * Gets the shot time values from SmartDashboard
      */
-    public void getShotTimerData() {
+    public void getSmartDashboardShotTimerData() {
         switch (frisbees_val) {
             case 0:
                 break;
@@ -65,6 +65,12 @@ public class ShotTimer {
             default:
                 break;
         }
+    }
+    
+    public void getPrefShotTimerData() {
+        shotTimes[0] = shotPref.getDouble(shotTime1Key + shotTimePrefKey, 5);
+        shotTimes[1] = shotPref.getDouble(shotTime2Key + shotTimePrefKey, 6);
+        shotTimes[2] = shotPref.getDouble(shotTime3Key + shotTimePrefKey, 7);
     }
     
     /**
@@ -88,6 +94,6 @@ public class ShotTimer {
      * Run in autoInit() to retrieve shot time values at start of autonomous
      */
     public void runShotTimer() {
-        getShotTimerData();
+        getPrefShotTimerData();
     }
 }
