@@ -84,6 +84,13 @@ public class ShootCommand {
         }
     }
     
+    public void runDiagnostics() {
+        SmartDashboard.putNumber("Shot Number", shotNumber);
+        SmartDashboard.putNumber("Shot Time", getTime());
+        SmartDashboard.putNumber("Shot Time 1", shotTimer.getShotTime(1));
+        SmartDashboard.putNumber("Shot Time 2", shotTimer.getShotTime(2));
+        SmartDashboard.putNumber("Shot Time 3", shotTimer.getShotTime(3));
+    }
     /**
      * Resets the ShootCommand variables
      */
@@ -99,22 +106,24 @@ public class ShootCommand {
      * @return is shootCommand() complete
      */
     public boolean shootCommand() {
-        runShooter();
         hopper.unlockServo();
         timer.start();
-        SmartDashboard.putNumber("ShotCommand Timer", getTime());
+        runDiagnostics();
         switch (shotNumber) {
             case 1:
+                runShooter();
                 if (shootFrisbee(shotTimer.getShotTime(1))) {
                     shotNumber = 2;
                 }
                 break;
             case 2:
+                runShooter();
                 if (shootFrisbee(shotTimer.getShotTime(2))) {
                     shotNumber = 3;
                 }
                 break;
             case 3:
+                runShooter();
                 if (shootFrisbee(shotTimer.getShotTime(3))) {
                     shotNumber = 4;
                 }
