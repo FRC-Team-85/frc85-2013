@@ -37,7 +37,7 @@ public class TurnCommand {
                 drive.setMotorOutputSetting(maxOutput, -maxOutput);
                 drive.setLinearizedOutput();
                 return false;
-            } else if (drive.getAngle() > angle) {
+            } else if (drive.getAngle() >= angle) {
                 drive.setMotorOutputSetting(0, 0);
                 drive.setLinearizedOutput();
                 return true;
@@ -49,7 +49,7 @@ public class TurnCommand {
                 drive.setMotorOutputSetting(-maxOutput, maxOutput);
                 drive.setLinearizedOutput();
                 return false;
-            } else if (drive.getAngle() < angle) {
+            } else if (drive.getAngle() <= angle) {
                 drive.setMotorOutputSetting(0, 0);
                 drive.setLinearizedOutput();
                 return true;
