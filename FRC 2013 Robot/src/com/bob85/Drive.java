@@ -40,6 +40,8 @@ public class Drive {
     
     private static final int kBUTTON_SHIFT_DRIVE = 2; //shift PTOs to drive joystick button
     private static final int kBUTTON_SHIFT_CLIMB = 3; //shift PTOs to climb joystick button
+    private static final int kBUTTON_SHIFT_LEFT_CLIMB = 4;
+    private static final int kBUTTON_SHIFT_RIGHT_CLIMB = 5;
     
     private double leftMotorsOutput; //left drive motor output setting
     private double rightMotorsOutput; //right drive motor output setting
@@ -62,6 +64,8 @@ public class Drive {
     
     private final int kDriveState = 0; //drive finite state
     public static final int kClimbState = 1; //climb finite state
+    private final int kLeftClimbState = 2;
+    private final int kRightClimbState = 3;
     private int driveState = kDriveState; //current drive state
     
     /**
@@ -108,6 +112,16 @@ public class Drive {
         rightMotorsOutput = -rightDriveJoystick.getY();
         leftMotorsOutput *= scaleFactor;
         rightMotorsOutput *= scaleFactor;
+    }
+    
+    public void getJoystickYAxisLeftClimbInputs(double scaleFactor) {
+        leftMotorsOutput = scaleFactor * leftDriveJoystick.getY();
+        rightMotorsOutput = scaleFactor * -rightDriveJoystick.getY();
+    }
+    
+    public void getJoystickYaxisRightClimbInputs(double scaleFactor) {
+        leftMotorsOutput = scaleFactor * -leftDriveJoystick.getY();
+        rightMotorsOutput = scaleFactor * rightDriveJoystick.getY();
     }
     
     /**
@@ -275,6 +289,16 @@ public class Drive {
         rightDriveServo.set(rightDriveServoClimbPosition);
     }
     
+    public void setLeftServoClimbPosition() {
+        leftDriveServo.set(leftDriveServoClimbPosition);
+        rightDriveServo.set(rightDriveServoDrivePosition);
+    }
+    
+    public void setRightServoClimbPosition() {
+        leftDriveServo.set(leftDriveServoDrivePosition);
+        rightDriveServo.set(rightDriveServoClimbPosition);
+    }
+    
     /**
      * Sends SmartDashboard diagnostics of Drive State
      */
@@ -331,12 +355,26 @@ public class Drive {
             case kDriveState:
                 if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
+                } else if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_LEFT_CLIMB)) {
+                    driveState = kLeftClimbState;
+                } else if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_RIGHT_CLIMB)) {
+                    driveState = kRightClimbState;
                 }
                 break;
             case kClimbState:
                 if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
                     driveState = kDriveState;
                     initEncoders();
+                }
+                break;
+            case kLeftClimbState:
+                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_RIGHT_CLIMB)) {
+                    driveState = kClimbState;
+                }
+                break;
+            case kRightClimbState:
+                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_LEFT_CLIMB)) {
+                    driveState = kClimbState;
                 }
                 break;
         }
@@ -355,6 +393,15 @@ public class Drive {
             case kClimbState:
                 setServoClimbPosition();
                 break;
+            case kLeftClimbState:
+                setLeftServoClimbPosition();
+                getJoystickYAxisLeftClimbInputs(1);
+                setFilteredMotorOutput();
+                break;
+            case kRightClimbState:
+                setRightServoClimbPosition();
+                getJoystickYaxisRightClimbInputs(1);
+                setFilteredMotorOutput();
         }
     }
     
