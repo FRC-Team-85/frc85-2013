@@ -19,8 +19,8 @@ public class Shooter {
     
     private double kOnTargetRPMTolerance = 25;
     
-    private static final double kPWM_TO_RPM = 5310;
-    private static final double kRPM_TO_PWM = (1/5310);
+    private static final double kPWM_TO_RPM = 4350;
+    private static final double kRPM_TO_PWM = (1/4350);
     
     public static final int kSHOOTER_RPM_MAX_SPEED_SETPOINT = 4350;
     public static final int kSHOOTER_RPM_PYRAMID_BACK_SETPOINT = 4000;
