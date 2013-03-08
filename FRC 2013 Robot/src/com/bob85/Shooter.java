@@ -17,7 +17,7 @@ public class Shooter {
     private static int shooterState = 0; // 0 is standby, 1 is readying, 2 is shoot
     private static int shooterSetpointState = 1;
     
-    private double kOnTargetRPMTolerance = 25;
+    private double kOnTargetRPMTolerance = 50;
     
     private static final double kPWM_TO_RPM = 4350;
     private static final double kRPM_TO_PWM = (1/4350);
@@ -166,9 +166,9 @@ public class Shooter {
     }
     
     public void runDiagnostics() {
-        SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
+        //SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
         SmartDashboard.putBoolean("Shooter On Target", onTarget());
-        SmartDashboard.putNumber("Shooter State", getShooterState());
+        //SmartDashboard.putNumber("Shooter State", getShooterState());
     }
     
     private void switchShooterSetpointStates() {
