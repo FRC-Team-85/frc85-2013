@@ -65,12 +65,14 @@ public class Robot extends IterativeRobot {
         shooter.initShooter();
         hopper.initHopper();
         auto.initAutonomous();
+        climber.initClimber();
     }
     
     public void teleopInit() {
         drive.initDrive();
         shooter.initShooter();
         hopper.initHopper();
+        climber.initClimber();
     }
     
     public void testInit() {

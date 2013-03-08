@@ -87,9 +87,6 @@ public class ShootCommand {
     public void runDiagnostics() {
         SmartDashboard.putNumber("Shot Number", shotNumber);
         SmartDashboard.putNumber("Shot Time", getTime());
-        SmartDashboard.putNumber("Shot Time 1", shotTimer.getShotTime(1));
-        SmartDashboard.putNumber("Shot Time 2", shotTimer.getShotTime(2));
-        SmartDashboard.putNumber("Shot Time 3", shotTimer.getShotTime(3));
     }
     /**
      * Resets the ShootCommand variables
@@ -128,9 +125,10 @@ public class ShootCommand {
                 }
                 break;
             case 4:
-                runShooter();
-                if (getTime() < (shotTimer.getShotTime(3) + 2)) {
+                
+                if (getTime() < (shotTimer.getShotTime(3) + 4)) {
                     runHopper();
+                    runShooter();
                 } else {
                     shotNumber = 5;
                     disableHopper();

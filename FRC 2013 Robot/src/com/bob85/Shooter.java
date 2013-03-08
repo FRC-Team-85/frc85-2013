@@ -106,6 +106,10 @@ public class Shooter {
         return shooterBeltMotorOutput;
     }
     
+    public void runShooterBelt() {
+        setShooterBeltSpeed(1);
+    }
+    
     /**
      * set shooter and belt with 0 output
      */
