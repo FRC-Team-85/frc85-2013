@@ -129,7 +129,7 @@ public class ShootCommand {
                 break;
             case 4:
                 runShooter();
-                if (getTime() < 15) {
+                if (getTime() < (shotTimer.getShotTime(3) + 2)) {
                     runHopper();
                 } else {
                     shotNumber = 5;
