@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
     Climber climber = new Climber(drive, leftStick, rightStick,
             leftDriveMotor, rightDriveMotor,
             leftDriveEncoder, rightDriveEncoder,
-            bottomClimberLimitSwitch, topClimberLimitSwitch, lockClimberServo);
+            bottomClimberLimitSwitch, topClimberLimitSwitch, lockClimberServo, lockClimberTiltServo);
   
     
     Hopper hopper = new Hopper(dropServo, hopperBelt, gamepad);
