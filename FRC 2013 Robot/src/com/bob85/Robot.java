@@ -23,8 +23,8 @@ public class Robot extends IterativeRobot {
     Servo leftDriveServo = new Servo(Drive.kLEFTDRIVE_SERVO);
     Servo rightDriveServo = new Servo (Drive.kRIGHTDRIVE_SERVO);
     Servo dropServo = new Servo(Hopper.kDROPSERVO_CHANNEL);
-    Servo lockClimberServo = new Servo(Climber.kCLIMBER_LOCK_SERVO);
-    Servo lockClimberTiltServo = new Servo(Climber.kCLIMBER_TILT_LOCK_SERVO);
+    Servo climberGearLockServo = new Servo(Climber.kGEAR_LOCK_SERVO);
+    Servo climberHardStopLockServo = new Servo(Climber.kHARD_STOP_LOCK_SERVO);
     
     Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
     Climber climber = new Climber(drive, leftStick, rightStick,
             leftDriveMotor, rightDriveMotor,
             leftDriveEncoder, rightDriveEncoder,
-            bottomClimberLimitSwitch, topClimberLimitSwitch, lockClimberServo, lockClimberTiltServo);
+            bottomClimberLimitSwitch, topClimberLimitSwitch, climberGearLockServo, climberHardStopLockServo);
   
     
     Hopper hopper = new Hopper(dropServo, hopperBelt, gamepad);

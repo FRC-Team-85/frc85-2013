@@ -86,7 +86,7 @@ public class ShotTimer {
      * Run in robotInit() to send initial data over NetworkTable
      */
     public void initShotTimer() {
-        initShotTimerData();
+        //initShotTimerData();
         shotPref.save();
     }
     

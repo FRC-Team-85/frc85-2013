@@ -7,8 +7,8 @@ public class Climber {
     public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;  
     public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
     
-    public static final int kCLIMBER_LOCK_SERVO = 9; // gear shift
-    public static final int kCLIMBER_TILT_LOCK_SERVO = 10; // climber tilt latch
+    public static final int kGEAR_LOCK_SERVO = 9; // gear shift
+    public static final int kHARD_STOP_LOCK_SERVO = 10; // climber tilt latch
     
     public static final int kBUTTON_CLIMBER_LOCK = 3; //joystick button to lock pin in climber gear
     public static final int kBUTTON_CLIMBER_UNLOCK = 2; //joystick button to unlock pin in climber gear
@@ -19,14 +19,14 @@ public class Climber {
     Encoder rightClimberEncoder;
     Joystick leftStick;
     Joystick rightStick;
-    Servo lockClimberServo;
-    Servo lockClimberTiltServo;
+    Servo gearLockServo;
+    Servo hardStopLockServo;
     
-    private static final int kCLIMBER_LOCK_SERVO_POSITION = 1; //lock pin in gear servo position
-    private static final int kCLIMBER_UNLOCK_SERVO_POSITION = 0; //unlock pin in gear servo position
+    private static final int k_GEAR_LOCK_SERVO_POSITION = 1; //lock pin in gear servo position
+    private static final int k_GEAR_UNLOCK_SERVO_POSITION = 0; //unlock pin in gear servo position
     
-    private static final int kCLIMBER_TILT_LOCK_SERVO_POSITION = 0;
-    private static final int kCLIMBER_TILT_UNLOCK_SERVO_POSITION = 1;
+    private static final int k_HARD_STOP_LOCK_SERVO_POSITION = 0;
+    private static final int k_HARD_STOP_UNLOCK_SERVO_POSITION = 1;
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
@@ -71,8 +71,8 @@ public class Climber {
         this.rightClimberEncoder = rightClimberEncoder;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
-        this.lockClimberServo = lockClimberServo;
-        this.lockClimberTiltServo = lockClimberTiltServo;
+        this.gearLockServo = lockClimberServo;
+        this.hardStopLockServo = lockClimberTiltServo;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         this.drive = drive;
@@ -90,18 +90,18 @@ public class Climber {
      * reverses the encoder reads when in Climber Mode
      */
     private void setClimberEncodersDirection(){
-            leftClimberEncoder.setReverseDirection(false);
-            rightClimberEncoder.setReverseDirection(true);
+            leftClimberEncoder.setReverseDirection(true);
+            rightClimberEncoder.setReverseDirection(false);
     }
     
     private void lockClimberServo() {
-        lockClimberServo.set(kCLIMBER_LOCK_SERVO_POSITION);
-        lockClimberTiltServo.set(kCLIMBER_TILT_UNLOCK_SERVO_POSITION);
+        gearLockServo.set(k_GEAR_LOCK_SERVO_POSITION);
+        hardStopLockServo.set(k_HARD_STOP_UNLOCK_SERVO_POSITION);
     }
     
     private void unlockClimberServo() {
-        lockClimberServo.set(kCLIMBER_UNLOCK_SERVO_POSITION);
-        lockClimberTiltServo.set(kCLIMBER_TILT_LOCK_SERVO_POSITION);
+        gearLockServo.set(k_GEAR_UNLOCK_SERVO_POSITION);
+        hardStopLockServo.set(k_HARD_STOP_LOCK_SERVO_POSITION);
     }
     
     /**
@@ -355,8 +355,8 @@ public class Climber {
      */
     public void runDiagnostics() {
         SmartDashboard.putNumber("Encoder Avg Dist", encoderClimberDistance);
-        SmartDashboard.putNumber("Gear Lock Servo Pos.", lockClimberServo.get());
-        SmartDashboard.putNumber("Latch Servo Pos.", lockClimberTiltServo.get());
+        SmartDashboard.putNumber("Gear Lock Servo Pos.", gearLockServo.get());
+        SmartDashboard.putNumber("Latch Servo Pos.", hardStopLockServo.get());
     } 
     
     /**
