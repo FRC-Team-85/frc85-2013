@@ -49,19 +49,27 @@ public class DriveCommand {
             currentDist = drive.getAverageEncodersDistance();
             
             if (isForward) {
-                if ((currentDist) < (dist - endDistanceOffset)) {
-                    drive.runRampUpTrapezoidalMotionProfile(maxOutput);
+                if ((currentDist) < (dist)) {
+                    //drive.runRampUpTrapezoidalMotionProfile(maxOutput);
+                    drive.setMotorOutputSetting(maxOutput, maxOutput);
+                                drive.setNonlinearizedOutput();
                     return false;
                 } else {
-                    drive.runRampDownTrapezoidalMotionProfile(0);
+                    //drive.runRampDownTrapezoidalMotionProfile(0);
+                    drive.setMotorOutputSetting(0 , 0);
+                                drive.setNonlinearizedOutput();
                     return true;
                 }
             } else {
-                if (currentDist > (dist + endDistanceOffset)) {
-                    drive.runRampUpTrapezoidalMotionProfile(-maxOutput);
+                if (currentDist > (dist)) {
+                    //drive.runRampUpTrapezoidalMotionProfile(-maxOutput);
+                    drive.setMotorOutputSetting(-maxOutput, -maxOutput);
+                    drive.setNonlinearizedOutput();
                     return false;
                 } else {
-                    drive.runRampDownTrapezoidalMotionProfile(0);
+                    //drive.runRampDownTrapezoidalMotionProfile(0);
+                    drive.setMotorOutputSetting(0 , 0);
+                                drive.setNonlinearizedOutput();
                     return true;
                 }
             }
