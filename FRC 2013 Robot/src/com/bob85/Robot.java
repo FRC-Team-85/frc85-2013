@@ -23,7 +23,8 @@ public class Robot extends IterativeRobot {
     Servo leftDriveServo = new Servo(Drive.kLEFTDRIVE_SERVO);
     Servo rightDriveServo = new Servo (Drive.kRIGHTDRIVE_SERVO);
     Servo dropServo = new Servo(Hopper.kDROPSERVO_CHANNEL);
-    Servo lockClimberServo = new Servo(Climber.kCLIMBERLOCK_SERVO);
+    Servo lockClimberServo = new Servo(Climber.kCLIMBER_LOCK_SERVO);
+    Servo lockClimberTiltServo = new Servo(Climber.kCLIMBER_TILT_LOCK_SERVO);
     
     Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
     Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);

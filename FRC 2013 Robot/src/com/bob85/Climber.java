@@ -7,7 +7,8 @@ public class Climber {
     public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;  
     public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
     
-    public static final int kCLIMBERLOCK_SERVO = 9;
+    public static final int kCLIMBER_LOCK_SERVO = 9; // gear shift
+    public static final int kCLIMBER_TILT_LOCK_SERVO = 10; // climber tilt latch
     
     public static final int kBUTTON_CLIMBER_LOCK = 3; //joystick button to lock pin in climber gear
     public static final int kBUTTON_CLIMBER_UNLOCK = 2; //joystick button to unlock pin in climber gear
@@ -19,9 +20,13 @@ public class Climber {
     Joystick leftStick;
     Joystick rightStick;
     Servo lockClimberServo;
+    Servo lockClimberTiltServo;
     
     private static final int kCLIMBER_LOCK_SERVO_POSITION = 1; //lock pin in gear servo position
     private static final int kCLIMBER_UNLOCK_SERVO_POSITION = 0; //unlock pin in gear servo position
+    
+    private static final int kCLIMBER_TILT_LOCK_SERVO_POSITION = 0;
+    private static final int kCLIMBER_TILT_UNLOCK_SERVO_POSITION = 1;
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
@@ -59,7 +64,7 @@ public class Climber {
             Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder,
             DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch,
-            Servo lockClimberServo) {
+            Servo lockClimberServo, Servo lockClimberTiltServo) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
@@ -67,6 +72,7 @@ public class Climber {
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
         this.lockClimberServo = lockClimberServo;
+        this.lockClimberTiltServo = lockClimberTiltServo;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         this.drive = drive;
@@ -90,10 +96,12 @@ public class Climber {
     
     private void lockClimberServo() {
         lockClimberServo.set(kCLIMBER_LOCK_SERVO_POSITION);
+        lockClimberTiltServo.set(kCLIMBER_TILT_LOCK_SERVO_POSITION);
     }
     
     private void unlockClimberServo() {
         lockClimberServo.set(kCLIMBER_UNLOCK_SERVO_POSITION);
+        lockClimberTiltServo.set(kCLIMBER_TILT_UNLOCK_SERVO_POSITION);
     }
     
     /**
