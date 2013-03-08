@@ -353,9 +353,7 @@ public class Climber {
      * Puts values for LimitSwitches on the SmartDashboard
      */
     public void runDiagnostics() {
-        SmartDashboard.putBoolean("Bot LimitSwitch", getIsClimberBot());
-        SmartDashboard.putBoolean("Top LimitSwitch", getIsClimberTop());
-        SmartDashboard.putNumber("Climber Avg Dist", encoderClimberDistance);
+        SmartDashboard.putNumber("Encoder Avg Dist", encoderClimberDistance);
     } 
     
     /**
