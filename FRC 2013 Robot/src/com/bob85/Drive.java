@@ -159,7 +159,7 @@ public class Drive {
     
     public void setNonlinearizedOutput() {
         leftDriveMotors.set(leftMotorsOutput);
-        rightDriveMotors.set(rightMotorsOutput);
+        rightDriveMotors.set(-rightMotorsOutput);
     }
     
     /**
