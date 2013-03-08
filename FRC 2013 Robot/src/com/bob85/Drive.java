@@ -216,8 +216,8 @@ public class Drive {
     public void initEncoders() {            
         leftDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
         rightDriveEncoder.setDistancePerPulse(encoderDistanceRatio);
-        leftDriveEncoder.setReverseDirection(false);
-        rightDriveEncoder.setReverseDirection(true);
+        leftDriveEncoder.setReverseDirection(true);
+        rightDriveEncoder.setReverseDirection(false);
     }
     
     /**
