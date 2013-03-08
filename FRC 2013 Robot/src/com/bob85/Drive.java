@@ -155,6 +155,11 @@ public class Drive {
         rightDriveMotors.set(-rightLinearMotorsOutput);
     }
     
+    public void setNonlinearizedOutput() {
+        leftDriveMotors.set(leftMotorsOutput);
+        rightDriveMotors.set(rightMotorsOutput);
+    }
+    
     /**
      * Limits maximum change in motor input limited to linear output until I inverse equation
      * @param isLeft enable limit for left input
@@ -286,8 +291,9 @@ public class Drive {
      */
     public void setFilteredMotorOutput() {
         setMotorOutputDeadbands();
+        setNonlinearizedOutput();
         //limitMotorsOutputChange(true, true);
-        setLinearizedOutput();
+        //setLinearizedOutput();
     }     
     
     /**
