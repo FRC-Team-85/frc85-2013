@@ -29,8 +29,8 @@ public class Autonomous {
     private void initCommands() {
         shootCmd = new ShootCommand(shooter, shotTimer, frisbeeLoader);
         turn180Cmd = new TurnCommand(drive, 180);
-        driveStage1Cmd = new DriveCommand(drive, -12);
-        driveStage2Cmd = new DriveCommand(drive, 12);
+        driveStage1Cmd = new DriveCommand(drive, -24);
+        driveStage2Cmd = new DriveCommand(drive, 24);
 
     }
 
@@ -56,9 +56,7 @@ public class Autonomous {
      * Sends autonomous diagnostics to SmartDashboard
      */
     private void runDiagnostics() {
-        SmartDashboard.putNumber("Auto Stage", autoStage);
-        SmartDashboard.putNumber("Shot Number", shootCmd.shotNumber);
-        SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
+        //SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
         SmartDashboard.putNumber("Average Drive Dist", drive.getAverageEncodersDistance());
     }
 
