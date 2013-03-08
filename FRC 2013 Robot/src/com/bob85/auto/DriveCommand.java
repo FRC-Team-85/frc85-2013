@@ -57,7 +57,7 @@ public class DriveCommand {
                 } else {
                     //drive.runRampDownTrapezoidalMotionProfile(0);
                     drive.setMotorOutputSetting(0 , 0);
-                                drive.setNonlinearizedOutput();
+                    drive.setNonlinearizedOutput();
                     return true;
                 }
             } else {
@@ -69,7 +69,7 @@ public class DriveCommand {
                 } else {
                     //drive.runRampDownTrapezoidalMotionProfile(0);
                     drive.setMotorOutputSetting(0 , 0);
-                                drive.setNonlinearizedOutput();
+                    drive.setNonlinearizedOutput();
                     return true;
                 }
             }

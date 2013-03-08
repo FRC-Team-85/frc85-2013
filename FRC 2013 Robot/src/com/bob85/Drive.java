@@ -368,12 +368,14 @@ public class Drive {
                 }
                 break;
             case kLeftClimbState:
-                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_RIGHT_CLIMB)) {
+                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_RIGHT_CLIMB) ||
+                    rightDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
                 }
                 break;
             case kRightClimbState:
-                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_LEFT_CLIMB)) {
+                if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_LEFT_CLIMB)||
+                    rightDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
                 }
                 break;
