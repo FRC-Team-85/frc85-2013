@@ -118,7 +118,6 @@ public class Shooter {
      * sets shooter and belt with 100% output
      */
     public void setShooterMaxSpeed() {
-        setShooterBeltSpeed(1);
         setShooterSpeed(1);
     }
     
@@ -230,9 +229,19 @@ public class Shooter {
                 break;
             case kRunShooterNotAtTargetRPMState:
                 setShooterMaxSpeed();
+                if (gamepad.getButton(ButtonType.kY)) {
+                    setShooterBeltSpeed(1);
+                } else {
+                    setShooterBeltSpeed(0);
+                }
                 break;
             case kRunShooterAtTargetRPMState:
                 setShooterMaxSpeed();
+                if (gamepad.getButton(ButtonType.kY)) {
+                    setShooterBeltSpeed(1);
+                } else {
+                    setShooterBeltSpeed(0);
+                }
                 break;
         }
     }
