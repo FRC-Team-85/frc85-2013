@@ -354,6 +354,8 @@ public class Climber {
      */
     public void runDiagnostics() {
         SmartDashboard.putNumber("Encoder Avg Dist", encoderClimberDistance);
+        SmartDashboard.putNumber("Gear Lock Servo Pos.", lockClimberServo.get());
+        SmartDashboard.putNumber("Latch Servo Pos.", lockClimberTiltServo.get());
     } 
     
     /**
