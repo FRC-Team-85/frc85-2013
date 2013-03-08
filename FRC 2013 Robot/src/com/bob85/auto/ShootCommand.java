@@ -127,12 +127,22 @@ public class ShootCommand {
                     shotNumber = 4;
                 }
                 break;
+            case 4:
+                runShooter();
+                if (getTime() < 15) {
+                    runHopper();
+                } else {
+                    shotNumber = 5;
+                    disableHopper();
+                }
+                break;
             default:
                 disableShooter();
+                disableHopper();
                 break;
         }
         
-        if (shotNumber == 4) {
+        if (shotNumber == 5) {
             disableShooter();
             return true;
         } else {
