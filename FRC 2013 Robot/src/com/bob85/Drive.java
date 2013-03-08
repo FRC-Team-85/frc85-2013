@@ -45,6 +45,8 @@ public class Drive {
     private double rightMotorsOutput; //right drive motor output setting
     private double leftLinearMotorsOutput; //left drive linearized actual motor output setting
     private double rightLinearMotorsOutput; //right drive linearized actual motor output setting
+    
+    private double kDriveLimitedSpeed = 0.7; //max speed for limited drive
             
     private double deadband = 0.2; //Deadband for drive motor output
     private final double changeLimit_val = 0.5; //maxmimum change limit value for motor output
@@ -126,10 +128,10 @@ public class Drive {
             if (rightDriveJoystick.getTrigger()) {
                 getJoystickYAxisInputs(1);
             } else if (leftDriveJoystick.getTrigger()) {
-                getJoystickYAxisInputs(-0.675);
+                getJoystickYAxisInputs(-kDriveLimitedSpeed);
             }
             else {
-                getJoystickYAxisInputs(0.675);
+                getJoystickYAxisInputs(kDriveLimitedSpeed);
             }
     }
     /**
