@@ -338,6 +338,7 @@ public class Climber {
     public void runClimbStates() {
         switch (climberState) {
             case kDriveState:
+                shiftClimberLockJoystickInput();
                 break;
             case kClimbState:
                 shiftClimberLockJoystickInput();
