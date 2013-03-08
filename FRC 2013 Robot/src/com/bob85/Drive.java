@@ -20,6 +20,8 @@ public class Drive {
     
     private Gyro gyro; //reference to drive gyro
     
+    private static final double kGYRO_SENSITIVITY = 0.007;
+    
     Joystick leftDriveJoystick; //reference to left drive joystick
     Joystick rightDriveJoystick; //reference to right drive joystick
     
@@ -64,7 +66,7 @@ public class Drive {
      * Initialize sensor settings
      */
     private void initDriveSettings() {
-        gyro.setSensitivity(.007);
+        gyro.setSensitivity(kGYRO_SENSITIVITY);
         initEncoders();
     }
     
