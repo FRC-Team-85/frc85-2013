@@ -52,6 +52,7 @@ public class Climber {
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
+        setClimberEncodersDirection();
     }
     
     public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
@@ -332,8 +333,7 @@ public class Climber {
                 break;
             case kClimbState:
                 shiftClimberLockJoystickInput();
-                initEncoderSetting();
-                setClimberEncodersDirection();
+                initEncoderSetting();     
                 //getJoystickInput(rightStick);
                 getClimbJoystickInputWithHardLimit();
                 setLinearClimbOutput();

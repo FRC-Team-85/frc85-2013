@@ -12,7 +12,7 @@ public class ShootCommand {
     public static final int frisbee_val = 3; //Amount of frisbees to fire
     private ShotTimer shotTimer; 
     public int shotNumber = 1; //current shot number
-    private double shotTime = 0.25; //length of time to leave hopper on in shot cycle
+    private double shotTime = 0.5; //length of time to leave hopper on in shot cycle
     private double currentTime;
     
     /**
@@ -49,7 +49,7 @@ public class ShootCommand {
      * @return 
      */
     public double getTime() {
-        currentTime = timer.get() * 10e-6;
+        currentTime = timer.get();
         return currentTime;
     }
     
@@ -97,7 +97,7 @@ public class ShootCommand {
     public void initShootCommand() {
         shotNumber = 1;
         timer.reset();
-        timer.stop();
+        timer.start();
         
     }
     
@@ -107,7 +107,6 @@ public class ShootCommand {
      */
     public boolean shootCommand() {
         hopper.unlockServo();
-        timer.start();
         runDiagnostics();
         switch (shotNumber) {
             case 1:

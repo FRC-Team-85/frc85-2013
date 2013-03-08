@@ -22,7 +22,7 @@ public class Shooter {
     private static final double kPWM_TO_RPM = 5310;
     private static final double kRPM_TO_PWM = (1/5310);
     
-    public static final int kSHOOTER_RPM_MAX_SPEED_SETPOINT = 5310;
+    public static final int kSHOOTER_RPM_MAX_SPEED_SETPOINT = 4350;
     public static final int kSHOOTER_RPM_PYRAMID_BACK_SETPOINT = 4000;
  
     private Victor shooterMotor;

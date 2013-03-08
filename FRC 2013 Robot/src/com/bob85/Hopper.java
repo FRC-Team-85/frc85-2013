@@ -30,8 +30,8 @@ public class Hopper {
     private double unlockedPosition = 1;
     private double lockedPosition = 0;
     
-    private final int kLockedServoState = 0;
-    private final int kUnlockedServoState = 1;
+    private final int kLockedServoState = 1;
+    private final int kUnlockedServoState = 0;
     private static int hopperState;
     private double beltIntakeSpeed = 1;
     private double dropSpeed = 1;

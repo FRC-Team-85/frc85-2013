@@ -10,7 +10,7 @@ public class Robot extends IterativeRobot {
     ShotTimer shotTimer = new ShotTimer(ShootCommand.frisbee_val);
     Joystick leftStick = new Joystick(1);
     Joystick rightStick = new Joystick(2);
-    F310Gamepad opPad = new F310Gamepad(3);
+    F310Gamepad gamepad = new F310Gamepad(3);
 
     Gyro gyro = new Gyro(Drive.kGYRO);
     
@@ -36,17 +36,16 @@ public class Robot extends IterativeRobot {
     
     Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
             leftDriveEncoder, rightDriveEncoder, gyro, leftStick, rightStick);
-    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterHalleffect, opPad);
+    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterHalleffect, gamepad);
     Climber climber = new Climber(drive, leftStick, rightStick,
             leftDriveMotor, rightDriveMotor,
             leftDriveEncoder, rightDriveEncoder,
             bottomClimberLimitSwitch, topClimberLimitSwitch, lockClimberServo);
   
     
-    Hopper hopper = new Hopper(dropServo, hopperBelt, opPad);
+    Hopper hopper = new Hopper(dropServo, hopperBelt, gamepad);
     
     Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, hopper);
-    
     public void robotInit() {
         drive.initDrive();
         shotTimer.initShotTimer();   
