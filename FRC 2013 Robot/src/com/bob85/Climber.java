@@ -154,13 +154,13 @@ public class Climber {
     private void getClimbJoystickInputWithHardLimit() {
         getJoystickInput(rightStick);
 
-        if (climberMotorOutput > 0 && getIsClimberTop()) {
+        if (leftStick.getRawButton(5)) {
+            getJoystickInput(rightStick);
+        } else if (climberMotorOutput > 0 && getIsClimberTop()) {
             climberMotorOutput = 0;
         } else if (climberMotorOutput < 0 && getIsClimberBot()) {
             climberMotorOutput = 0;
-        } else if (leftStick.getRawButton(5)) {
-            getJoystickInput(rightStick);
-        }
+        }  
     }
 
     /**
