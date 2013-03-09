@@ -423,8 +423,10 @@ public class Drive {
         initEncoders();
         resetEncoders();
         enableEncoders();
-        setServoDrivePosition();
-        driveState = kDriveState;
+        //setServoDrivePosition();
+        //driveState = kDriveState;
+        setServoClimbPosition();
+        driveState = kClimbState;
     }
     
     /**
