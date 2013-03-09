@@ -104,7 +104,7 @@ public class ShootCommand {
      */
     public boolean shootCommand() {
         hopper.unlockServo();
-        runDiagnostics();
+        //runDiagnostics();
         switch (shotNumber) {
             case 1:
                 runShooter();
