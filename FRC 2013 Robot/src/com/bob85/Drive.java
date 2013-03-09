@@ -443,7 +443,7 @@ public class Drive {
      */
     public void runDrive() {
         enableEncoders();
-        runDiagnostics();
+        //runDiagnostics();
         switchDriveStates();
         runDriveStates();        
     }

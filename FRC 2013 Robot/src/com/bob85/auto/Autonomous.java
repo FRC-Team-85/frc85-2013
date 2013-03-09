@@ -119,7 +119,7 @@ public class Autonomous {
      */
     public void runAutonomous() {
         runSequentialAutonomous();
-        runDiagnostics();
+        //runDiagnostics();
     }
 
     /**

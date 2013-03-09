@@ -242,6 +242,6 @@ public class Hopper {
     public void runHopper() {
         switchHopperStates();
         runHopperStates();
-        runDiagnostics();
+        //runDiagnostics();
     }
 }
