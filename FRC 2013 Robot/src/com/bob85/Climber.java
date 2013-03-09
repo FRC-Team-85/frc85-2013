@@ -344,7 +344,7 @@ public class Climber {
                 shiftClimberLockJoystickInput();
                 initEncoderSetting();     
                 //getJoystickInput(rightStick);
-                getClimbJoystickInputWithHardLimit();
+                //getClimbJoystickInputWithHardLimit();
                 setLinearClimbOutput();
                 break;
         }
