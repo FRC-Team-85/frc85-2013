@@ -365,18 +365,26 @@ public class Drive {
                 if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
                     driveState = kDriveState;
                     initEncoders();
+                } else if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_LEFT_CLIMB)) {
+                    driveState = kLeftClimbState;
+                } else if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_RIGHT_CLIMB)) {
+                    driveState = kRightClimbState;
                 }
                 break;
             case kLeftClimbState:
                 if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_RIGHT_CLIMB) ||
                     rightDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
+                } else if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
+                    driveState = kDriveState;
                 }
                 break;
             case kRightClimbState:
                 if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_LEFT_CLIMB)||
                     rightDriveJoystick.getRawButton(kBUTTON_SHIFT_CLIMB)) {
                     driveState = kClimbState;
+                } else if (rightDriveJoystick.getRawButton(kBUTTON_SHIFT_DRIVE)) {
+                    driveState = kDriveState;
                 }
                 break;
         }
