@@ -154,9 +154,7 @@ public class Climber {
     private void getClimbJoystickInputWithHardLimit() {
         getJoystickInput(rightStick);
 
-        if (leftStick.getRawButton(5)) {
-            getJoystickInput(rightStick);
-        } else if (climberMotorOutput > 0 && getIsClimberTop()) {
+         if (climberMotorOutput > 0 && getIsClimberTop()) {
             climberMotorOutput = 0;
         } else if (climberMotorOutput < 0 && getIsClimberBot()) {
             climberMotorOutput = 0;
@@ -356,9 +354,11 @@ public class Climber {
      * Puts values for LimitSwitches on the SmartDashboard
      */
     public void runDiagnostics() {
-        SmartDashboard.putNumber("Encoder Avg Dist", encoderClimberDistance);
-        SmartDashboard.putNumber("Gear Lock Servo Pos.", gearLockServo.get());
-        SmartDashboard.putNumber("Latch Servo Pos.", hardStopLockServo.get());
+        //SmartDashboard.putNumber("Encoder Avg Dist", encoderClimberDistance);
+        //SmartDashboard.putNumber("Gear Lock Servo Pos.", gearLockServo.get());
+        //SmartDashboard.putNumber("Latch Servo Pos.", hardStopLockServo.get());
+        SmartDashboard.putBoolean("Climber Top Limit", getIsClimberTop());
+        SmartDashboard.putBoolean("Climber Bot Limit", getIsClimberBot());
     } 
     
     /**
@@ -373,7 +373,7 @@ public class Climber {
      * Executes Methods for the Main Robot Class
      */
     public void runClimber() {
-        runDiagnostics();
+        //runDiagnostics();
         switchClimbStates();
         runClimbStates();        
     }
