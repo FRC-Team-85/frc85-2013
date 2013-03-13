@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climber {
-    public static final int kBOTTOM_LIMITSWITCH_CHANNEL = 8;  
-    public static final int kTOP_LIMITSWITCH_CHANNEL = 9;
+    public static final int kDIO_CLIMBER_LIMITSWITCH_BOT = 8;  
+    public static final int kDIO_CLIMBER_LIMITSWITCH_TOP = 9;
     
-    public static final int kGEAR_LOCK_SERVO = 9; // gear shift
-    public static final int kHARD_STOP_LOCK_SERVO = 10; // climber tilt latch
+    public static final int kPWM_CLIMBER_SERVO_PIN_GEAR_LOCK = 9; // gear shift
+    public static final int kPWM_CLIMBER_SERVO_PIN_HARD_STOP = 10; // climber tilt latch
     
     public static final int kBUTTON_CLIMBER_LOCK = 3; //joystick button to lock pin in climber gear
     public static final int kBUTTON_CLIMBER_UNLOCK = 2; //joystick button to unlock pin in climber gear

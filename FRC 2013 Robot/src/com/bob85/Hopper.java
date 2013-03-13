@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Hopper {
     
-    public static final int kDROPSERVO_CHANNEL = 8; //Hopper Locking Pin Servo PWM Channel
+    public static final int kPWM_HOPPER_SERVO_PIN_FRISBEE_LOCK = 8; //Hopper Locking Pin Servo PWM Channel
     
-    public static final int kHOPPERBELTMOTOR_CHANNEL = 7; //Hopper Belt Motor PWM Channel
+    public static final int kPWM_HOPPER_VICTOR_BELT = 7; //Hopper Belt Motor PWM Channel
     
     private Servo dropServo; //reference to hopper locking pin servo
     

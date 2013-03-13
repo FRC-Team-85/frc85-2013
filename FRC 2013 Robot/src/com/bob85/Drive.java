@@ -25,18 +25,18 @@ public class Drive {
     Joystick leftDriveJoystick; //reference to left drive joystick
     Joystick rightDriveJoystick; //reference to right drive joystick
     
-    public static final int kLEFTDRIVE_VICTORS = 1; //left drive PWM channel
-    public static final int kRIGHTDRIVE_VICTORS = 2; //right drive PWM channel
+    public static final int kPWM_DRIVE_VICTOR_LEFT = 1; //left drive PWM channel
+    public static final int kPWM_DRIVE_VICTOR_RIGHT = 2; //right drive PWM channel
     
-    public static final int kLEFTDRIVE_SERVO = 3; //left drive PTO PWM channel
-    public static final int kRIGHTDRIVE_SERVO = 4; //right drive PTO PWM channel
+    public static final int kPWM_DRIVE_SERVO_PTO_LEFT = 3; //left drive PTO PWM channel
+    public static final int kPWM_DRIVE_SERVO_PTO_RIGHT = 4; //right drive PTO PWM channel
     
-    public static final int kLEFTDRIVE_ENCODER_A = 1; //left drive encoder A Digital I/O Channel
-    public static final int kLEFTDRIVE_ENCODER_B = 2; //left drive encoder B Digital I/O Channel
-    public static final int kRIGHTDRIVE_ENCODER_A = 3; //right drive encoder A Digital I/O Channel
-    public static final int kRIGHTDRIVE_ENCODER_B = 4; //right drive encoder B Digital I/O Channel
+    public static final int kDIO_DRIVE_ENCODER_LEFT_A = 1; //left drive encoder A Digital I/O Channel
+    public static final int kDIO_DRIVE_ENCODER_LEFT_B = 2; //left drive encoder B Digital I/O Channel
+    public static final int kDIO_DRIVE_ENCODER_RIGHT_A = 3; //right drive encoder A Digital I/O Channel
+    public static final int kDIO_DRIVE_ENCODER_RIGHT_B = 4; //right drive encoder B Digital I/O Channel
     
-    public static final int kGYRO = 1; //drive gyro analog I/O channel
+    public static final int kANALOG_DRIVE_GYRO_HEADING = 1; //drive gyro analog I/O channel
     
     private static final int kBUTTON_SHIFT_DRIVE = 2; //shift PTOs to drive joystick button
     private static final int kBUTTON_SHIFT_CLIMB = 3; //shift PTOs to climb joystick button

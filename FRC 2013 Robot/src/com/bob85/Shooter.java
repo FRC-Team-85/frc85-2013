@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter {
     public static int shooterSetpoint;
     
-    public static final int SHOOTER_MOTOR_CHANNEL = 5;
-    public static final int SHOOTER_BELT_MOTOR_CHANNEL = 6;
-    public static final int SHOOTER_RPM_SENSOR_CHANNEL = 5;
+    public static final int kPWM_SHOOTER_VICTOR_WHEEL = 5;
+    public static final int kPWM_SHOOTER_VICTOR_BELT = 6;
+    public static final int kDIO_SHOOTER_HALLEFFECT_WHEEL = 5;
     
     private final int kStopShooterState = 0;
     private final int kRunShooterNotAtTargetRPMState = 1;

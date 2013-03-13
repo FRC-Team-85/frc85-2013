@@ -8,43 +8,43 @@ public class Robot extends IterativeRobot {
     
     AutoModeChooser autoChooser = new AutoModeChooser();
     ShotTimer shotTimer = new ShotTimer(ShootCommand.frisbee_val);
-    Joystick leftStick = new Joystick(1);
-    Joystick rightStick = new Joystick(2);
-    F310Gamepad gamepad = new F310Gamepad(3);
+    Joystick js_Left = new Joystick(1);
+    Joystick js_Right = new Joystick(2);
+    F310Gamepad pad_Operator = new F310Gamepad(3);
 
-    Gyro gyro = new Gyro(Drive.kGYRO);
+    Gyro gyro_Drive_Heading = new Gyro(Drive.kANALOG_DRIVE_GYRO_HEADING);
     
-    Victor leftDriveMotor = new Victor(Drive.kLEFTDRIVE_VICTORS);
-    Victor rightDriveMotor = new Victor(Drive.kRIGHTDRIVE_VICTORS);
-    Victor shooterMotor = new Victor(Shooter.SHOOTER_MOTOR_CHANNEL);
-    Victor shooterBeltMotor = new Victor(Shooter.SHOOTER_BELT_MOTOR_CHANNEL);
-    Victor hopperBelt = new Victor(Hopper.kHOPPERBELTMOTOR_CHANNEL);
+    Victor vic_Drive_Left = new Victor(Drive.kPWM_DRIVE_VICTOR_LEFT);
+    Victor vic_Drive_Right = new Victor(Drive.kPWM_DRIVE_VICTOR_RIGHT);
+    Victor vic_Shooter_Wheel = new Victor(Shooter.kPWM_SHOOTER_VICTOR_WHEEL);
+    Victor vic_Shooter_Belt = new Victor(Shooter.kPWM_SHOOTER_VICTOR_BELT);
+    Victor vic_Hopper_Belt = new Victor(Hopper.kPWM_HOPPER_VICTOR_BELT);
     
-    Servo leftDriveServo = new Servo(Drive.kLEFTDRIVE_SERVO);
-    Servo rightDriveServo = new Servo (Drive.kRIGHTDRIVE_SERVO);
-    Servo dropServo = new Servo(Hopper.kDROPSERVO_CHANNEL);
-    Servo climberGearLockServo = new Servo(Climber.kGEAR_LOCK_SERVO);
-    Servo climberHardStopLockServo = new Servo(Climber.kHARD_STOP_LOCK_SERVO);
+    Servo servo_Drive_PTO_Left = new Servo(Drive.kPWM_DRIVE_SERVO_PTO_LEFT);
+    Servo servo_Drive_PTO_Right = new Servo (Drive.kPWM_DRIVE_SERVO_PTO_RIGHT);
+    Servo servo_Hopper_Pin_Frisbee_Lock = new Servo(Hopper.kPWM_HOPPER_SERVO_PIN_FRISBEE_LOCK);
+    Servo servo_Climber_Pin_Gear_Lock = new Servo(Climber.kPWM_CLIMBER_SERVO_PIN_GEAR_LOCK);
+    Servo servo_Climber_Pin_Hard_Stop = new Servo(Climber.kPWM_CLIMBER_SERVO_PIN_HARD_STOP);
     
-    Encoder leftDriveEncoder = new Encoder(Drive.kLEFTDRIVE_ENCODER_A, Drive.kLEFTDRIVE_ENCODER_B);
-    Encoder rightDriveEncoder = new Encoder(Drive.kRIGHTDRIVE_ENCODER_A, Drive.kRIGHTDRIVE_ENCODER_B);
+    Encoder enc_Drive_Left = new Encoder(Drive.kDIO_DRIVE_ENCODER_LEFT_A, Drive.kDIO_DRIVE_ENCODER_LEFT_B);
+    Encoder enc_Drive_Right = new Encoder(Drive.kDIO_DRIVE_ENCODER_RIGHT_A, Drive.kDIO_DRIVE_ENCODER_RIGHT_B);
     
-    DigitalInput bottomClimberLimitSwitch = new DigitalInput(Climber.kBOTTOM_LIMITSWITCH_CHANNEL);
-    DigitalInput topClimberLimitSwitch = new DigitalInput(Climber.kTOP_LIMITSWITCH_CHANNEL);
+    DigitalInput limit_Climber_Bottom = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_BOT);
+    DigitalInput limit_Climber_Top = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_TOP);
     
-    HallEffect shooterHalleffect = new HallEffect(Shooter.SHOOTER_RPM_SENSOR_CHANNEL);
+    HallEffect halle_Shooter_Wheel = new HallEffect(Shooter.kDIO_SHOOTER_HALLEFFECT_WHEEL);
     
     
-    Drive drive = new Drive(leftDriveMotor, rightDriveMotor, leftDriveServo, rightDriveServo,
-            leftDriveEncoder, rightDriveEncoder, gyro, leftStick, rightStick);
-    Shooter shooter = new Shooter(shooterMotor, shooterBeltMotor, shooterHalleffect, gamepad);
-    Climber climber = new Climber(drive, leftStick, rightStick,
-            leftDriveMotor, rightDriveMotor,
-            leftDriveEncoder, rightDriveEncoder,
-            bottomClimberLimitSwitch, topClimberLimitSwitch, climberGearLockServo, climberHardStopLockServo);
+    Drive drive = new Drive(vic_Drive_Left, vic_Drive_Right, servo_Drive_PTO_Left, servo_Drive_PTO_Right,
+            enc_Drive_Left, enc_Drive_Right, gyro_Drive_Heading, js_Left, js_Right);
+    Shooter shooter = new Shooter(vic_Shooter_Wheel, vic_Shooter_Belt, halle_Shooter_Wheel, pad_Operator);
+    Climber climber = new Climber(drive, js_Left, js_Right,
+            vic_Drive_Left, vic_Drive_Right,
+            enc_Drive_Left, enc_Drive_Right,
+            limit_Climber_Bottom, limit_Climber_Top, servo_Climber_Pin_Gear_Lock, servo_Climber_Pin_Hard_Stop);
   
     
-    Hopper hopper = new Hopper(dropServo, hopperBelt, gamepad);
+    Hopper hopper = new Hopper(servo_Hopper_Pin_Frisbee_Lock, vic_Hopper_Belt, pad_Operator);
     
     Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, hopper);
     public void robotInit() {
