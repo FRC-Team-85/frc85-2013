@@ -126,7 +126,7 @@ public class ShootCommand {
                 break;
             case 4:
                 
-                if (getTime() < (shotTimer.getShotTime(3) + 4)) {
+                if (getTime() < (shotTimer.getShotTime(3) + 2)) {
                     runHopper();
                     runShooter();
                 } else {
