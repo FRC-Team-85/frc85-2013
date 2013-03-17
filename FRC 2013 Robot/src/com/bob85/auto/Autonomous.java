@@ -29,8 +29,8 @@ public class Autonomous {
     private void initCommands() {
         shootCmd = new ShootCommand(shooter, shotTimer, frisbeeLoader);
         turn180Cmd = new TurnCommand(drive, 180);
-        driveStage1Cmd = new DriveCommand(drive, -1);
-        driveStage2Cmd = new DriveCommand(drive, 1);
+        driveStage1Cmd = new DriveCommand(drive, -1, 2);
+        driveStage2Cmd = new DriveCommand(drive, 1, 2);
 
     }
 
