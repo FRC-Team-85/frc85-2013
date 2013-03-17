@@ -104,6 +104,12 @@ public class ShootCommand {
      */
     public boolean shootCommand() {
         hopper.unlockServo();
+        
+         if (shotNumber == 5) {
+            disableShooter();
+            return true;
+        }
+        
         //runDiagnostics();
         switch (shotNumber) {
             case 1:
@@ -124,8 +130,7 @@ public class ShootCommand {
                     shotNumber = 4;
                 }
                 break;
-            case 4:
-                
+            case 4:              
                 if (getTime() < (shotTimer.getShotTime(3) + 2)) {
                     runHopper();
                     runShooter();
@@ -139,12 +144,7 @@ public class ShootCommand {
                 disableHopper();
                 break;
         }
-        
-        if (shotNumber == 5) {
-            disableShooter();
-            return true;
-        } else {
-            return false;
-        }
+    
+        return false;
     }
 }
