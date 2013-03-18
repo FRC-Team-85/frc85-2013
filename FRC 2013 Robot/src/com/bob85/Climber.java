@@ -17,12 +17,6 @@ public class Climber {
     Joystick leftStick;
     Joystick rightStick;
     
-    private static final int k_GEAR_LOCK_SERVO_POSITION = 1; //lock pin in gear servo position
-    private static final int k_GEAR_UNLOCK_SERVO_POSITION = 0; //unlock pin in gear servo position
-    
-    private static final int k_HARD_STOP_LOCK_SERVO_POSITION = 0;
-    private static final int k_HARD_STOP_UNLOCK_SERVO_POSITION = 1;
-    
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
     private int kClimberEncoderTopDist = 50; //maximum climber height in encoder distance in inches
