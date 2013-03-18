@@ -126,6 +126,7 @@ public class Autonomous {
      * Resets Autonomous & Command variables and gets mode & shot time settings
      */
     public void initAutonomous() {
+        finishAutonomous();
         autoStage = kShootStage;
         autoChooser.runAutoModeChooser();
         shotTimer.runShotTimer();
