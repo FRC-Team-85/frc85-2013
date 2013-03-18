@@ -12,7 +12,7 @@ public class ShootCommand {
     public static final int frisbee_val = 3; //Amount of frisbees to fire
     private ShotTimer shotTimer; 
     public int shotNumber = 1; //current shot number
-    private double shotTime = 0.5; //length of time to leave hopper on in shot cycle
+    private double shotTime = 0.4; //length of time to leave hopper on in shot cycle
     private double currentTime;
     
     /**
@@ -131,7 +131,7 @@ public class ShootCommand {
                 }
                 break;
             case 4:              
-                if (getTime() < (shotTimer.getShotTime(3) + 2)) {
+                if (getTime() < (shotTimer.getShotTime(3) + 3)) {
                     runHopper();
                     runShooter();
                 } else {

@@ -90,8 +90,8 @@ public class Climber {
      * reverses the encoder reads when in Climber Mode
      */
     private void setClimberEncodersDirection(){
-            leftClimberEncoder.setReverseDirection(true);
-            rightClimberEncoder.setReverseDirection(false);
+            leftClimberEncoder.setReverseDirection(false);
+            rightClimberEncoder.setReverseDirection(true);
     }
     
     private void lockClimberServo() {

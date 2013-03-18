@@ -9,7 +9,7 @@ public class TurnCommand {
     private double angle;
     private boolean isClockwise;
     private boolean isCommandStarted = false;
-    private double maxOutput = 0.675; //drive motor output
+    private double maxOutput = 0.55; //drive motor output
     private double commandTimeOut = -1;
     
     /**

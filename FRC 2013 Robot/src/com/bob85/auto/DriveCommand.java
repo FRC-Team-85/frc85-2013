@@ -14,7 +14,7 @@ public class DriveCommand {
     
     private double dist;
     private double currentDist;
-    private double maxOutput = 0.675;
+    private double maxOutput = 0.35;
     
     /**
      * Constructs a DriveCommand with a reference to a Drive object
