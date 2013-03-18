@@ -52,7 +52,18 @@ public class Climber {
     
     private static final int kDriveState = 0; //at least one side of the drive is in drive
     private static final int kClimbState = 1; //both PTOs are in climb
+    private static final int kClimbManualState = 1;
+    private static final int kClimbAutoState = 2;
     private int climberState = kDriveState;
+    
+    private static final int kClimbAuto_DriveState = 0;
+    private static final int kClimbAuto_TopInState = 1;
+    private static final int kClimbAuto_TopOutState = 2;
+    private static final int kClimbAuto_BotInState = 3;
+    private static final int kClimbAuto_BotOutState = 4;
+    private static final int kClimbAuto_NextLevelInState = 5; //latch hooks to go over corner
+    private static final int kClimbAuto_NextLevelPullState = 6; //pull robot over corner
+    private int climberAutoState;
     
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -317,17 +328,23 @@ public class Climber {
         switch (climberState) {
             case kDriveState:
                 if (drive.getDriveState() == Drive.kClimbState) {
-                    climberState = kClimbState;
+                    climberState = kClimbManualState;
                     resetClimberEncoders(); //reset encoders when robot swaps to climb
                 } else if (drive.getDriveState() != Drive.kClimbState) {
                     climberState = kDriveState;
                 }
-            case kClimbState:
+                break;
+            case kClimbManualState:
                 if (drive.getDriveState() != Drive.kClimbState){
                     climberState = kDriveState;
-                } else if (drive.getDriveState() == Drive.kClimbState){
-                    climberState = kClimbState;
+                } else if (drive.getDriveState() == Drive.kClimbState && rightStick.getRawButton(12)){
+                    climberState = kClimbAutoState;
+                } else if (drive.getDriveState() == Drive.kClimbState && !rightStick.getRawButton(12)) {
+                    climberState = kClimbManualState;
                 }
+                break;
+            case kClimbAutoState:
+                climberState = kClimbManualState;
         }
 
     }
@@ -350,6 +367,10 @@ public class Climber {
                 setLinearClimbOutput();
                 break;
         }
+    }
+    
+    public void runAutoClimbStates() {
+        
     }
      
     /**
