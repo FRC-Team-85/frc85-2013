@@ -23,8 +23,6 @@ public class Robot extends IterativeRobot {
     Servo servo_Drive_PTO_Left = new Servo(Drive.kPWM_DRIVE_SERVO_PTO_LEFT);
     Servo servo_Drive_PTO_Right = new Servo (Drive.kPWM_DRIVE_SERVO_PTO_RIGHT);
     Servo servo_Hopper_Pin_Frisbee_Lock = new Servo(Hopper.kPWM_HOPPER_SERVO_PIN_FRISBEE_LOCK);
-    Servo servo_Climber_Pin_Gear_Lock = new Servo(Climber.kPWM_CLIMBER_SERVO_PIN_GEAR_LOCK);
-    Servo servo_Climber_Pin_Hard_Stop = new Servo(Climber.kPWM_CLIMBER_SERVO_PIN_HARD_STOP);
     
     Encoder enc_Drive_Left = new Encoder(Drive.kDIO_DRIVE_ENCODER_LEFT_A, Drive.kDIO_DRIVE_ENCODER_LEFT_B);
     Encoder enc_Drive_Right = new Encoder(Drive.kDIO_DRIVE_ENCODER_RIGHT_A, Drive.kDIO_DRIVE_ENCODER_RIGHT_B);
@@ -41,7 +39,7 @@ public class Robot extends IterativeRobot {
     Climber climber = new Climber(drive, js_Left, js_Right,
             vic_Drive_Left, vic_Drive_Right,
             enc_Drive_Left, enc_Drive_Right,
-            limit_Climber_Bottom, limit_Climber_Top, servo_Climber_Pin_Gear_Lock, servo_Climber_Pin_Hard_Stop);
+            limit_Climber_Bottom, limit_Climber_Top);
   
     
     Hopper hopper = new Hopper(servo_Hopper_Pin_Frisbee_Lock, vic_Hopper_Belt, pad_Operator);

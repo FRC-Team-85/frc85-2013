@@ -1,18 +1,20 @@
 package com.bob85.auto;
 
 import com.bob85.Drive;
+import edu.wpi.first.wpilibj.Timer;
 
 public class DriveCommand {
 
     private Drive drive;
-    private boolean isResetEncoders;
+    private Timer timer;
+    private boolean isCommandStarted; //checks if command initialization run has occured
     boolean isForward;
-
+    private double commandTimeOut = -1; //time out setting for DriveCommand, -1 defaults to no time out
     private double endDistanceOffset = 1;
     
     private double dist;
     private double currentDist;
-    private double maxOutput = 0.675;
+    private double maxOutput = 0.35;
     
     /**
      * Constructs a DriveCommand with a reference to a Drive object
@@ -25,13 +27,19 @@ public class DriveCommand {
         isForward = (dist >= 0) ? true : false;
     }
     
+    public DriveCommand(Drive drive, double dist, double timeOut) {
+        this(drive, dist);
+        commandTimeOut = timeOut;
+        timer = new Timer();
+    }
+    
     /**
      * Resets and starts the encoders for the DriveCommand
      */
     public void initDriveCommand() {
         drive.resetEncoders();
         drive.enableEncoders();
-        isResetEncoders = false;
+        isCommandStarted = false;
     }
 
     /**
@@ -41,9 +49,14 @@ public class DriveCommand {
      */
     public boolean driveCommand() {
             
-            if (!isResetEncoders) {
+            if (!isCommandStarted) {
                 drive.resetEncoders();
-                isResetEncoders = true;
+                timer.start();
+                isCommandStarted = true;
+            }
+            
+            if (commandTimeOut != -1 && timer.get() > commandTimeOut) {
+                return true;
             }
             
             currentDist = drive.getAverageEncodersDistance();
@@ -53,7 +66,6 @@ public class DriveCommand {
                     //drive.runRampUpTrapezoidalMotionProfile(maxOutput);
                     drive.setMotorOutputSetting(maxOutput, maxOutput);
                                 drive.setNonlinearizedOutput();
-                    return false;
                 } else {
                     //drive.runRampDownTrapezoidalMotionProfile(0);
                     drive.setMotorOutputSetting(0 , 0);
@@ -65,7 +77,6 @@ public class DriveCommand {
                     //drive.runRampUpTrapezoidalMotionProfile(-maxOutput);
                     drive.setMotorOutputSetting(-maxOutput, -maxOutput);
                     drive.setNonlinearizedOutput();
-                    return false;
                 } else {
                     //drive.runRampDownTrapezoidalMotionProfile(0);
                     drive.setMotorOutputSetting(0 , 0);
@@ -73,6 +84,6 @@ public class DriveCommand {
                     return true;
                 }
             }
-        
+        return false;
     }
 }

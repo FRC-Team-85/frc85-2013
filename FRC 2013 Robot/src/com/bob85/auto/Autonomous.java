@@ -28,9 +28,9 @@ public class Autonomous {
      */
     private void initCommands() {
         shootCmd = new ShootCommand(shooter, shotTimer, frisbeeLoader);
-        turn180Cmd = new TurnCommand(drive, 180);
-        driveStage1Cmd = new DriveCommand(drive, -1);
-        driveStage2Cmd = new DriveCommand(drive, 1);
+        turn180Cmd = new TurnCommand(drive, 180, 2);
+        driveStage1Cmd = new DriveCommand(drive, -24, 2);
+        driveStage2Cmd = new DriveCommand(drive, 12, 1);
 
     }
 
@@ -126,6 +126,7 @@ public class Autonomous {
      * Resets Autonomous & Command variables and gets mode & shot time settings
      */
     public void initAutonomous() {
+        finishAutonomous();
         autoStage = kShootStage;
         autoChooser.runAutoModeChooser();
         shotTimer.runShotTimer();

@@ -7,9 +7,6 @@ public class Climber {
     public static final int kDIO_CLIMBER_LIMITSWITCH_BOT = 8;  
     public static final int kDIO_CLIMBER_LIMITSWITCH_TOP = 9;
     
-    public static final int kPWM_CLIMBER_SERVO_PIN_GEAR_LOCK = 9; // gear shift
-    public static final int kPWM_CLIMBER_SERVO_PIN_HARD_STOP = 10; // climber tilt latch
-    
     public static final int kBUTTON_CLIMBER_LOCK = 3; //joystick button to lock pin in climber gear
     public static final int kBUTTON_CLIMBER_UNLOCK = 2; //joystick button to unlock pin in climber gear
     
@@ -19,14 +16,6 @@ public class Climber {
     Encoder rightClimberEncoder;
     Joystick leftStick;
     Joystick rightStick;
-    Servo gearLockServo;
-    Servo hardStopLockServo;
-    
-    private static final int k_GEAR_LOCK_SERVO_POSITION = 1; //lock pin in gear servo position
-    private static final int k_GEAR_UNLOCK_SERVO_POSITION = 0; //unlock pin in gear servo position
-    
-    private static final int k_HARD_STOP_LOCK_SERVO_POSITION = 0;
-    private static final int k_HARD_STOP_UNLOCK_SERVO_POSITION = 1;
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
@@ -74,16 +63,13 @@ public class Climber {
     public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
             Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder,
-            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch,
-            Servo lockClimberServo, Servo lockClimberTiltServo) {
+            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
         this.rightClimberEncoder = rightClimberEncoder;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
-        this.gearLockServo = lockClimberServo;
-        this.hardStopLockServo = lockClimberTiltServo;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         this.drive = drive;
@@ -101,29 +87,8 @@ public class Climber {
      * reverses the encoder reads when in Climber Mode
      */
     private void setClimberEncodersDirection(){
-            leftClimberEncoder.setReverseDirection(true);
-            rightClimberEncoder.setReverseDirection(false);
-    }
-    
-    private void lockClimberServo() {
-        gearLockServo.set(k_GEAR_LOCK_SERVO_POSITION);
-        hardStopLockServo.set(k_HARD_STOP_UNLOCK_SERVO_POSITION);
-    }
-    
-    private void unlockClimberServo() {
-        gearLockServo.set(k_GEAR_UNLOCK_SERVO_POSITION);
-        hardStopLockServo.set(k_HARD_STOP_LOCK_SERVO_POSITION);
-    }
-    
-    /**
-     * Shifts climber gear locking pin
-     */
-    private void shiftClimberLockJoystickInput() {
-        if (leftStick.getRawButton(kBUTTON_CLIMBER_LOCK)) {
-            lockClimberServo();
-        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_UNLOCK)) {
-            unlockClimberServo();
-        }
+            leftClimberEncoder.setReverseDirection(false);
+            rightClimberEncoder.setReverseDirection(true);
     }
     
     /**
@@ -357,10 +322,10 @@ public class Climber {
     public void runClimbStates() {
         switch (climberState) {
             case kDriveState:
-                shiftClimberLockJoystickInput();
+                
                 break;
             case kClimbState:
-                shiftClimberLockJoystickInput();
+
                 initEncoderSetting();     
                 //getJoystickInput(rightStick);
                 getClimbJoystickInputWithHardLimit();
@@ -389,7 +354,6 @@ public class Climber {
      */
     public void initClimber() {
             climberState = kDriveState;
-            unlockClimberServo();
     } 
     
     /**
