@@ -59,6 +59,8 @@ public class Climber {
     private int climberAutoState = kClimbAuto_ManualState;
     private int climberAutoSavedState = kClimbAuto_TopInState;
     
+    private int climberLevel = 0; //current level the robot is on
+    
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -98,6 +100,14 @@ public class Climber {
     private void setClimberEncodersDirection(){
             leftClimberEncoder.setReverseDirection(false);
             rightClimberEncoder.setReverseDirection(true);
+    }
+    
+    private boolean getIsClimberTiltRest() {
+        return true;
+    }
+    
+    private boolean getIsClimberTiltExtent() {
+        return true;
     }
     
     /**
@@ -284,7 +294,7 @@ public class Climber {
         }
     }
     
-    public void switchAutoClimbStates() {
+    public void runAutoClimbStates() {
         switch (climberAutoState) {
             case kClimbAuto_ManualState:
                 if (climberState == kClimbAutoState) {
@@ -297,12 +307,31 @@ public class Climber {
                 } else {
                     climberAutoSavedState = kClimbAuto_TopInState;
                 }
-                
+                break;
+            case kClimbAuto_TopOutState:
+                if (true) {
+                    climberLevel++;
+                    if (climberLevel < 3) {
+                    climberAutoState = kClimbAuto_BotInState;
+                    }
+                } else {
+                    climberAutoSavedState = kClimbAuto_TopOutState;
+                }
+                break;
+            case kClimbAuto_BotInState:
+                if (true) {
+                    climberAutoState = kClimbAuto_BotOutState;
+                } else {
+                    climberAutoSavedState = kClimbAuto_BotInState;
+                }
+                break;
+            case kClimbAuto_BotOutState:
+                if (true) {              
+                    climberAutoState = kClimbAuto_TopInState;
+                } else {
+                    climberAutoSavedState = kClimbAuto_BotOutState;
+                }
             }
-    }
-    
-    public void runAutoClimbStates() {
-        
     }
      
     /**
@@ -314,6 +343,7 @@ public class Climber {
         //SmartDashboard.putNumber("Latch Servo Pos.", hardStopLockServo.get());
         SmartDashboard.putBoolean("Climber Top Limit", getIsClimberTop());
         SmartDashboard.putBoolean("Climber Bot Limit", getIsClimberBot());
+        SmartDashboard.putBoolean("Climber Rest Limit", value);
     } 
     
     /**
@@ -321,6 +351,9 @@ public class Climber {
      */
     public void initClimber() {
             climberState = kDriveState;
+            climberLevel = 0;
+            climberAutoState = kClimbAuto_ManualState;
+            climberAutoSavedState = kClimbAuto_TopInState;
     } 
     
     /**
