@@ -6,6 +6,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Climber {
     public static final int kDIO_CLIMBER_LIMITSWITCH_BOT = 8;  
     public static final int kDIO_CLIMBER_LIMITSWITCH_TOP = 9;
+    public static final int kDIO_CLIMBER_LIMITSWITCH_TILT_REST = 10;
+    public static final int kDIO_CLIMBER_LIMITSWITCH_TILT_EXTENT = 11;
+    
+    public static final int kPWM_CLIMBER_VICTOR_TILT = 10;
     
     public static final int kBUTTON_CLIMBER_LOCK = 3; //joystick button to lock pin in climber gear
     public static final int kBUTTON_CLIMBER_UNLOCK = 2; //joystick button to unlock pin in climber gear
@@ -45,14 +49,15 @@ public class Climber {
     private static final int kClimbAutoState = 2;
     private int climberState = kDriveState;
     
-    private static final int kClimbAuto_DriveState = 0;
+    private static final int kClimbAuto_ManualState = 0;
     private static final int kClimbAuto_TopInState = 1;
     private static final int kClimbAuto_TopOutState = 2;
     private static final int kClimbAuto_BotInState = 3;
     private static final int kClimbAuto_BotOutState = 4;
     private static final int kClimbAuto_NextLevelInState = 5; //latch hooks to go over corner
     private static final int kClimbAuto_NextLevelPullState = 6; //pull robot over corner
-    private int climberAutoState;
+    private int climberAutoState = kClimbAuto_ManualState;
+    private int climberAutoSavedState = kClimbAuto_TopInState;
     
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -63,7 +68,8 @@ public class Climber {
     public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
             Victor leftClimberMotors, Victor rightClimberMotors, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder,
-            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch) {
+            DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch, 
+            DigitalInput limit_Climber_Tilt_Rest, DigitalInput limit_Climber_Tilt_Extent) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
         this.leftClimberEncoder = leftClimberEncoder;
@@ -332,6 +338,23 @@ public class Climber {
                 setLinearClimbOutput();
                 break;
         }
+    }
+    
+    public void switchAutoClimbStates() {
+        switch (climberAutoState) {
+            case kClimbAuto_ManualState:
+                if (climberState == kClimbAutoState) {
+                    climberAutoState = climberAutoSavedState;
+                }
+                break;
+            case kClimbAuto_TopInState:
+                if (true) {
+                    climberAutoState = kClimbAuto_TopOutState;
+                } else {
+                    climberAutoSavedState = kClimbAuto_TopInState;
+                }
+                
+            }
     }
     
     public void runAutoClimbStates() {

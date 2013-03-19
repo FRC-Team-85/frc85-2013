@@ -19,6 +19,7 @@ public class Robot extends IterativeRobot {
     Victor vic_Shooter_Wheel = new Victor(Shooter.kPWM_SHOOTER_VICTOR_WHEEL);
     Victor vic_Shooter_Belt = new Victor(Shooter.kPWM_SHOOTER_VICTOR_BELT);
     Victor vic_Hopper_Belt = new Victor(Hopper.kPWM_HOPPER_VICTOR_BELT);
+    Victor vic_Climber_Tilt = new Victor(Climber.kPWM_CLIMBER_VICTOR_TILT);
     
     Servo servo_Drive_PTO_Left = new Servo(Drive.kPWM_DRIVE_SERVO_PTO_LEFT);
     Servo servo_Drive_PTO_Right = new Servo (Drive.kPWM_DRIVE_SERVO_PTO_RIGHT);
@@ -29,6 +30,8 @@ public class Robot extends IterativeRobot {
     
     DigitalInput limit_Climber_Bottom = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_BOT);
     DigitalInput limit_Climber_Top = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_TOP);
+    DigitalInput limit_Climber_Tilt_Rest = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_TILT_REST);
+    DigitalInput limit_Climber_Tilt_Extent = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_TILT_EXTENT);
     
     HallEffect halle_Shooter_Wheel = new HallEffect(Shooter.kDIO_SHOOTER_HALLEFFECT_WHEEL);
     
@@ -39,7 +42,7 @@ public class Robot extends IterativeRobot {
     Climber climber = new Climber(drive, js_Left, js_Right,
             vic_Drive_Left, vic_Drive_Right,
             enc_Drive_Left, enc_Drive_Right,
-            limit_Climber_Bottom, limit_Climber_Top);
+            limit_Climber_Bottom, limit_Climber_Top, limit_Climber_Tilt_Rest, limit_Climber_Tilt_Extent);
   
     
     Hopper hopper = new Hopper(servo_Hopper_Pin_Frisbee_Lock, vic_Hopper_Belt, pad_Operator);
