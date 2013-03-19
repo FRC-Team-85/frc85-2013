@@ -399,6 +399,7 @@ public class Drive {
                 setServoDrivePosition();
                 getTankDriveJoystickInput();
                 setFilteredMotorOutput();
+                resetEncoders();
                 break;
             case kClimbState:
                 setServoClimbPosition();
@@ -412,6 +413,7 @@ public class Drive {
                 setRightServoClimbPosition();
                 getJoystickYaxisRightClimbInputs(1);
                 setFilteredMotorOutput();
+                break;
         }
     }
     

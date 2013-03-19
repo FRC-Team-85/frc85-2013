@@ -176,10 +176,19 @@ public class Climber {
         return encoderClimberDistance;
     }
     
+    private void limitSwitchEncoderReset(){
+        if (climberTiltRestLimitSwitch.get() || climberTiltExtendLimitSwitch.get()){
+            leftClimberEncoder.reset();
+            rightClimberEncoder.reset();
+        }
+    }
+    
     /**
      * Drives the Climber tilting in and out with limits
      */
     private void setClimberTilt(){
+        limitSwitchEncoderReset();
+        
         if (leftStick.getRawButton(kBUTTON_CLIMBER_REST) && (!climberTiltRestLimitSwitch.get())){
             climberTiltMotor.set(climberTiltOutput);
         } else if (leftStick.getRawButton(kBUTTON_CLIMBER_EXTEND) && (!climberTiltExtendLimitSwitch.get())){
