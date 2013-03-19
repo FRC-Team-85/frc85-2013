@@ -11,11 +11,14 @@ public class Climber {
     
     public static final int kPWM_CLIMBER_VICTOR_TILT = 10;
     
+    public static final int kBUTTON_CLIMBER_REST = 3;
+    public static final int kBUTTON_CLIMBER_EXTEND = 2;
     public static final int kBUTTON_CLIMBER_LOCK = 3; //joystick button to lock pin in climber gear
     public static final int kBUTTON_CLIMBER_UNLOCK = 2; //joystick button to unlock pin in climber gear
     
     Victor leftClimberMotors;
     Victor rightClimberMotors;
+    Victor climberTiltMotor;
     Encoder leftClimberEncoder;
     Encoder rightClimberEncoder;
     Joystick leftStick;
@@ -25,21 +28,18 @@ public class Climber {
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
     private int kClimberEncoderTopDist = 50; //maximum climber height in encoder distance in inches
     
-    private double linearClimberMotorOutputCoefficient = -0.058;
-    private double linearClimberMotorOutputOffset = 1.5;
-    boolean speedLimitReached = false;
-    
     private double encoderClimberDistance;
+    
+    private double climberTiltOutput = 1;
     
     private double climberMotorOutput;
     
     private int climberStage;
-    
-    private double speedSwitchPoint = -0.8;
-    private double topEncoderLimitValue;
 
     DigitalInput bottomClimberLimitSwitch;
     DigitalInput topClimberLimitSwitch;
+    DigitalInput climberTiltRestLimitSwitch;
+    DigitalInput climberTiltExtendLimitSwitch;
     
     Drive drive;
     
@@ -64,18 +64,21 @@ public class Climber {
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
         setClimberEncodersDirection();
     }
-    
+   
     public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
-            Victor leftClimberMotors, Victor rightClimberMotors, 
+            Victor leftClimberMotors, Victor rightClimberMotors, Victor climberTiltMotor, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder,
             DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch, 
-            DigitalInput limit_Climber_Tilt_Rest, DigitalInput limit_Climber_Tilt_Extent) {
+            DigitalInput limit_Climber_Tilt_Rest, DigitalInput limit_Climber_Tilt_Extend) {
         this.leftClimberMotors = leftClimberMotors;
         this.rightClimberMotors = rightClimberMotors;
+        this.climberTiltMotor = climberTiltMotor;
         this.leftClimberEncoder = leftClimberEncoder;
         this.rightClimberEncoder = rightClimberEncoder;
         this.bottomClimberLimitSwitch = bottomClimberLimitSwitch;
         this.topClimberLimitSwitch = topClimberLimitSwitch;
+        this.climberTiltRestLimitSwitch = limit_Climber_Tilt_Rest;
+        this.climberTiltExtendLimitSwitch = limit_Climber_Tilt_Extend;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
         this.drive = drive;
@@ -174,6 +177,19 @@ public class Climber {
     }
     
     /**
+     * Drives the Climber tilting in and out with limits
+     */
+    private void setClimberTilt(){
+        if (leftStick.getRawButton(kBUTTON_CLIMBER_REST) && (!climberTiltRestLimitSwitch.get())){
+            climberTiltMotor.set(climberTiltOutput);
+        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_EXTEND) && (!climberTiltExtendLimitSwitch.get())){
+            climberTiltMotor.set(-climberTiltOutput);
+        } else {
+            climberTiltMotor.set(0);
+        }
+    }
+    
+    /**
      * Drives the Hooks and sets softLimits on the Hook Movement
      * 
      * @param joyStick Joystick input
@@ -194,41 +210,6 @@ public class Climber {
     }
     
     /**
-     * Sets the Hooks to drive upwards to an encoder count and stops
-     * 
-     * NOT TESTED, STILL THEORECTICAL
-     * 
-     */
-    private void scaleStage1LinearClimberMotorOutputUp() {
-        getEncoderDistance();
-        
-        if (!getIsClimberTop() && encoderClimberDistance < topEncoderLimitValue){
-        climberMotorOutput = (linearClimberMotorOutputCoefficient * encoderClimberDistance + linearClimberMotorOutputOffset);
-        } else {
-            stopClimb();
-        }
-    }
-    
-    /**
-     * Drives the ClimberHooks moves downward in a scaling fashion
-     * 
-     * NOT TESTED, STILL THEORETICAL 
-     */
-    private void scaleStage2LinearClimberMotorOutputDown() {
-
-        if (!getIsClimberBot()) {
-            if (climberMotorOutput > speedSwitchPoint && speedLimitReached != true) {//Speed increases
-                climberMotorOutput = (-linearClimberMotorOutputCoefficient * encoderClimberDistance - linearClimberMotorOutputOffset);
-            } else if (climberMotorOutput <= speedSwitchPoint) {//Speed decreases 
-                speedLimitReached = true;
-                climberMotorOutput = (linearClimberMotorOutputCoefficient * encoderClimberDistance - 0.1);
-            } else {
-                stopClimb();
-            }
-        }
-    }
-    
-    /**
      * Sets a Button to a certain height in encoderCounts
      * 
      * @param joystick Joystick Input
@@ -244,52 +225,6 @@ public class Climber {
                 stopClimb();
             }
         }
-    }
-    
-    /**
-     * Case 0 = sets the Hooks on a Manual Control
-     * Case 1 = auto drives up
-     * Case 2 = auto drives down
-     * 
-     * NOT TESTED, STILL THEORECTICAL 
-     */
-     public void runAutoClimb() {
-        
-        switch(climberStage) {
-            case 0:
-                manualJoystickElevDrive(rightStick);
-                break;
-            case 1:
-                scaleStage1LinearClimberMotorOutputUp();
-                break;
-            case 2:
-                scaleStage2LinearClimberMotorOutputDown();
-                break;
-            default:
-                stopClimb();
-        }
-    }
-    
-     public void switchAutoClimb(Joystick joystick, int startAutoClimbButton){
-         switch(climberStage){
-             case 0:
-                 if (getIsClimberBot() && joystick.getRawButton(startAutoClimbButton)){
-                     climberStage = 1;
-                 }
-                 break;
-             case 1:
-                 if (encoderClimberDistance >= topEncoderLimitValue || getIsClimberTop()){
-                     climberStage = 2;
-                 }
-                 break;
-             case 2:
-                 if (getIsClimberBot()){
-                     climberStage = 3;
-                 }
-                 break;
-             default:
-                 stopClimb();
-         }
     }
     
     /**
@@ -385,7 +320,8 @@ public class Climber {
     public void runClimber() {
         runDiagnostics();
         switchClimbStates();
-        runClimbStates();        
+        runClimbStates();
+        setClimberTilt();
     }
 }
 
