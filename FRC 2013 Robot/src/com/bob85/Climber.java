@@ -103,11 +103,11 @@ public class Climber {
     }
     
     private boolean getIsClimberTiltRest() {
-        return true;
+        return climberTiltRestLimitSwitch.get();
     }
     
     private boolean getIsClimberTiltExtent() {
-        return true;
+        return climberTiltExtendLimitSwitch.get();
     }
     
     /**
@@ -178,16 +178,16 @@ public class Climber {
      * Computes the average climber distance and resets the values when the bottomLimitSwitch is hit 
      */
     private double getEncoderDistance() {        
-        if (getIsClimberBot()) {
-            rightClimberEncoder.reset();
-            leftClimberEncoder.reset();
-        }
+        resetClimberEncoderAtBottom();
         encoderClimberDistance = ((rightClimberEncoder.getDistance() + leftClimberEncoder.getDistance()) / 2 );
         return encoderClimberDistance;
     }
     
-    private void limitSwitchEncoderReset(){
-        if (climberTiltRestLimitSwitch.get() || climberTiltExtendLimitSwitch.get()){
+    /**
+     * Resets the encoders if the 
+     */
+    private void resetClimberEncoderAtBottom(){
+        if (getIsClimberBot()){
             leftClimberEncoder.reset();
             rightClimberEncoder.reset();
         }
@@ -197,7 +197,7 @@ public class Climber {
      * Drives the Climber tilting in and out with limits
      */
     private void setClimberTilt(){
-        limitSwitchEncoderReset();
+        resetClimberEncoderAtBottom();
         
         if (leftStick.getRawButton(kBUTTON_CLIMBER_REST) && (!climberTiltRestLimitSwitch.get())){
             climberTiltMotor.set(climberTiltOutput);
@@ -343,7 +343,12 @@ public class Climber {
         //SmartDashboard.putNumber("Latch Servo Pos.", hardStopLockServo.get());
         SmartDashboard.putBoolean("Climber Top Limit", getIsClimberTop());
         SmartDashboard.putBoolean("Climber Bot Limit", getIsClimberBot());
-        SmartDashboard.putBoolean("Climber Rest Limit", value);
+        SmartDashboard.putBoolean("Climber Rest Limit", getIsClimberTiltRest());
+        SmartDashboard.putBoolean("Climber Extent Limit", getIsClimberTiltExtent());
+        //SmartDashboard.putNumber("Climber Level", climberLevel);
+        //SmartDashboard.putNumber("Climber State", climberState);
+        //SmartDashboard.putNumber("Climber Auto State", climberAutoState);
+        //SmartDashboard.putNumber("Climber Auto Saved State", climberAutoSavedState);
     } 
     
     /**
@@ -364,6 +369,7 @@ public class Climber {
         switchClimbStates();
         runClimbStates();
         setClimberTilt();
+        getEncoderDistance();
     }
 }
 
