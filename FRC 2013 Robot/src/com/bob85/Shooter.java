@@ -290,6 +290,8 @@ public class Shooter {
     public void disableShooter() {
         shooterHalleffect.stop();
         shooterHalleffect.reset();
+        setShooterSpeed(0);
+        setShooterBeltSpeed(0);
     }
     
     /**

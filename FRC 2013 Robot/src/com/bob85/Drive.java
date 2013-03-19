@@ -442,6 +442,8 @@ public class Drive {
         disableEncoders();
         resetEncoders();
         resetGyro();
+        setMotorOutputSetting(0, 0);
+        setNonlinearizedOutput();
     }
     
     /**
