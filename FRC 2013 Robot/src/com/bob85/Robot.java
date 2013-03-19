@@ -56,6 +56,7 @@ public class Robot extends IterativeRobot {
     public void disabledInit() {
         drive.disableDrive();
         shooter.disableShooter();
+        hopper.disableHopper();
     }
     
     public void autonomousInit() {
