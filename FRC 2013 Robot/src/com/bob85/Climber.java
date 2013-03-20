@@ -263,10 +263,55 @@ public class Climber {
         }
     }
     
-    public boolean setClimberAutoLatch(double desiredPosition, double latchDistance, double scaleFactor) {
-        return true;
+    public boolean runClimberAutoDriveUpwardsComplete(double desiredPosition, double driveSpeed, double scaleFactor){
+        if (getEncoderDistance() >= desiredPosition){
+            climberMotorOutput = 0;
+            return true;
+        } else {
+            climberMotorOutput = (driveSpeed * scaleFactor);
+            return false;
+        }
     }
     
+    public boolean runClimberAutoDriveDownwardsComplete(double desiredPosition, double driveSpeed, double scaleFactor){
+        if (getEncoderDistance() <= desiredPosition){
+            climberMotorOutput = 0;
+            return true;
+        } else {
+            climberMotorOutput = (driveSpeed * scaleFactor);
+            return false;
+        }
+    }
+    
+    public boolean setClimberAutoLatch(double latchDistance, double desiredPosition, double overShootOffset, double driveSpeedUp, double driveSpeedDown, double scaleFactor) {
+        switch (climberLatchState){
+            case kClimbLatch_Null_State:
+                climberMotorOutput = 0;
+                climberLatchState = kClimbLatch_Extend_State;
+                break;
+            case kClimbLatch_Extend_State:
+                if (runClimberAutoDriveUpwardsComplete(desiredPosition + overShootOffset, driveSpeedUp, scaleFactor)){
+                    climberLatchState = kClimbLatch_Latch_State;
+                } else {
+                    climberLatchState = kClimbLatch_Extend_State;
+                }
+                break;
+            case kClimbLatch_Latch_State:
+                if (runClimberAutoDriveDownwardsComplete(desiredPosition, driveSpeedDown, scaleFactor)){
+                    climberLatchState = kClimbLatch_Complete_State;
+                } else {
+                    climberLatchState = kClimbLatch_Latch_State;
+                }
+                break;
+            case kClimbLatch_Complete_State:
+                climberMotorOutput = 0;
+                return true;
+            default:
+                climberMotorOutput = 0;
+                return false;
+        }
+        return false;
+    }
     /**
      * Sets the parameters for switching into Manual Climb
      */
@@ -299,7 +344,8 @@ public class Climber {
     
     /**
      * Case 0 = do nothing
-     * Case 1 = set the Joysticks for manualHookDriving
+     * Case 1 = set the Joysticks for manualDrive
+     * Case 2 = set AutoClimb
      * 
      */
     public void runClimbStates() {
@@ -331,14 +377,14 @@ public class Climber {
                 break;
             case kClimbAuto_TopInState:
                 if (climberLevel == 0) {
-                    if (true) {
+                    if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
                         climberLatchState = kClimbLatch_Null_State;
                         climberAutoState = kClimbAuto_TopOutState;
                     } else {
                         climberAutoSavedState = kClimbAuto_TopInState;
                     }
                 } else if (climberLevel >= 1) {
-                    if (true) {
+                    if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
                         climberLatchState = kClimbLatch_Null_State;
                         climberAutoState = kClimbAuto_TopOutState;
                     } else {
@@ -348,7 +394,7 @@ public class Climber {
                     
                 break;
             case kClimbAuto_TopOutState:
-                if (true) {
+                if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
                     climberLatchState = kClimbLatch_Null_State;
                     climberLevel++;
                     if (climberLevel < 3) {
@@ -359,7 +405,7 @@ public class Climber {
                 }
                 break;
             case kClimbAuto_BotInState:
-                if (true) {
+                if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
                     climberLatchState = kClimbLatch_Null_State;
                     climberAutoState = kClimbAuto_BotOutState;
                 } else {
@@ -367,13 +413,13 @@ public class Climber {
                 }
                 break;
             case kClimbAuto_BotOutState:
-                if (true) {              
+                if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {              
                     climberLatchState = kClimbLatch_Null_State;
                     climberAutoState = kClimbAuto_TopInState;
                 } else {
                     climberAutoSavedState = kClimbAuto_BotOutState;
                 }
-            }
+        }
     }
      
     /**
