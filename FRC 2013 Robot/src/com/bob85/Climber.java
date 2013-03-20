@@ -199,9 +199,9 @@ public class Climber {
     private void setClimberTilt(){
         resetClimberEncoderAtBottom();
         
-        if (leftStick.getRawButton(kBUTTON_CLIMBER_REST) && (!climberTiltRestLimitSwitch.get())){
+        if (leftStick.getRawButton(kBUTTON_CLIMBER_REST) && (!getIsClimberTiltRest())){
             climberTiltMotor.set(climberTiltOutput);
-        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_EXTEND) && (!climberTiltExtendLimitSwitch.get())){
+        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_EXTEND) && (!getIsClimberTiltExtent())){
             climberTiltMotor.set(-climberTiltOutput);
         } else {
             climberTiltMotor.set(0);
@@ -264,12 +264,14 @@ public class Climber {
                     climberState = kDriveState;
                 } else if (drive.getDriveState() == Drive.kClimbState && rightStick.getRawButton(12)){
                     climberState = kClimbAutoState;
-                } else if (drive.getDriveState() == Drive.kClimbState && !rightStick.getRawButton(12)) {
-                    climberState = kClimbManualState;
                 }
                 break;
             case kClimbAutoState:
-                climberState = kClimbManualState;
+                if (drive.getDriveState() != Drive.kClimbState){
+                    climberState = kDriveState;
+                } else if (drive.getDriveState() == Drive.kClimbState && !rightStick.getRawButton(12)) {
+                    climberState = kClimbManualState;
+                }
         }
 
     }
