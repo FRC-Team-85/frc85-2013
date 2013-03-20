@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
     
     AutoModeChooser autoChooser = new AutoModeChooser();
-    ShotTimer shotTimer = new ShotTimer(ShootCommand.frisbee_val);
+    AutoPrefs autoPrefs = new AutoPrefs(ShootCommand.frisbee_val);
     Joystick js_Left = new Joystick(1);
     Joystick js_Right = new Joystick(2);
     F310Gamepad pad_Operator = new F310Gamepad(3);
@@ -47,10 +47,10 @@ public class Robot extends IterativeRobot {
     
     Hopper hopper = new Hopper(servo_Hopper_Pin_Frisbee_Lock, vic_Hopper_Belt, pad_Operator);
     
-    Autonomous auto = new Autonomous(autoChooser, shotTimer, drive, shooter, hopper);
+    Autonomous auto = new Autonomous(autoChooser, autoPrefs, drive, shooter, hopper);
     public void robotInit() {
         drive.initDrive();
-        shotTimer.initShotTimer();   
+        autoPrefs.initAutoPrefs();   
         shooter.initShooter();
         climber.initClimber();
         hopper.initHopper();

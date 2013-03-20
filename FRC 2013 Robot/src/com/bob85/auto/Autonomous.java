@@ -14,7 +14,7 @@ public class Autonomous {
     
     Timer autoTimer;
     AutoModeChooser autoChooser;
-    ShotTimer shotTimer;
+    AutoPrefs autoPrefs;
     Drive drive;
     Shooter shooter;
     Hopper frisbeeLoader;
@@ -27,9 +27,9 @@ public class Autonomous {
      * Instantiates the Commands
      */
     private void initCommands() {
-        shootCmd = new ShootCommand(shooter, shotTimer, frisbeeLoader);
+        shootCmd = new ShootCommand(shooter, autoPrefs, frisbeeLoader);
         turn180Cmd = new TurnCommand(drive, 180, 2);
-        driveStage1Cmd = new DriveCommand(drive, -24, 2);
+        driveStage1Cmd = new DriveCommand(drive, -12, 2);
         driveStage2Cmd = new DriveCommand(drive, 12, 1);
 
     }
@@ -37,19 +37,28 @@ public class Autonomous {
     /**
      * Constructs an Autonomous object
      * @param autoChooser Autonomous Mode Selector
-     * @param shotTimer ShootCommand Shot Time Settings
+     * @param autoPrefs ShootCommand Shot Time Settings
      * @param drive Drive
      * @param shooter Shooter
      * @param frisbeeLoader Hopper
      */
-    public Autonomous(AutoModeChooser autoChooser, ShotTimer shotTimer, Drive drive,
+    public Autonomous(AutoModeChooser autoChooser, AutoPrefs autoPrefs, Drive drive,
             Shooter shooter, Hopper frisbeeLoader) {
         this.autoChooser = autoChooser;
-        this.shotTimer = shotTimer;
+        this.autoPrefs = autoPrefs;
         this.drive = drive;
         this.shooter = shooter;
         this.frisbeeLoader = frisbeeLoader;
         initCommands();
+    }
+    
+    /**
+     * Assigns the saved preferences to the autonomous command settings
+     */
+    private void setAutonomousSettings() {
+        driveStage1Cmd.changeDesiredDistance(autoPrefs.driveSettings[0]);
+        turn180Cmd.changeDesiredAngle(autoPrefs.driveSettings[1]);
+        driveStage2Cmd.changeDesiredDistance(autoPrefs.driveSettings[2]);
     }
     
     /**
@@ -129,7 +138,8 @@ public class Autonomous {
         finishAutonomous();
         autoStage = kShootStage;
         autoChooser.runAutoModeChooser();
-        shotTimer.runShotTimer();
+        autoPrefs.runAutoPrefs();
+        setAutonomousSettings();
         shootCmd.initShootCommand();
         driveStage1Cmd.initDriveCommand();
         turn180Cmd.initTurnCommand();

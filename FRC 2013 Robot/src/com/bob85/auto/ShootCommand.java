@@ -10,7 +10,7 @@ public class ShootCommand {
     private Shooter shooter;
     private Hopper hopper;
     public static final int frisbee_val = 3; //Amount of frisbees to fire
-    private ShotTimer shotTimer; 
+    private AutoPrefs autoPrefs; 
     public int shotNumber = 1; //current shot number
     private double shotTime = 0.4; //length of time to leave hopper on in shot cycle
     private double currentTime;
@@ -18,13 +18,13 @@ public class ShootCommand {
     /**
      * Constructs a ShootCommand
      * @param shooter Shooter object
-     * @param shotTimer ShotTimer object
+     * @param autoPrefs AutoPrefs object
      * @param hopper Hopper object
      */
-    public ShootCommand(Shooter shooter, ShotTimer shotTimer, Hopper hopper) {
+    public ShootCommand(Shooter shooter, AutoPrefs autoPrefs, Hopper hopper) {
         this.shooter = shooter;
         this.hopper = hopper;
-        this.shotTimer = shotTimer;
+        this.autoPrefs = autoPrefs;
         timer = new Timer();
     }
     
@@ -114,24 +114,24 @@ public class ShootCommand {
         switch (shotNumber) {
             case 1:
                 runShooter();
-                if (shootFrisbee(shotTimer.getShotTime(1))) {
+                if (shootFrisbee(autoPrefs.getShotTime(1))) {
                     shotNumber = 2;
                 }
                 break;
             case 2:
                 runShooter();
-                if (shootFrisbee(shotTimer.getShotTime(2))) {
+                if (shootFrisbee(autoPrefs.getShotTime(2))) {
                     shotNumber = 3;
                 }
                 break;
             case 3:
                 runShooter();
-                if (shootFrisbee(shotTimer.getShotTime(3))) {
+                if (shootFrisbee(autoPrefs.getShotTime(3))) {
                     shotNumber = 4;
                 }
                 break;
             case 4:              
-                if (getTime() < (shotTimer.getShotTime(3) + 3)) {
+                if (getTime() < (autoPrefs.getShotTime(3) + 3)) {
                     runHopper();
                     runShooter();
                 } else {

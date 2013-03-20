@@ -33,6 +33,10 @@ public class DriveCommand {
         timer = new Timer();
     }
     
+    public void changeDesiredDistance(double dist) {
+        this.dist = dist;
+    }
+    
     /**
      * Resets and starts the encoders for the DriveCommand
      */

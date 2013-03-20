@@ -35,6 +35,10 @@ public class TurnCommand {
         commandTimeOut = timeOut;
     }
     
+    public void changeDesiredAngle(double angle) {
+        this.angle = angle;
+    }
+    
     /**
      * Resets the gyro angle to 0
      */
