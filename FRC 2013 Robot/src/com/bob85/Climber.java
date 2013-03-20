@@ -282,16 +282,21 @@ public class Climber {
      * 
      */
     public void runClimbStates() {
+        
+        setClimberTilt();
+        
         switch (climberState) {
-            case kDriveState:
-                
+            case kDriveState:        
                 break;
-            case kClimbState:
-
+            case kClimbManualState:
                 initEncoderSetting();     
                 //getJoystickInput(rightStick);
                 getClimbJoystickInputWithHardLimit();
                 setLinearClimbOutput();
+                break;
+            case kClimbAutoState:
+                initEncoderSetting();
+                runAutoClimbStates();
                 break;
         }
     }
