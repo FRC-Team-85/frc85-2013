@@ -39,7 +39,7 @@ public class Robot extends IterativeRobot {
     Drive drive = new Drive(vic_Drive_Left, vic_Drive_Right, servo_Drive_PTO_Left, servo_Drive_PTO_Right,
             enc_Drive_Left, enc_Drive_Right, gyro_Drive_Heading, js_Left, js_Right);
     Shooter shooter = new Shooter(vic_Shooter_Wheel, vic_Shooter_Belt, halle_Shooter_Wheel, pad_Operator);
-    Climber climber = new Climber(drive, js_Left, js_Right,
+    Climber climber = new Climber(drive, js_Left, js_Right, pad_Operator,
             vic_Drive_Left, vic_Drive_Right, vic_Climber_Tilt,
             enc_Drive_Left, enc_Drive_Right,
             limit_Climber_Bottom, limit_Climber_Top, limit_Climber_Tilt_Rest, limit_Climber_Tilt_Extent);

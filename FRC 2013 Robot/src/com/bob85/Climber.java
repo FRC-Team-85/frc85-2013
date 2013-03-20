@@ -1,6 +1,7 @@
 package com.bob85;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climber {
@@ -23,6 +24,7 @@ public class Climber {
     Encoder rightClimberEncoder;
     Joystick leftStick;
     Joystick rightStick;
+    F310Gamepad gamepad;
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
@@ -67,7 +69,7 @@ public class Climber {
         setClimberEncodersDirection();
     }
    
-    public Climber(Drive drive, Joystick leftStick, Joystick rightStick,
+    public Climber(Drive drive, Joystick leftStick, Joystick rightStick, F310Gamepad gamepad,
             Victor leftClimberMotors, Victor rightClimberMotors, Victor climberTiltMotor, 
             Encoder leftClimberEncoder, Encoder rightClimberEncoder,
             DigitalInput bottomClimberLimitSwitch, DigitalInput topClimberLimitSwitch, 
@@ -83,7 +85,16 @@ public class Climber {
         this.climberTiltExtendLimitSwitch = limit_Climber_Tilt_Extend;
         this.leftStick = leftStick;
         this.rightStick = rightStick;
+        this.gamepad = gamepad;
         this.drive = drive;
+    }
+    
+    private boolean getNuclearLaunchDetected() {
+        if (leftStick.getTrigger() && rightStick.getTrigger() && 
+            gamepad.getButton(ButtonType.kLB) && gamepad.getButton(F310Gamepad.ButtonType.kRB)) {
+                return true;
+        }
+        return false;
     }
     
     /**
@@ -262,14 +273,14 @@ public class Climber {
             case kClimbManualState:
                 if (drive.getDriveState() != Drive.kClimbState){
                     climberState = kDriveState;
-                } else if (drive.getDriveState() == Drive.kClimbState && rightStick.getRawButton(12)){
+                } else if (drive.getDriveState() == Drive.kClimbState && getNuclearLaunchDetected()){
                     climberState = kClimbAutoState;
                 }
                 break;
             case kClimbAutoState:
                 if (drive.getDriveState() != Drive.kClimbState){
                     climberState = kDriveState;
-                } else if (drive.getDriveState() == Drive.kClimbState && !rightStick.getRawButton(12)) {
+                } else if (drive.getDriveState() == Drive.kClimbState && rightStick.getRawButton(12)) {
                     climberState = kClimbManualState;
                 }
         }
