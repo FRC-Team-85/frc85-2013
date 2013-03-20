@@ -63,6 +63,12 @@ public class Climber {
     
     private int climberLevel = 0; //current level the robot is on
     
+    private static final int kClimbLatch_Null_State = 0;
+    private static final int kClimbLatch_Extend_State = 1;
+    private static final int kClimbLatch_Latch_State = 2;
+    private static final int kClimbLatch_Complete_State = 3;
+    private int climberLatchState = kClimbLatch_Null_State; 
+    
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
         rightClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -257,6 +263,10 @@ public class Climber {
         }
     }
     
+    public boolean setClimberAutoLatch(double desiredPosition, double latchDistance, double scaleFactor) {
+        return true;
+    }
+    
     /**
      * Sets the parameters for switching into Manual Climb
      */
@@ -320,14 +330,26 @@ public class Climber {
                 }
                 break;
             case kClimbAuto_TopInState:
-                if (true) {
-                    climberAutoState = kClimbAuto_TopOutState;
-                } else {
-                    climberAutoSavedState = kClimbAuto_TopInState;
+                if (climberLevel == 0) {
+                    if (true) {
+                        climberLatchState = kClimbLatch_Null_State;
+                        climberAutoState = kClimbAuto_TopOutState;
+                    } else {
+                        climberAutoSavedState = kClimbAuto_TopInState;
+                    }
+                } else if (climberLevel >= 1) {
+                    if (true) {
+                        climberLatchState = kClimbLatch_Null_State;
+                        climberAutoState = kClimbAuto_TopOutState;
+                    } else {
+                        climberAutoSavedState = kClimbAuto_TopInState;
+                    }
                 }
+                    
                 break;
             case kClimbAuto_TopOutState:
                 if (true) {
+                    climberLatchState = kClimbLatch_Null_State;
                     climberLevel++;
                     if (climberLevel < 3) {
                     climberAutoState = kClimbAuto_BotInState;
@@ -338,6 +360,7 @@ public class Climber {
                 break;
             case kClimbAuto_BotInState:
                 if (true) {
+                    climberLatchState = kClimbLatch_Null_State;
                     climberAutoState = kClimbAuto_BotOutState;
                 } else {
                     climberAutoSavedState = kClimbAuto_BotInState;
@@ -345,6 +368,7 @@ public class Climber {
                 break;
             case kClimbAuto_BotOutState:
                 if (true) {              
+                    climberLatchState = kClimbLatch_Null_State;
                     climberAutoState = kClimbAuto_TopInState;
                 } else {
                     climberAutoSavedState = kClimbAuto_BotOutState;
@@ -383,11 +407,12 @@ public class Climber {
      * Executes Methods for the Main Robot Class
      */
     public void runClimber() {
+        getEncoderDistance();
         runDiagnostics();
         switchClimbStates();
         runClimbStates();
         setClimberTilt();
-        getEncoderDistance();
+
     }
 }
 
