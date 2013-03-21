@@ -65,9 +65,10 @@ public class Autonomous {
      * Sends autonomous diagnostics to SmartDashboard
      */
     private void runDiagnostics() {
-        SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
-        SmartDashboard.putNumber("Average Drive Dist", drive.getAverageEncodersDistance());
-        SmartDashboard.putNumber("Auto Stage", autoStage);
+        SmartDashboard.putNumber(Drive.key_Gyro_Angle, drive.getAngle());
+        SmartDashboard.putNumber(Drive.key_Encoder_Average_Dist, drive.getAverageEncodersDistance());
+        //SmartDashboard.putNumber("Auto Stage", autoStage);
+        SmartDashboard.putBoolean(Shooter.key_shooterRPMCheck, shooter.onTarget());
     }
 
     private void runSequentialAutonomous() {
@@ -128,7 +129,7 @@ public class Autonomous {
      */
     public void runAutonomous() {
         runSequentialAutonomous();
-        //runDiagnostics();
+        runDiagnostics();
     }
 
     /**

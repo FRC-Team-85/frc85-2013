@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive {
+    public static final String key_Gyro_Angle = "Gyro Angle";
+    public static final String key_Encoder_Average_Dist = "Average Drive Dist";
     
     private SpeedController leftDriveMotors; //class reference to left drive
     private SpeedController rightDriveMotors; //class reference to right drive
@@ -254,8 +256,10 @@ public class Drive {
      * Sends diagnostics to SmartDashboard
      */
     public void runEncoderDiagnostics() {
-        SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
-        SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance()); 
+        //SmartDashboard.putNumber("Left Drive Encoder Dist", leftDriveEncoder.getDistance());
+        //SmartDashboard.putNumber("Right Drive Encoder Dist", rightDriveEncoder.getDistance());
+        SmartDashboard.putNumber(key_Encoder_Average_Dist, getAverageEncodersDistance());
+        SmartDashboard.putNumber(key_Gyro_Angle, getAngle());
     }
     
     /**

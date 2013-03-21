@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.F310Gamepad.ButtonType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
+    
+    public static final String key_shooterRPMCheck = "Shooter On Target";
+    
     public static int shooterSetpoint;
     
     public static final int kPWM_SHOOTER_VICTOR_WHEEL = 5;
@@ -170,7 +173,7 @@ public class Shooter {
     
     public void runDiagnostics() {
         //SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
-        SmartDashboard.putBoolean("Shooter On Target", onTarget());
+        SmartDashboard.putBoolean(key_shooterRPMCheck, onTarget());
         //SmartDashboard.putNumber("Shooter State", getShooterState());
     }
     
