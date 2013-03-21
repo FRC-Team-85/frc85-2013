@@ -216,9 +216,9 @@ public class Climber {
     private void setClimberTilt(){
         resetClimberEncoderAtBottom();
         
-        if (leftStick.getRawButton(kBUTTON_CLIMBER_REST) && (!getIsClimberTiltRest())){
+        if (leftStick.getRawButton(kBUTTON_CLIMBER_REST)){
             climberTiltMotor.set(climberTiltOutput);
-        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_EXTEND) && (!getIsClimberTiltExtent())){
+        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_EXTEND)){
             climberTiltMotor.set(-climberTiltOutput);
         } else {
             climberTiltMotor.set(0);
