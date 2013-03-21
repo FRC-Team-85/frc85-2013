@@ -97,7 +97,7 @@ public class Climber {
     
     private boolean getNuclearLaunchDetected() {
         if (leftStick.getTrigger() && rightStick.getTrigger() && 
-            gamepad.getButton(ButtonType.kLB) && gamepad.getButton(F310Gamepad.ButtonType.kRB)) {
+            gamepad.getButton(ButtonType.kLStick) && gamepad.getButton(F310Gamepad.ButtonType.kRStick)) {
                 return true;
         }
         return false;
@@ -216,9 +216,9 @@ public class Climber {
     private void setClimberTilt(){
         resetClimberEncoderAtBottom();
         
-        if (leftStick.getRawButton(kBUTTON_CLIMBER_REST)){
+        if (gamepad.getButton(ButtonType.kLB)){
             climberTiltMotor.set(climberTiltOutput);
-        } else if (leftStick.getRawButton(kBUTTON_CLIMBER_EXTEND)){
+        } else if (gamepad.getButton(ButtonType.kLF)){
             climberTiltMotor.set(-climberTiltOutput);
         } else {
             climberTiltMotor.set(0);
