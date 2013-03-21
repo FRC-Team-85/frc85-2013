@@ -216,9 +216,9 @@ public class Climber {
     private void setClimberTilt(){
         resetClimberEncoderAtBottom();
         
-        if (gamepad.getButton(ButtonType.kLB)){
+        if (gamepad.getButton(ButtonType.kLB) && !getIsClimberTiltExtent()){
             climberTiltMotor.set(climberTiltOutput);
-        } else if (gamepad.getButton(ButtonType.kLF)){
+        } else if (gamepad.getButton(ButtonType.kLF) && !getIsClimberTiltRest()){
             climberTiltMotor.set(-climberTiltOutput);
         } else {
             climberTiltMotor.set(0);
