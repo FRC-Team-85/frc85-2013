@@ -10,7 +10,7 @@ public class Climber {
     public static final int kDIO_CLIMBER_LIMITSWITCH_TILT_REST = 10;
     public static final int kDIO_CLIMBER_LIMITSWITCH_TILT_EXTENT = 11;
     
-    public static final int kPWM_CLIMBER_VICTOR_TILT = 10;
+    public static final int kPWM_CLIMBER_VICTOR_TILT = 9;
     
     public static final int kBUTTON_CLIMBER_REST = 3;
     public static final int kBUTTON_CLIMBER_EXTEND = 2;
