@@ -363,11 +363,11 @@ public class Climber {
                 break;
             case kClimbAutoState:
                 initEncoderSetting();
-                runAutoClimbStates();
+                //runAutoClimbStates();
                 break;
         }
     }
-    
+    /**
     public void runAutoClimbStates() {
         switch (climberAutoState) {
             case kClimbAuto_ManualState:
@@ -421,7 +421,7 @@ public class Climber {
                 }
         }
     }
-     
+    */ 
     /**
      * Puts values for LimitSwitches on the SmartDashboard
      */
