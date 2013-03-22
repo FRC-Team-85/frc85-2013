@@ -173,7 +173,7 @@ public class Shooter {
     }
     
     public void runDiagnostics() {
-        //SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
+        SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
         SmartDashboard.putBoolean(key_shooterRPMCheck, onTarget());
         //SmartDashboard.putNumber("Shooter State", getShooterState());
     }
