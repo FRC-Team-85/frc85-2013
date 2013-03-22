@@ -28,7 +28,10 @@ public class Climber {
     
     private int encoderCPR = 250;
     private double encoderDistanceRatio = ((2 * Math.PI) / encoderCPR); //Every encoder revolution is 6.283 linear inches moved on the climber
-    private int kClimberEncoderTopDist = 50; //maximum climber height in encoder distance in inches
+    private int kClimberEncoderTopDist = 270; //maximum climber height in encoder distance in inches
+    private int kClimberFullStrokeExtend = 262; //level 1+ extend climb
+    private int kClimberPartialStrokeExtend = 140; //bottom level climb
+    private int kClimberFullStrokeRetract = 0;
     
     private double encoderClimberDistance;
     
@@ -252,15 +255,25 @@ public class Climber {
      * @param topButton Button to be pressed
      * @param presetHeight an Encoder Value set as a Max Height Setpoint
      */
-    public void setClimberToPresetHeight(Joystick joystick, int topButton, double presetHeight){
-        if (joystick.getRawButton(topButton) == true){
-            if (presetHeight > encoderClimberDistance && !getIsClimberTop()){
-                climberMotorOutput = -0.5;
+    public boolean setClimberToPresetHeight(double presetHeight, double speed){
+            if (presetHeight == 0) {
+                if (!getIsClimberBot()) {
+                climberMotorOutput = -speed;
                 setClimberMotors();
-            } else {
-                stopClimb();
+                } else {
+                    stopClimb();
+                    return true;
+                }
+            } else if (presetHeight > 0) {
+                if (!getIsClimberTop() && getEncoderDistance() < presetHeight) {
+                    climberMotorOutput = speed;
+                    setClimberMotors();
+                } else {
+                    stopClimb();
+                    return true;
+                }
             }
-        }
+            return false;
     }
     
     public boolean runClimberAutoDriveUpwardsComplete(double desiredPosition, double driveSpeed, double scaleFactor){
@@ -283,33 +296,23 @@ public class Climber {
         }
     }
     
-    public boolean setClimberAutoLatch(double latchDistance, double desiredPosition, double overShootOffset, double driveSpeedUp, double driveSpeedDown, double scaleFactor) {
+    public boolean setClimberAutoLatch(double desiredPosition, double driveSpeed) {
         switch (climberLatchState){
             case kClimbLatch_Null_State:
                 climberMotorOutput = 0;
                 climberLatchState = kClimbLatch_Extend_State;
                 break;
             case kClimbLatch_Extend_State:
-                if (runClimberAutoDriveUpwardsComplete(desiredPosition + overShootOffset, driveSpeedUp, scaleFactor)){
-                    climberLatchState = kClimbLatch_Latch_State;
-                } else {
-                    climberLatchState = kClimbLatch_Extend_State;
-                }
-                break;
-            case kClimbLatch_Latch_State:
-                if (runClimberAutoDriveDownwardsComplete(desiredPosition, driveSpeedDown, scaleFactor)){
+                if (setClimberToPresetHeight(desiredPosition, driveSpeed)){
                     climberLatchState = kClimbLatch_Complete_State;
                 } else {
-                    climberLatchState = kClimbLatch_Latch_State;
+                    climberLatchState = kClimbLatch_Extend_State;
                 }
                 break;
             case kClimbLatch_Complete_State:
                 climberMotorOutput = 0;
                 return true;
-            default:
-                climberMotorOutput = 0;
-                return false;
-        }
+        }    
         return false;
     }
     /**
@@ -335,7 +338,7 @@ public class Climber {
             case kClimbAutoState:
                 if (drive.getDriveState() != Drive.kClimbState){
                     climberState = kDriveState;
-                } else if (drive.getDriveState() == Drive.kClimbState && rightStick.getRawButton(12)) {
+                } else if (drive.getDriveState() == Drive.kClimbState && gamepad.getButton(ButtonType.kB)) {
                     climberState = kClimbManualState;
                 }
         }
@@ -367,7 +370,7 @@ public class Climber {
                 break;
         }
     }
-    /**
+    
     public void runAutoClimbStates() {
         switch (climberAutoState) {
             case kClimbAuto_ManualState:
@@ -377,14 +380,14 @@ public class Climber {
                 break;
             case kClimbAuto_TopInState:
                 if (climberLevel == 0) {
-                    if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
+                    if (setClimberToPresetHeight(kClimberPartialStrokeExtend, 0.8)) {
                         climberLatchState = kClimbLatch_Null_State;
                         climberAutoState = kClimbAuto_TopOutState;
                     } else {
                         climberAutoSavedState = kClimbAuto_TopInState;
                     }
                 } else if (climberLevel >= 1) {
-                    if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
+                    if (setClimberToPresetHeight(kClimberFullStrokeExtend, 0.8)) {
                         climberLatchState = kClimbLatch_Null_State;
                         climberAutoState = kClimbAuto_TopOutState;
                     } else {
@@ -394,18 +397,20 @@ public class Climber {
                     
                 break;
             case kClimbAuto_TopOutState:
-                if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
+                if (setClimberToPresetHeight(kClimberFullStrokeRetract, 1)) {
                     climberLatchState = kClimbLatch_Null_State;
                     climberLevel++;
                     if (climberLevel < 3) {
                     climberAutoState = kClimbAuto_BotInState;
+                    } else {
+                        climberAutoSavedState = kClimbAuto_TopOutState;
                     }
                 } else {
                     climberAutoSavedState = kClimbAuto_TopOutState;
                 }
                 break;
             case kClimbAuto_BotInState:
-                if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {
+                if (setClimberToPresetHeight(kClimberFullStrokeExtend, 0.8)) {
                     climberLatchState = kClimbLatch_Null_State;
                     climberAutoState = kClimbAuto_BotOutState;
                 } else {
@@ -413,7 +418,7 @@ public class Climber {
                 }
                 break;
             case kClimbAuto_BotOutState:
-                if (setClimberAutoLatch(latchDistance, desiredPosition, overShootOffset, driveSpeedUp, driveSpeedDown, scaleFactor)) {              
+                if (setClimberToPresetHeight(kClimberFullStrokeRetract, 1)) {              
                     climberLatchState = kClimbLatch_Null_State;
                     climberAutoState = kClimbAuto_TopInState;
                 } else {
@@ -421,7 +426,6 @@ public class Climber {
                 }
         }
     }
-    */ 
     /**
      * Puts values for LimitSwitches on the SmartDashboard
      */
