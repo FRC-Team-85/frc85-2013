@@ -257,16 +257,23 @@ public class Climber {
      */
     public boolean setClimberToPresetHeight(double presetHeight, double speed){
             if (presetHeight == 0) {
-                if (!getIsClimberBot()) {
-                climberMotorOutput = -speed;
-                setClimberMotors();
+                if (!getIsClimberBot() && getEncoderDistance() > 10) {
+                    climberMotorOutput = -speed;
+                    setClimberMotors();
+                } else if(!getIsClimberBot() && getEncoderDistance() < 10) {
+                    climberMotorOutput = speed * -0.65;
+                    setClimberMotors();
                 } else {
                     stopClimb();
                     return true;
                 }
             } else if (presetHeight > 0) {
-                if (!getIsClimberTop() && getEncoderDistance() < presetHeight) {
+                if (!getIsClimberTop() && getEncoderDistance() < presetHeight - 10) {
                     climberMotorOutput = speed;
+                    setClimberMotors();
+                } else if (!getIsClimberTop() && getEncoderDistance() > (presetHeight - 10) && 
+                    getEncoderDistance() < presetHeight) {
+                    climberMotorOutput = speed *0.65;
                     setClimberMotors();
                 } else {
                     stopClimb();
@@ -366,7 +373,7 @@ public class Climber {
                 break;
             case kClimbAutoState:
                 initEncoderSetting();
-                //runAutoClimbStates();
+                runAutoClimbStates();
                 break;
         }
     }
