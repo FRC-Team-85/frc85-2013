@@ -168,9 +168,13 @@ public class Climber {
 
         if (leftStick.getRawButton(5)) {
             getJoystickInput(rightStick);
-    } else if (climberMotorOutput > 0 && getIsClimberTop()) {
+    } 
+        /*
+        else if (climberMotorOutput > 0 && getIsClimberTop()) {
             climberMotorOutput = 0;
-        } else if (climberMotorOutput < 0 && getIsClimberBot()) {
+        } 
+        */
+        else if (climberMotorOutput < 0 && getIsClimberBot()) {
             climberMotorOutput = 0;
         }  
     }
