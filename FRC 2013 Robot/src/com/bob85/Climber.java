@@ -8,7 +8,7 @@ public class Climber {
     public static final int kDIO_CLIMBER_LIMITSWITCH_BOT = 8;  
     public static final int kDIO_CLIMBER_LIMITSWITCH_TOP = 9;
     public static final int kDIO_CLIMBER_LIMITSWITCH_TILT_REST = 10;
-    public static final int kDIO_CLIMBER_LIMITSWITCH_TILT_EXTENT = 11;
+    public static final int kDIO_CLIMBER_LIMITSWITCH_TILT_EXTENT = 12;
     
     public static final int kPWM_CLIMBER_VICTOR_TILT = 9;
     
@@ -120,11 +120,11 @@ public class Climber {
     }
     
     private boolean getIsClimberTiltRest() {
-        return climberTiltRestLimitSwitch.get();
+        return !climberTiltRestLimitSwitch.get();
     }
     
     private boolean getIsClimberTiltExtent() {
-        return climberTiltExtendLimitSwitch.get();
+        return !climberTiltExtendLimitSwitch.get();
     }
     
     /**
@@ -141,7 +141,7 @@ public class Climber {
      * @return is climber elevator at top
      */
     private boolean getIsClimberTop() {
-        return !topClimberLimitSwitch.get();
+        return topClimberLimitSwitch.get();
     }
     
     /**

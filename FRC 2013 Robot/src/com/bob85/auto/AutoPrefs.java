@@ -11,7 +11,7 @@ public class AutoPrefs {
     
     public static final String driveDist1Key = "Drive_Dist_1";
     public static final String turnAngleKey = "Turn_Angle";
-    public static final String driveDist3Key = "Drive_Dist_3";
+    public static final String driveDist2Key = "Drive_Dist_2";
 
     private static final String prefKey = "_Pref";
     
@@ -37,7 +37,7 @@ public class AutoPrefs {
     public void getPrefDriveSettingsData() {
         driveSettings[0] = autoPref.getDouble(driveDist1Key + prefKey, -12);
         driveSettings[1] = autoPref.getDouble(turnAngleKey + prefKey, 180);
-        driveSettings[2] = autoPref.getDouble(driveDist3Key + prefKey, 12);
+        driveSettings[2] = autoPref.getDouble(driveDist2Key + prefKey, 12);
     }
     
     /**
