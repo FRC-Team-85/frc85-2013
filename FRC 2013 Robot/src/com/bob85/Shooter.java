@@ -8,7 +8,7 @@ public class Shooter {
     
     public static final String key_shooterRPMCheck = "Shooter On Target";
     
-    public static int shooterSetpoint;
+    
     
     public static final int kPWM_SHOOTER_VICTOR_WHEEL = 5;
     public static final int kPWM_SHOOTER_VICTOR_BELT = 6;
@@ -20,7 +20,7 @@ public class Shooter {
     private static int shooterState = 0; // 0 is standby, 1 is readying, 2 is shoot
     private static int shooterSetpointState = 1;
     
-    private double kOnTargetRPMTolerance = 50;
+    private double kOnTargetRPMTolerance = -50;
     
     private static final double kPWM_TO_RPM = 4350;
     private static final double kRPM_TO_PWM = (1/4350);
@@ -28,6 +28,7 @@ public class Shooter {
     public static final int kSHOOTER_RPM_MAX_SPEED_SETPOINT = 4350;
     public static final int kSHOOTER_RPM_PYRAMID_BACK_SETPOINT = 4000;
  
+    public static int shooterSetpoint = kSHOOTER_RPM_MAX_SPEED_SETPOINT;
     private Victor shooterMotor;
     private Victor shooterBeltMotor;
     
@@ -93,7 +94,7 @@ public class Shooter {
     }
     
     public boolean onTarget() {
-        if (Math.abs(shooterHalleffect.getRPM() -  shooterSetpoint) <  kOnTargetRPMTolerance) {
+        if ((shooterHalleffect.getRPM() -  shooterSetpoint) >  kOnTargetRPMTolerance) {
             return true;
         } else {
             return false;
@@ -193,11 +194,8 @@ public class Shooter {
      */
     private void runShooterSetpointStates() {
         switch (shooterSetpointState) {
-            case 0:
+            default:
                 shooterSetpoint = kSHOOTER_RPM_MAX_SPEED_SETPOINT;
-                break;
-            case 1:
-                shooterSetpoint = kSHOOTER_RPM_PYRAMID_BACK_SETPOINT;
                 break;
         }
         setPIDShooterSetpoint(shooterSetpoint);

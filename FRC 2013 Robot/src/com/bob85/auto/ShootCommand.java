@@ -33,7 +33,7 @@ public class ShootCommand {
      */
     private void runShooter() {
         shooter.setShooterSpeed(1);
-        shooter.setShooterBeltSpeed(1);
+        //shooter.setShooterBeltSpeed(1);
     }
     
     /**
@@ -59,6 +59,7 @@ public class ShootCommand {
     public void runHopper() {
             hopper.setMotorOutputSetting(-1);
             hopper.setLinearizedOutput();
+            shooter.setShooterBeltSpeed(1);
     }
     
     public void disableHopper() {
