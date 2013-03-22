@@ -94,7 +94,7 @@ public class Shooter {
     }
     
     public boolean onTarget() {
-        if ((shooterHalleffect.getRPM() -  shooterSetpoint) >  kOnTargetRPMTolerance) {
+        if ((shooterHalleffect.getRPM() -  kSHOOTER_RPM_MAX_SPEED_SETPOINT) >  kOnTargetRPMTolerance) {
             return true;
         } else {
             return false;
