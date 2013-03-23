@@ -244,6 +244,8 @@ public class Shooter {
                 setShooterMaxSpeed();
                 if (gamepad.getButton(ButtonType.kY)) {
                     setShooterBeltSpeed(1);
+                } else if (gamepad.getButton(ButtonType.kA)) {
+                    setShooterBeltSpeed(-1);
                 } else {
                     setShooterBeltSpeed(0);
                 }
