@@ -118,7 +118,7 @@ public class Shooter {
      * set shooter and belt with 0 output
      */
     public void setShooterToRest() {
-        setShooterBeltSpeed(0);
+        //setShooterBeltSpeed(0);
         setShooterSpeed(0);
     }
     
@@ -173,7 +173,7 @@ public class Shooter {
     }
     
     public void runDiagnostics() {
-        SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
+        //SmartDashboard.putNumber("Shooter RPM", shooterHalleffect.getRPM());
         SmartDashboard.putBoolean(key_shooterRPMCheck, onTarget());
         //SmartDashboard.putNumber("Shooter State", getShooterState());
     }
@@ -231,11 +231,20 @@ public class Shooter {
         switch (shooterState) {
             case kStopShooterState:
                 setShooterToRest();
+                if (gamepad.getButton(ButtonType.kY)) {
+                    setShooterBeltSpeed(1);
+                } else if (gamepad.getButton(ButtonType.kA)) {
+                    setShooterBeltSpeed(-1);
+                } else {
+                    setShooterBeltSpeed(0);
+                }
                 break;
             case kRunShooterNotAtTargetRPMState:
                 setShooterMaxSpeed();
                 if (gamepad.getButton(ButtonType.kY)) {
                     setShooterBeltSpeed(1);
+                } else if (gamepad.getButton(ButtonType.kA)) {
+                    setShooterBeltSpeed(-1);
                 } else {
                     setShooterBeltSpeed(0);
                 }

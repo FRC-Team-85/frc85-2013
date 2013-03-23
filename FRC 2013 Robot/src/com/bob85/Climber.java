@@ -465,7 +465,7 @@ public class Climber {
      */
     public void runClimber() {
         getEncoderDistance();
-        runDiagnostics();
+        //runDiagnostics();
         switchClimbStates();
         runClimbStates();
         setClimberTilt();
