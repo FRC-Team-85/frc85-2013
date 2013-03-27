@@ -28,10 +28,10 @@ public class Robot extends IterativeRobot {
     Encoder enc_Drive_Left = new Encoder(Drive.kDIO_DRIVE_ENCODER_LEFT_A, Drive.kDIO_DRIVE_ENCODER_LEFT_B);
     Encoder enc_Drive_Right = new Encoder(Drive.kDIO_DRIVE_ENCODER_RIGHT_A, Drive.kDIO_DRIVE_ENCODER_RIGHT_B);
     
-    DigitalInput limit_Climber_Bottom = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_BOT);
-    DigitalInput limit_Climber_Top = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_TOP);
-    DigitalInput limit_Climber_Tilt_Rest = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_TILT_REST);
-    DigitalInput limit_Climber_Tilt_Extent = new DigitalInput(Climber.kDIO_CLIMBER_LIMITSWITCH_TILT_EXTENT);
+    LimitSwitch limit_Climber_Bottom = new LimitSwitch(Climber.kDIO_CLIMBER_LIMITSWITCH_BOT, false);
+    LimitSwitch limit_Climber_Top = new LimitSwitch(Climber.kDIO_CLIMBER_LIMITSWITCH_TOP, false);
+    LimitSwitch limit_Climber_Tilt_Rest = new LimitSwitch(Climber.kDIO_CLIMBER_LIMITSWITCH_TILT_REST, true);
+    LimitSwitch limit_Climber_Tilt_Extent = new LimitSwitch(Climber.kDIO_CLIMBER_LIMITSWITCH_TILT_EXTENT, true);
     
     HallEffect halle_Shooter_Wheel = new HallEffect(Shooter.kDIO_SHOOTER_HALLEFFECT_WHEEL);
     

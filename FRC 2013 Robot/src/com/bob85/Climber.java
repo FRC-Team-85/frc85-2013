@@ -123,11 +123,11 @@ public class Climber {
     }
     
     private boolean getIsClimberTiltRest() {
-        return !climberTiltRestLimitSwitch.get();
+        return climberTiltRestLimitSwitch.get();
     }
     
     private boolean getIsClimberTiltExtent() {
-        return !climberTiltExtendLimitSwitch.get();
+        return climberTiltExtendLimitSwitch.get();
     }
     
     /**
