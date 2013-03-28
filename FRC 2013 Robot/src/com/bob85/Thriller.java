@@ -119,17 +119,21 @@ public class Thriller {
         }
     }
     
-    private void setClimberHookLimits(){
+    private void setClimberHookLimits(double speed){
         if (upperClimberLimitSwitch.get()){
             if ((leftDriveMotors.get() > 0) || (rightDriveMotors.get() > 0)){
                 setDriveMotors(0);
             }
+        } else {
+            setDriveMotors(speed);
         }
         
         if (lowerClimberLimitSwitch.get()){
             if ((leftDriveMotors.get() < 0) || (rightDriveMotors.get() < 0)){
                 setDriveMotors(0);
             }
+        } else {
+            setDriveMotors(speed);
         }
     }
     
