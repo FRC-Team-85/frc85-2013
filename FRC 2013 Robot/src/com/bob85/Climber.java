@@ -36,7 +36,8 @@ public class Climber {
     private double encoderClimberDistance;
     
     private double climberTiltOutput = 1;
-    
+    private double climberExtendMaxOutput = 1;
+    private double climberRetractMaxOutput = 1;
     private double climberMotorOutput;
     
     private int climberStage;
@@ -59,18 +60,11 @@ public class Climber {
     private static final int kClimbAuto_TopOutState = 2;
     private static final int kClimbAuto_BotInState = 3;
     private static final int kClimbAuto_BotOutState = 4;
-    private static final int kClimbAuto_NextLevelInState = 5; //latch hooks to go over corner
-    private static final int kClimbAuto_NextLevelPullState = 6; //pull robot over corner
+
     private int climberAutoState = kClimbAuto_ManualState;
-    private int climberAutoSavedState = kClimbAuto_TopInState;
+    private int climberAutoSavedState = kClimbAuto_TopOutState;
     
     private int climberLevel = 0; //current level the robot is on
-    
-    private static final int kClimbLatch_Null_State = 0;
-    private static final int kClimbLatch_Extend_State = 1;
-    private static final int kClimbLatch_Latch_State = 2;
-    private static final int kClimbLatch_Complete_State = 3;
-    private int climberLatchState = kClimbLatch_Null_State; 
     
     private void initEncoderSetting() {
         leftClimberEncoder.setDistancePerPulse(encoderDistanceRatio);
@@ -229,26 +223,6 @@ public class Climber {
     }
     
     /**
-     * Drives the Hooks and sets softLimits on the Hook Movement
-     * 
-     * @param joyStick Joystick input
-     */
-    public void manualJoystickElevDrive(Joystick joyStick){
-        getEncoderDistance();
-        drive.setMotorOutputDeadbands();
-        getJoystickInput(joyStick);        
-        
-            if (getIsClimberTop() && -joyStick.getY() < 0) {
-                stopClimb();
-            } else if (getIsClimberBot() && -joyStick.getY() > 0) {
-                stopClimb();
-            } else {
-                setLinearClimbOutput();
-            }
-        
-    }
-    
-    /**
      * Sets a Button to a certain height in encoderCounts
      * 
      * @param joystick Joystick Input
@@ -282,46 +256,7 @@ public class Climber {
             }
             return false;
     }
-    
-    public boolean runClimberAutoDriveUpwardsComplete(double desiredPosition, double driveSpeed, double scaleFactor){
-        if (getEncoderDistance() >= desiredPosition){
-            climberMotorOutput = 0;
-            return true;
-        } else {
-            climberMotorOutput = (driveSpeed * scaleFactor);
-            return false;
-        }
-    }
-    
-    public boolean runClimberAutoDriveDownwardsComplete(double desiredPosition, double driveSpeed, double scaleFactor){
-        if (getEncoderDistance() <= desiredPosition){
-            climberMotorOutput = 0;
-            return true;
-        } else {
-            climberMotorOutput = (driveSpeed * scaleFactor);
-            return false;
-        }
-    }
-    
-    public boolean setClimberAutoLatch(double desiredPosition, double driveSpeed) {
-        switch (climberLatchState){
-            case kClimbLatch_Null_State:
-                climberMotorOutput = 0;
-                climberLatchState = kClimbLatch_Extend_State;
-                break;
-            case kClimbLatch_Extend_State:
-                if (setClimberToPresetHeight(desiredPosition, driveSpeed)){
-                    climberLatchState = kClimbLatch_Complete_State;
-                } else {
-                    climberLatchState = kClimbLatch_Extend_State;
-                }
-                break;
-            case kClimbLatch_Complete_State:
-                climberMotorOutput = 0;
-                return true;
-        }    
-        return false;
-    }
+
     /**
      * Sets the parameters for switching into Manual Climb
      */
@@ -387,15 +322,13 @@ public class Climber {
                 break;
             case kClimbAuto_TopInState:
                 if (climberLevel == 0) {
-                    if (setClimberToPresetHeight(kClimberPartialStrokeExtend, 0.8)) {
-                        climberLatchState = kClimbLatch_Null_State;
+                    if (setClimberToPresetHeight(kClimberPartialStrokeExtend, climberExtendMaxOutput)) {
                         climberAutoState = kClimbAuto_TopOutState;
                     } else {
                         climberAutoSavedState = kClimbAuto_TopInState;
                     }
                 } else if (climberLevel >= 1) {
-                    if (setClimberToPresetHeight(kClimberFullStrokeExtend, 0.8)) {
-                        climberLatchState = kClimbLatch_Null_State;
+                    if (setClimberToPresetHeight(kClimberFullStrokeExtend, climberExtendMaxOutput)) {
                         climberAutoState = kClimbAuto_TopOutState;
                     } else {
                         climberAutoSavedState = kClimbAuto_TopInState;
@@ -404,8 +337,7 @@ public class Climber {
                     
                 break;
             case kClimbAuto_TopOutState:
-                if (setClimberToPresetHeight(kClimberFullStrokeRetract, 1)) {
-                    climberLatchState = kClimbLatch_Null_State;
+                if (setClimberToPresetHeight(kClimberFullStrokeRetract, climberRetractMaxOutput)) {
                     climberLevel++;
                     if (climberLevel < 3) {
                     climberAutoState = kClimbAuto_BotInState;
@@ -417,16 +349,14 @@ public class Climber {
                 }
                 break;
             case kClimbAuto_BotInState:
-                if (setClimberToPresetHeight(kClimberFullStrokeExtend, 0.8)) {
-                    climberLatchState = kClimbLatch_Null_State;
+                if (setClimberToPresetHeight(kClimberFullStrokeExtend, climberExtendMaxOutput)) {
                     climberAutoState = kClimbAuto_BotOutState;
                 } else {
                     climberAutoSavedState = kClimbAuto_BotInState;
                 }
                 break;
             case kClimbAuto_BotOutState:
-                if (setClimberToPresetHeight(kClimberFullStrokeRetract, 1)) {              
-                    climberLatchState = kClimbLatch_Null_State;
+                if (setClimberToPresetHeight(kClimberFullStrokeRetract, climberRetractMaxOutput)) {              
                     climberAutoState = kClimbAuto_TopInState;
                 } else {
                     climberAutoSavedState = kClimbAuto_BotOutState;
