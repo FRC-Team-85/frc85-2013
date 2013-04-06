@@ -9,7 +9,7 @@ public class TurnCommand {
     private double angle;
     private boolean isClockwise;
     private boolean isCommandStarted = false;
-    private double maxOutput = 0.55; //drive motor output
+    private double maxOutput = 0.8; //drive motor output
     private double commandTimeOut = -1;
     
     /**
@@ -37,6 +37,7 @@ public class TurnCommand {
     
     public void changeDesiredAngle(double angle) {
         this.angle = angle;
+        isClockwise = (angle >= 0) ? this.isClockwise = true : false;
     }
     
     /**
@@ -73,7 +74,7 @@ public class TurnCommand {
                 timer.stop();
                 return true;
             }
-        } else {
+        } else if (!isClockwise) {
             if (drive.getAngle() > angle) {
                 drive.setMotorOutputSetting(-maxOutput, maxOutput);
                 drive.setLinearizedOutput();

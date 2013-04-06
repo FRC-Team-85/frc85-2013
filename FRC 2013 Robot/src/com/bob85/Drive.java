@@ -256,9 +256,9 @@ public class Drive {
      * Sends diagnostics to SmartDashboard
      */
     public void runEncoderDiagnostics() {
-        SmartDashboard.putNumber("Left Drive Dist", leftDriveEncoder.getDistance());
-        SmartDashboard.putNumber("Right Drive Dist", rightDriveEncoder.getDistance());
-        SmartDashboard.putNumber(key_Encoder_Average_Dist, getAverageEncodersDistance());
+        //SmartDashboard.putNumber("Left Drive Dist", leftDriveEncoder.getDistance());
+        //SmartDashboard.putNumber("Right Drive Dist", rightDriveEncoder.getDistance());
+        //SmartDashboard.putNumber(key_Encoder_Average_Dist, getAverageEncodersDistance());
         SmartDashboard.putNumber(key_Gyro_Angle, getAngle());
     }
     
