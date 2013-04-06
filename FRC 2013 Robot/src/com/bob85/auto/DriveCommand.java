@@ -35,6 +35,7 @@ public class DriveCommand {
     
     public void changeDesiredDistance(double dist) {
         this.dist = dist;
+        isForward = (dist >= 0) ? true : false;
     }
     
     /**
